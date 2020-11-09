@@ -1,17 +1,34 @@
 module ShoppingDataTests.ShoppingListTests
 
 open NUnit.Framework
-open ShoppingData.ShoppingItemModule
 open ShoppingData.ShoppingListModule
+open ShoppingData.Utils
 
 [<SetUp>]
 let Setup () = ()
 
-let shoppingList = emptyShoppingList "MyList" "pass"
+let private shoppingList = emptyShoppingList "MyList" "pass"
+let private modName (list: ShoppingList) = { list with Name = "modifiedName" }
 
 [<Test>]
 let ``should execute function if password is correct`` () =
-    let f (list: ShoppingList) = { list with Name = "modifiedName" }
     let expected = emptyShoppingList "modifiedName" "pass"
-    let result = executeIfPassword shoppingList "pass" f
-    Assert.AreEqual(expected, result)
+
+    let result =
+        executeIfPassword shoppingList "pass" modName
+
+    match result with
+    | Success (r) -> Assert.AreEqual(expected, r)
+    | _ -> failwith ("should have matched to success")
+
+
+[<Test>]
+let ``should return error if password is not correct`` () =
+    let expected = IncorrectPassword
+
+    let result =
+        executeIfPassword shoppingList "badPass" modName
+
+    match result with
+    | Failure (f) -> Assert.AreEqual(expected, f)
+    | _ -> failwith ("should have matched to failure")

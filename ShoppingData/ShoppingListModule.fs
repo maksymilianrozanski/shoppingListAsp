@@ -1,6 +1,7 @@
 namespace ShoppingData
 
 open ShoppingData.ShoppingItemModule
+open Utils
 
 module ShoppingListModule =
 
@@ -17,4 +18,4 @@ module ShoppingListModule =
           Items = [||] }
 
     let executeIfPassword (list: ShoppingList) password f =
-        if (list.Password = password) then f (list) else list
+        if (list.Password = password) then Success(f (list)) else  Failure(IncorrectPassword)
