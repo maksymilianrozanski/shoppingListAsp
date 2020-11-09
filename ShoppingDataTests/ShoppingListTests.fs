@@ -1,8 +1,10 @@
 module ShoppingDataTests.ShoppingListTests
 
 open NUnit.Framework
+open NUnit.Framework
 open ShoppingData.ShoppingListModule
 open ShoppingData.Utils
+open ShoppingData.ShoppingItemModule
 
 [<SetUp>]
 let Setup () = ()
@@ -32,3 +34,30 @@ let ``should return error if password is not correct`` () =
     match result with
     | Failure (f) -> Assert.AreEqual(expected, f)
     | _ -> failwith ("should have matched to failure")
+
+[<Test>]
+let ``should return list with item added`` () =
+    let milk =
+        { Name = "Milk"
+          Quantity = 2
+          ItemType = ToBuy }
+
+    let coffee =
+        { Name = "Coffee"
+          Quantity = 4
+          ItemType = ToBuy }
+
+    let initial =
+        { Name = "myList"
+          Password = "pass"
+          Items = [ milk ] }
+
+
+    let expected =
+        { initial with
+              Items = [ milk; coffee ] }
+
+    let result = addItem initial coffee
+
+    Assert.AreEqual(expected, result)
+

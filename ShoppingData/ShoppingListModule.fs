@@ -10,12 +10,16 @@ module ShoppingListModule =
     type ShoppingList =
         { Name: string
           Password: string
-          Items: ItemData [] }
+          Items: List<ItemData> }
 
     let emptyShoppingList name password =
         { Name = name
           Password = password
-          Items = [||] }
+          Items = List.empty }
 
     let executeIfPassword (list: ShoppingList) password f =
-        if (list.Password = password) then Success(f (list)) else  Failure(IncorrectPassword)
+        if (list.Password = password) then Success(f (list)) else Failure(IncorrectPassword)
+
+    let addItem (list: ShoppingList) item =
+        { list with
+              Items = list.Items @ [ item ] }
