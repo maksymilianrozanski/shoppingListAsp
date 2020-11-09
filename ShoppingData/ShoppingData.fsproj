@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <Compile Include="Utils.fs" />
+        <Compile Include="ShoppingListErrors.fs" />
         <Compile Include="ShoppingItemModule.fs" />
         <Compile Include="ShoppingListModule.fs" />
     </ItemGroup>

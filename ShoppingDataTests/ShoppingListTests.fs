@@ -1,10 +1,10 @@
 module ShoppingDataTests.ShoppingListTests
 
 open NUnit.Framework
-open NUnit.Framework
 open ShoppingData.ShoppingListModule
 open ShoppingData.Utils
 open ShoppingData.ShoppingItemModule
+open ShoppingData
 
 [<SetUp>]
 let Setup () = ()

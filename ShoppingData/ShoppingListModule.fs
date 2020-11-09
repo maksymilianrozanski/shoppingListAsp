@@ -1,11 +1,10 @@
 namespace ShoppingData
 
 open ShoppingData.ShoppingItemModule
+open ShoppingData
 open Utils
 
 module ShoppingListModule =
-
-    type ShoppingListErrors = | IncorrectPassword
 
     type ShoppingList =
         { Name: string
