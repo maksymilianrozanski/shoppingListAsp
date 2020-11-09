@@ -1,4 +1,4 @@
-module ShoppingDataTests
+module ShoppingDataTests.IfThisUserTests
 
 open ShoppingData.ShoppingItemModule
 

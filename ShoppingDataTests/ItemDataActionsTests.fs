@@ -1,4 +1,4 @@
-module ItemDataActionsTests
+module ShoppingDataTests.ItemDataActionsTests
 
 open NUnit.Framework
 open ShoppingData.ShoppingItemModule
