@@ -2,7 +2,6 @@ module ShoppingDataTests.ShoppingListTests
 
 open NUnit.Framework
 open ShoppingData.ShoppingListModule
-open ShoppingData.Utils
 open ShoppingData.ShoppingItemModule
 open ShoppingData
 
@@ -20,7 +19,7 @@ let ``should execute function if password is correct`` () =
         executeIfPassword shoppingList "pass" modName
 
     match result with
-    | Success (r) -> Assert.AreEqual(expected, r)
+    | Choice2Of2 (r) -> Assert.AreEqual(expected, r)
     | _ -> failwith ("should have matched to success")
 
 
@@ -32,7 +31,7 @@ let ``should return error if password is not correct`` () =
         executeIfPassword shoppingList "badPass" modName
 
     match result with
-    | Failure (f) -> Assert.AreEqual(expected, f)
+    | Choice1Of2 (f) -> Assert.AreEqual(expected, f)
     | _ -> failwith ("should have matched to failure")
 
 [<Test>]
@@ -60,4 +59,3 @@ let ``should return list with item added`` () =
     let result = addItem initial coffee
 
     Assert.AreEqual(expected, result)
-
