@@ -19,20 +19,18 @@ let ``should execute function if password is correct`` () =
         executeIfPassword shoppingList "pass" modName
 
     match result with
-    | Choice2Of2 (r) -> Assert.AreEqual(expected, r)
-    | _ -> failwith ("should have matched to success")
+    | Choice1Of2 (r) -> Assert.AreEqual(expected, r)
+    | _ -> failwith ("should match to Choice1Of2")
 
 
 [<Test>]
-let ``should return error if password is not correct`` () =
-    let expected = IncorrectPassword
-
+let ``should return Choice1Of2(IncorrectPassword) error if password is not correct`` () =
     let result =
         executeIfPassword shoppingList "badPass" modName
 
     match result with
-    | Choice1Of2 (f) -> Assert.AreEqual(expected, f)
-    | _ -> failwith ("should have matched to failure")
+    | Choice2Of2 (f) -> Assert.AreEqual(IncorrectPassword, f)
+    | _ -> failwith ("should match to Choice1Of2")
 
 [<Test>]
 let ``should return list with item added`` () =

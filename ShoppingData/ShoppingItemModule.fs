@@ -15,25 +15,25 @@ module ShoppingItemModule =
           Quantity: int
           ItemType: ItemType }
 
-    let ifThisUser (item: ItemData) user f: ItemData =
+    let ifThisUser (item: ItemData) user f =
         match item.ItemType with
-        | Assigned (u) -> if (u = user) then (f item) else item
-        | _ -> item
+        | Assigned(u) -> if (u = user) then Choice1Of2((f item)) else Choice2Of2(IncorrectUser)
+        | _ -> Choice2Of2(ForbiddenOperation)
 
     let assignItem item user =
         match item.ItemType with
         | ToBuy
-        | NotFound -> { item with ItemType = Assigned(user) }
-        | _ -> item
+        | NotFound -> Choice1Of2({ item with ItemType = Assigned(user) })
+        | _ -> Choice2Of2(ForbiddenOperation)
 
     let notFoundItem item user =
         match item.ItemType with
         | Assigned (_) -> ifThisUser item user (fun i -> { i with ItemType = NotFound })
-        | _ -> item
+        | _ -> Choice2Of2(ForbiddenOperation)
 
     let toBought item user =
         match item.ItemType with
         | Assigned (_) -> ifThisUser item user (fun i -> { i with ItemType = Bought })
-        | _ -> item
+        | _ -> Choice2Of2(ForbiddenOperation)
 
     let toCancelled item = { item with ItemType = Cancelled }

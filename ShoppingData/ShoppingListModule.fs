@@ -16,7 +16,7 @@ module ShoppingListModule =
           Items = List.empty }
 
     let executeIfPassword (list: ShoppingList) password f =
-        if (list.Password = password) then Choice2Of2(f (list)) else Choice1Of2(IncorrectPassword)
+        if (list.Password = password) then Choice1Of2(f (list)) else Choice2Of2(IncorrectPassword)
 
     let addItem (list: ShoppingList) item =
         { list with

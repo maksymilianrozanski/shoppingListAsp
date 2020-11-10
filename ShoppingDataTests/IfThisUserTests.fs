@@ -1,6 +1,7 @@
 module ShoppingDataTests.IfThisUserTests
 
 open ShoppingData.ShoppingItemModule
+open ShoppingData
 
 open NUnit.Framework
 
@@ -25,28 +26,32 @@ let ``should apply function only if ItemType is Assigned and match username`` ()
           ItemType = Assigned("J") }
 
     let result = ifThisUser (data) "J" f
-    Assert.AreEqual(expected, result)
+    match result with
+    | Choice1Of2 (x) -> Assert.AreEqual(expected, x)
+    | _ -> failwith ("should match to Choice1Of2")
 
 [<Test>]
-let ``should not apply function if ItemType different than Assigned`` () =
+let ``should return Choice2Of2(ForbiddenOperation) if ItemType other than Assigned`` () =
     let data =
         { Name = "Sugar"
           Quantity = 10
           ItemType = ToBuy }
 
     let f item = { item with Name = "Brown sugar" }
-    let expected = data
     let result = ifThisUser data "J" f
-    Assert.AreSame(expected, result)
+    match result with
+    | Choice2Of2(x) -> Assert.AreEqual(ForbiddenOperation, x)
+    | _ -> failwith("should match to Choice2Of2")
 
 [<Test>]
-let ``should not apply function if provided username if different than item's`` () =
+let ``should return Choice2Of2(IncorrectUser) if provided username is different than item's`` () =
     let data =
         { Name = "Sugar"
           Quantity = 10
           ItemType = Assigned("J") }
 
     let f item = { item with Name = "Brown sugar" }
-    let expected = data
     let result = ifThisUser data "K" f
-    Assert.AreSame(expected, result)
+    match result with
+    | Choice2Of2(x) -> Assert.AreEqual(IncorrectUser, x)
+    | _ -> failwith("should match to Choice2Of2")
