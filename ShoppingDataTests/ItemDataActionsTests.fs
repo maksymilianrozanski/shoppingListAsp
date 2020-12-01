@@ -15,7 +15,8 @@ let ``should change ToBuy type to Assigned`` () =
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = ToBuy }
+          ItemType = ToBuy
+          Id = 0 }
 
     let expected =
         { someItem with
@@ -24,7 +25,7 @@ let ``should change ToBuy type to Assigned`` () =
     let types = [ ToBuy; NotFound ]
     for t in types do
         let item = { someItem with ItemType = t }
-        let result = assignItem item "J"
+        let result = assignItem "J" item
         match result with
         | Choice1Of2 (x) -> Assert.AreEqual(expected, x)
         | _ -> failwith ("should match to Choice1Of2")
@@ -34,12 +35,13 @@ let ``assignItem should not change item with ItemTypes Assigned; Bought; Cancell
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = NotFound }
+          ItemType = NotFound
+          Id = 0 }
 
     let types = [ Assigned("John"); Bought; Cancelled ]
     for t in types do
         let item = { someItem with ItemType = t }
-        let result = assignItem item "J"
+        let result = assignItem "J" item
         match result with
         | Choice2Of2 (x) -> Assert.AreEqual(ForbiddenOperation, x)
         | _ -> failwith ("should match to Choice2Of2")
@@ -49,12 +51,13 @@ let ``should return ForbiddenOperation when notFoundItem called on item without 
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
     let otherTypes = [ ToBuy; Bought; NotFound; Cancelled ]
     for i in otherTypes do
         let item = { someItem with ItemType = i }
-        let result = notFoundItem item "MM"
+        let result = notFoundItem "MM" item
         match result with
         | Choice2Of2 (x) -> Assert.AreSame(ForbiddenOperation, x)
         | _ -> failwith ("should match to Choice2Of2")
@@ -64,10 +67,11 @@ let ``should return item with changed ItemType from Assigned to NotFound when ma
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
     let expected = { someItem with ItemType = NotFound }
-    let result = notFoundItem someItem "M"
+    let result = notFoundItem "M" someItem
     match result with
     | Choice1Of2 (x) -> Assert.AreEqual(expected, x)
     | _ -> failwith ("should match to Choice1Of2")
@@ -77,9 +81,10 @@ let ``should return Choice2Of2(IncorrectUser) if username not matched`` () =
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
-    let result = notFoundItem someItem "MM"
+    let result = notFoundItem "MM" someItem
     match result with
     | Choice2Of2 (x) -> Assert.AreEqual(IncorrectUser, x)
     | _ -> failwith ("should match to Choice2Of2")
@@ -89,10 +94,11 @@ let ``toBought should return item with changed ItemType from Assigned to Bought 
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
     let expected = { someItem with ItemType = Bought }
-    let result = toBought someItem "M"
+    let result = toBought "M" someItem
     match result with
     | Choice1Of2 (x) -> Assert.AreEqual(expected, x)
     | _ -> failwith ("should match to Choice1Of2")
@@ -102,34 +108,37 @@ let ``toBought should return Choice2Of2(IncorrectUser) when username not matched
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
-    let result = toBought someItem "other name"
+    let result = toBought "other name" someItem
     match result with
-    | Choice2Of2(x) ->     Assert.AreEqual(IncorrectUser, x)
-    | _ -> failwith("should match to Choice2Of2")
+    | Choice2Of2 (x) -> Assert.AreEqual(IncorrectUser, x)
+    | _ -> failwith ("should match to Choice2Of2")
 
 [<Test>]
 let ``toBought should return Choice2Of2(ForbiddenOperation) for items with ItemType other than Assigned`` () =
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
     let otherTypes = [ ToBuy; Bought; NotFound; Cancelled ]
     for t in otherTypes do
         let item = { someItem with ItemType = t }
-        let result = toBought item "name"
+        let result = toBought "name" item
         match result with
-        | Choice2Of2(x) -> Assert.AreEqual(ForbiddenOperation, x)
-        | _ -> failwith("should match to Choice2Of2")
+        | Choice2Of2 (x) -> Assert.AreEqual(ForbiddenOperation, x)
+        | _ -> failwith ("should match to Choice2Of2")
 
 [<Test>]
 let ``toCancelled should return item with changed ItemType to Cancelled`` () =
     let someItem =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("M") }
+          ItemType = Assigned("M")
+          Id = 0 }
 
     let types =
         [ ToBuy
@@ -138,8 +147,10 @@ let ``toCancelled should return item with changed ItemType to Cancelled`` () =
           NotFound
           Cancelled ]
 
-    let expected = { someItem with ItemType = Cancelled }
+    let expected =
+        Choice1Of2({ someItem with ItemType = Cancelled })
+
     for t in types do
         let item = { someItem with ItemType = t }
-        let result = toCancelled item
+        let result = toCancelled "not-used" item
         Assert.AreEqual(expected, result)

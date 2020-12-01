@@ -4,3 +4,4 @@ type ShoppingListErrors =
         | IncorrectPassword
         | IncorrectUser
         | ForbiddenOperation
+        | ListItemNotFound

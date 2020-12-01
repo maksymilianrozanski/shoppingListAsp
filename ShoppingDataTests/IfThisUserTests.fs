@@ -16,14 +16,16 @@ let ``should apply function only if ItemType is Assigned and match username`` ()
     let data =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("J") }
+          ItemType = Assigned("J")
+          Id = 0 }
 
     let f item = { item with Name = "Brown sugar" }
 
     let expected =
         { Name = "Brown sugar"
           Quantity = 10
-          ItemType = Assigned("J") }
+          ItemType = Assigned("J")
+          Id = 0 }
 
     let result = ifThisUser (data) "J" f
     match result with
@@ -35,7 +37,8 @@ let ``should return Choice2Of2(ForbiddenOperation) if ItemType other than Assign
     let data =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = ToBuy }
+          ItemType = ToBuy
+          Id = 0 }
 
     let f item = { item with Name = "Brown sugar" }
     let result = ifThisUser data "J" f
@@ -48,7 +51,8 @@ let ``should return Choice2Of2(IncorrectUser) if provided username is different 
     let data =
         { Name = "Sugar"
           Quantity = 10
-          ItemType = Assigned("J") }
+          ItemType = Assigned("J")
+          Id = 0 }
 
     let f item = { item with Name = "Brown sugar" }
     let result = ifThisUser data "K" f
