@@ -25,6 +25,15 @@ module ShoppingListModule =
         { list with
               Items = list.Items @ [ item ] }
 
+    let private containsItemWithId (list: ShoppingList) (item: ItemData) =
+        list.Items
+        |> List.exists (fun i -> i.Id = item.Id)
+
+    let addItemIfNotExist item (list: ShoppingList) =
+        match (containsItemWithId list item) with
+        | false -> Choice1Of2(addItem list item)
+        | true -> Choice2Of2(ItemWithIdAlreadyExists)
+
     let modifyItem f itemId (list: ShoppingList) =
         list.Items
         |> List.tryFind (fun i -> i.Id = itemId)
@@ -51,3 +60,5 @@ module ShoppingListModule =
     let listItemToBought = toBought >> modifyItemIfPassword
 
     let listItemToCancelled = toCancelled >> modifyItemIfPassword
+
+    let addItemIfPassword = executeIfPassword << addItemIfNotExist

@@ -5,3 +5,4 @@ type ShoppingListErrors =
         | IncorrectUser
         | ForbiddenOperation
         | ListItemNotFound
+        | ItemWithIdAlreadyExists

@@ -1,5 +1,8 @@
 module ShoppingDataTests.ShoppingListTests
 
+open FSharpPlus
+open FSharpPlus.Control
+open NUnit.Framework
 open NUnit.Framework
 open NUnit.Framework
 open ShoppingData.ShoppingListModule
@@ -157,5 +160,74 @@ let ``should return list with item's ItemType assigned to user`` () =
 
     let result =
         listItemToAssigned "John" 1 threeItemList "pass"
+
+    Assert.AreEqual(expected, result)
+
+let bread id =
+    { Name = "Bread"
+      Quantity = 1
+      ItemType = ToBuy
+      Id = id }
+
+[<Test>]
+let ``should not add item to the list when Items contains item with Id`` () =
+    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(ItemWithIdAlreadyExists)
+
+    let result =
+        addItemIfNotExist (bread 1) threeItemList
+
+    Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should add item to the list when Items does not contain item with Id`` () =
+    let itemToAdd = (bread 3)
+
+    let expected: Choice<ShoppingList, ShoppingListErrors> =
+        Choice1Of2(addItem threeItemList itemToAdd)
+
+    let result =
+        addItemIfNotExist itemToAdd threeItemList
+
+    Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should add item to the list when password is correct and Items does not contain item with Id`` () =
+    let itemToAdd = (bread 3)
+
+    let expected: Choice<ShoppingList, ShoppingListErrors> =
+        Choice1Of2(addItem threeItemList itemToAdd)
+
+    let result =
+        addItemIfPassword itemToAdd threeItemList "pass"
+
+    Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should return Choice2Of2(ItemWithIdAlreadyExists) when password is correct and Items contains item with Id`` () =
+    let itemToAdd = (bread 1)
+    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(ItemWithIdAlreadyExists)
+
+    let result =
+        addItemIfPassword itemToAdd threeItemList "pass"
+
+    Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should return Choice2Of2(IncorrectPassword) when password is incorrect and Items contains item with Id`` () =
+    let itemToAdd = (bread 1)
+    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(IncorrectPassword)
+
+    let result =
+        addItemIfPassword itemToAdd threeItemList "incorrect"
+
+    Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should return Choice2Of2(IncorrectPassword) when password is incorrect and Items does not contain item with Id`` () =
+    let itemToAdd = (bread 1)
+    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(IncorrectPassword)
+
+    let result =
+        addItemIfPassword itemToAdd threeItemList "incorrect"
 
     Assert.AreEqual(expected, result)
