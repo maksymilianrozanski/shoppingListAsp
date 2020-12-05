@@ -51,8 +51,6 @@ module ShoppingListModule =
 
     let modifyItemIfPassword f id = executeIfPassword (modifyItem f id)
 
-    type ItemModifiedByUser = string -> ItemData -> Choice<ItemData, ShoppingListErrors>
-
     let listItemToAssigned = assignItem >> modifyItemIfPassword
 
     let listItemToNotFound = notFoundItem >> modifyItemIfPassword
