@@ -1,9 +1,11 @@
-using ShoppingData;
+using ShoppingList.Dtos;
 
 namespace ShoppingList.Data
 {
     public interface IShoppingListRepo
     {
-        void CreateShoppingList(ShoppingListModule.ShoppingList shoppingList);
+        void CreateShoppingList(ShoppingListCreateDto shoppingList);
+
+        bool SaveChanges();
     }
 }
