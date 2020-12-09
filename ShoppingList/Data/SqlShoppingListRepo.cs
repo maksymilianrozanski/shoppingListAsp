@@ -1,5 +1,6 @@
 using System;
 using ShoppingList.Dtos;
+using ShoppingList.Entities;
 
 namespace ShoppingList.Data
 {
@@ -19,6 +20,9 @@ namespace ShoppingList.Data
             else
                 _context.ShoppingListEntities.Add(shoppingList);
         }
+
+        public ShoppingListEntity GetShoppingListEntityById(int id) =>
+            _context.ShoppingListEntities.Find(id);
 
         public bool SaveChanges() => _context.SaveChanges() >= 0;
     }

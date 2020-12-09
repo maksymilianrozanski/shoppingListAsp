@@ -1,4 +1,5 @@
 using ShoppingList.Dtos;
+using ShoppingList.Entities;
 
 namespace ShoppingList.Data
 {
@@ -6,6 +7,8 @@ namespace ShoppingList.Data
     {
         void CreateShoppingList(ShoppingListCreateDto shoppingList);
 
+        ShoppingListEntity GetShoppingListEntityById(int id);
+        
         bool SaveChanges();
     }
 }

@@ -16,6 +16,17 @@ namespace ShoppingList.Controllers
             _repository = repository;
         }
 
+        [HttpGet("{id}", Name = "GetShoppingListById")]
+        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id)
+        {
+            var item = _repository.GetShoppingListEntityById(id);
+            Console.WriteLine($"item received from database: ${item}");
+            if (item != null)
+                return Ok(item);
+            else
+                return NotFound();
+        }
+
         [HttpPost]
         public ActionResult Post(ShoppingListCreateDto listCreateDto)
         {
@@ -23,7 +34,7 @@ namespace ShoppingList.Controllers
             var shoppingList = listCreateDto;
             _repository.CreateShoppingList(shoppingList);
             var result = _repository.SaveChanges();
-            
+
             //todo: return valid response
             if (result)
                 return Ok();
@@ -32,4 +43,3 @@ namespace ShoppingList.Controllers
         }
     }
 }
-
