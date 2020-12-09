@@ -13,12 +13,16 @@ namespace ShoppingList.Data
             _context = context;
         }
 
-        public void CreateShoppingList(ShoppingListCreateDto shoppingList)
+        public ShoppingListEntity CreateShoppingList(ShoppingListCreateDto shoppingList)
         {
             if (shoppingList == null)
                 throw new ArgumentNullException(nameof(shoppingList));
             else
-                _context.ShoppingListEntities.Add(shoppingList);
+            {
+                ShoppingListEntity toSave = shoppingList;
+                _context.ShoppingListEntities.Add(toSave);
+                return toSave;
+            }
         }
 
         public ShoppingListEntity GetShoppingListEntityById(int id) =>

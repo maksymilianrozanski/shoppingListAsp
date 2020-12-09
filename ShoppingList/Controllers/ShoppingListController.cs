@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
+using ShoppingList.Entities;
 
 namespace ShoppingList.Controllers
 {
@@ -28,16 +29,16 @@ namespace ShoppingList.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(ShoppingListCreateDto listCreateDto)
+        public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
         {
             Console.WriteLine("received post request");
             var shoppingList = listCreateDto;
-            _repository.CreateShoppingList(shoppingList);
-            var result = _repository.SaveChanges();
+            var created = _repository.CreateShoppingList(shoppingList);
+            var savedSuccessfully = _repository.SaveChanges();
 
-            //todo: return valid response
-            if (result)
-                return Ok();
+            if (savedSuccessfully)
+                return CreatedAtAction(nameof(GetShoppingListById), new {created.Id},
+                    (ShoppingListReadDto) created);
             else
                 return NotFound();
         }

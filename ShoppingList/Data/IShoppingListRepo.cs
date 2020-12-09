@@ -5,7 +5,7 @@ namespace ShoppingList.Data
 {
     public interface IShoppingListRepo
     {
-        void CreateShoppingList(ShoppingListCreateDto shoppingList);
+        ShoppingListEntity CreateShoppingList(ShoppingListCreateDto shoppingList);
 
         ShoppingListEntity GetShoppingListEntityById(int id);
         
