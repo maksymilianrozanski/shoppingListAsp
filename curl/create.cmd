@@ -1,2 +1,2 @@
 rem requests adding new shopping list
-curl -X POST "https://localhost:5001/shoppinglist" -d "@json/shoppingList.json" -v -H "Content-Type: application/json" --ssl-no-revoke
+curl -X POST "localhost:5000/shoppingList" -d "@json/shoppingList.json" -H "Content-Type: application/json" -v --ssl-no-revoke

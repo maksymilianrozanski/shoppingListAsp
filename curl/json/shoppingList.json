@@ -1,5 +1,4 @@
 {
-  "Name": "empty name",
-  "Password" : "pass",
-  "Items": []
+  "name": "Empty name",
+  "password": "password"
 }

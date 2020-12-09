@@ -1,6 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingList.Data;
 using ShoppingList.Dtos;
-using ShoppingData;
 
 namespace ShoppingList.Controllers
 {
@@ -8,11 +9,27 @@ namespace ShoppingList.Controllers
     [ApiController]
     public class ShoppingListController : ControllerBase
     {
-        [HttpPost]
-        public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
+        private readonly IShoppingListRepo _repository;
+
+        public ShoppingListController(IShoppingListRepo repository)
         {
-            var emptyList = ShoppingListModule.emptyShoppingList(listCreateDto.Name, 4, listCreateDto.Password);
-            return Ok(emptyList);
+            _repository = repository;
+        }
+
+        [HttpPost]
+        public ActionResult Post(ShoppingListCreateDto listCreateDto)
+        {
+            Console.WriteLine("received post request");
+            var shoppingList = listCreateDto;
+            _repository.CreateShoppingList(shoppingList);
+            var result = _repository.SaveChanges();
+            
+            //todo: return valid response
+            if (result)
+                return Ok();
+            else
+                return NotFound();
         }
     }
 }
+
