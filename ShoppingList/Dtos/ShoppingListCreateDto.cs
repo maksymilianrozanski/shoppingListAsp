@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.FSharp.Collections;
 using ShoppingData;
 
@@ -6,8 +7,7 @@ namespace ShoppingList.Dtos
 {
     public class ShoppingListCreateDto
     {
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public List<ShoppingItemModule.ItemData> Items { get; set; }
+       [Required] [MaxLength(100)]public  string Name { get; set; }
+        [Required] [MaxLength(20)]public  string Password { get; set; }
     }
 }
