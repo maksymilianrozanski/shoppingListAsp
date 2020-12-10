@@ -3,6 +3,7 @@ using LaYumba.Functional;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
+using ShoppingList.Entities;
 using static LaYumba.Functional.F;
 
 namespace ShoppingList.Controllers
@@ -19,15 +20,9 @@ namespace ShoppingList.Controllers
         }
 
         [HttpGet("{id}", Name = "GetShoppingListById")]
-        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id)
-        {
-            var item = _repository.GetShoppingListEntityById(id);
-            Console.WriteLine($"item received from database: ${item}");
-            if (item != null)
-                return Ok(item);
-            else
-                return NotFound();
-        }
+        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
+            _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound,
+                i => Ok((ShoppingListReadDto) i));
 
         [HttpPost]
         public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto) =>

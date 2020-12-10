@@ -16,7 +16,7 @@ namespace ShoppingList.Data
         public Option<ShoppingListEntity> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList) =>
             shoppingList.Map(i => _context.ShoppingListEntities.Add(i).Entity);
 
-        public ShoppingListEntity GetShoppingListEntityById(int id) =>
+        public Option<ShoppingListEntity> GetShoppingListEntityById(int id) =>
             _context.ShoppingListEntities.Find(id);
 
         public bool SaveChanges() => _context.SaveChanges() >= 0;

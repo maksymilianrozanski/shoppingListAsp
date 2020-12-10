@@ -8,8 +8,8 @@ namespace ShoppingList.Data
     {
         Option<ShoppingListEntity> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
 
-        ShoppingListEntity GetShoppingListEntityById(int id);
-        
+        Option<ShoppingListEntity> GetShoppingListEntityById(int id);
+
         bool SaveChanges();
     }
 }
