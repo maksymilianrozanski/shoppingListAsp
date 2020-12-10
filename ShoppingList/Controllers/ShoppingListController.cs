@@ -1,8 +1,9 @@
 using System;
+using LaYumba.Functional;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
-using ShoppingList.Entities;
+using static LaYumba.Functional.F;
 
 namespace ShoppingList.Controllers
 {
@@ -29,18 +30,12 @@ namespace ShoppingList.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
-        {
-            Console.WriteLine("received post request");
-            var shoppingList = listCreateDto;
-            var created = _repository.CreateShoppingList(shoppingList);
-            var savedSuccessfully = _repository.SaveChanges();
-
-            if (savedSuccessfully)
-                return CreatedAtAction(nameof(GetShoppingListById), new {created.Id},
-                    (ShoppingListReadDto) created);
-            else
-                return NotFound();
-        }
+        public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto) =>
+            _repository.CreateShoppingList(listCreateDto)
+                .Bind(i => _repository.SaveChanges() ? Some(i) : null)
+                .Match<ActionResult>(NotFound,
+                    Some: i =>
+                        CreatedAtAction(nameof(GetShoppingListById), new {i.Id},
+                            (ShoppingListReadDto) i));
     }
 }

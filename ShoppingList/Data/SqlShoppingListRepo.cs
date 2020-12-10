@@ -1,4 +1,4 @@
-using System;
+using LaYumba.Functional;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
 
@@ -13,17 +13,8 @@ namespace ShoppingList.Data
             _context = context;
         }
 
-        public ShoppingListEntity CreateShoppingList(ShoppingListCreateDto shoppingList)
-        {
-            if (shoppingList == null)
-                throw new ArgumentNullException(nameof(shoppingList));
-            else
-            {
-                ShoppingListEntity toSave = shoppingList;
-                _context.ShoppingListEntities.Add(toSave);
-                return toSave;
-            }
-        }
+        public Option<ShoppingListEntity> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList) =>
+            shoppingList.Map(i => _context.ShoppingListEntities.Add(i).Entity);
 
         public ShoppingListEntity GetShoppingListEntityById(int id) =>
             _context.ShoppingListEntities.Find(id);
