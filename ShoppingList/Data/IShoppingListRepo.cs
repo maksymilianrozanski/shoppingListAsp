@@ -10,6 +10,8 @@ namespace ShoppingList.Data
 
         Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
 
+        Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated);
+
         bool SaveChanges();
     }
 }

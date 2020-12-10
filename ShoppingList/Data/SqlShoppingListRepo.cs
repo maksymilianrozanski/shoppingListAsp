@@ -27,6 +27,11 @@ namespace ShoppingList.Data
             ((Option<ShoppingListEntity>) _context.ShoppingListEntities.Find(id))
             .Map(i => (ShoppingListReadDto) i);
 
+        public Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated) =>
+            updated.Map(i => _context.Update((ShoppingListEntity) i).Entity)
+                .Bind(i => SaveChanges() ? Some(i) : null)
+                .Map(i => (ShoppingListReadDto) i);
+
         public bool SaveChanges() => _context.SaveChanges() >= 0;
     }
 }

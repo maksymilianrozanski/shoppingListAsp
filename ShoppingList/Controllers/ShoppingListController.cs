@@ -30,5 +30,10 @@ namespace ShoppingList.Controllers
                     Some: i =>
                         CreatedAtAction(nameof(GetShoppingListById), new {i.Id},
                             i));
+
+        [HttpPut]
+        public ActionResult<ShoppingListReadDto> Put(ShoppingListUpdateDto entity) =>
+            _repository.UpdateShoppingListEntity(entity)
+                .Match<ActionResult>(NotFound, Ok);
     }
 }

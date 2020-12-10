@@ -24,5 +24,14 @@ namespace ShoppingList.Entities
                 Password = createDto.Password,
                 Items = new List<ItemDataEntity>()
             };
+
+        public static implicit operator ShoppingListEntity(ShoppingListUpdateDto updateDto) =>
+            new ShoppingListEntity
+            {
+                Id = updateDto.Id,
+                Name = updateDto.Name,
+                Password = updateDto.Password,
+                Items = updateDto.Items
+            };
     }
 }
