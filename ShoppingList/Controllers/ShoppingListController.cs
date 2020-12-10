@@ -21,16 +21,14 @@ namespace ShoppingList.Controllers
 
         [HttpGet("{id}", Name = "GetShoppingListById")]
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
-            _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound,
-                i => Ok((ShoppingListReadDto) i));
+            _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound, Ok);
 
         [HttpPost]
         public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto) =>
             _repository.CreateShoppingList(listCreateDto)
-                .Bind(i => _repository.SaveChanges() ? Some(i) : null)
                 .Match<ActionResult>(NotFound,
                     Some: i =>
                         CreatedAtAction(nameof(GetShoppingListById), new {i.Id},
-                            (ShoppingListReadDto) i));
+                            i));
     }
 }

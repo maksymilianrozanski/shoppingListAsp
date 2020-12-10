@@ -6,9 +6,9 @@ namespace ShoppingList.Data
 {
     public interface IShoppingListRepo
     {
-        Option<ShoppingListEntity> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
+        Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
 
-        Option<ShoppingListEntity> GetShoppingListEntityById(int id);
+        Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
 
         bool SaveChanges();
     }
