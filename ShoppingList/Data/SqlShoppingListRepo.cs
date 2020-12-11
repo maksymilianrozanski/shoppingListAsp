@@ -37,14 +37,22 @@ namespace ShoppingList.Data
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id);
 
-        //todo: fix crashing when adding new items to the list
         public Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated) =>
             updated.Bind(i => GetShoppingListWithChildrenById(i.Id).Map(j => (i, j)))
                 .Bind(bothNonEmpty =>
                     {
                         var (updateDto, entityFromDb) = bothNonEmpty;
                         var itemToSave = _context.Update(entityFromDb).Entity.Merge(updateDto);
-                        return SaveChanges() ? Some((ShoppingListReadDto) itemToSave) : null;
+                        return Try(SaveChanges)
+                            .Run()
+                            .Match(exception =>
+                                {
+                                    Console.WriteLine($"Exception during saving: ${exception}");
+                                    return null;
+                                },
+                                noException => noException
+                                    ? Some((ShoppingListReadDto) itemToSave)
+                                    : null);
                     }
                 );
 
