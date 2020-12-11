@@ -36,15 +36,5 @@ namespace ShoppingList.Entities
                 changed.Items.Map(i => i.ToItemDataEntity(this.Id, this)).ToList();
             return this;
         }
-
-        //todo:
-        // public static implicit operator ShoppingListEntity(ShoppingListUpdateDto updateDto) =>
-        //     new ShoppingListEntity
-        //     {
-        //         Id = updateDto.Id,
-        //         Name = updateDto.Name,
-        //         Password = updateDto.Password,
-        //         ItemDataEntities = updateDto.Items
-        //     };
     }
 }
