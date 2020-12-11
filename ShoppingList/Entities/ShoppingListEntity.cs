@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using LaYumba.Functional;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.FSharp.Collections;
 using ShoppingData;
 using ShoppingList.Dtos;
@@ -14,7 +17,7 @@ namespace ShoppingList.Entities
 
         [Required] public string Password { get; set; }
 
-        [Required] public IEnumerable<ItemDataEntity> Items { get; set; }
+        [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; }
 
         public static implicit operator ShoppingListEntity(ShoppingListCreateDto createDto) =>
             new ShoppingListEntity
@@ -22,16 +25,26 @@ namespace ShoppingList.Entities
                 Id = 0,
                 Name = createDto.Name,
                 Password = createDto.Password,
-                Items = new List<ItemDataEntity>()
+                ItemDataEntities = new List<ItemDataEntity>()
             };
 
-        public static implicit operator ShoppingListEntity(ShoppingListUpdateDto updateDto) =>
-            new ShoppingListEntity
-            {
-                Id = updateDto.Id,
-                Name = updateDto.Name,
-                Password = updateDto.Password,
-                Items = updateDto.Items
-            };
+        public ShoppingListEntity Merge(ShoppingListUpdateDto changed)
+        {
+            this.Name = changed.Name;
+            this.Password = changed.Password;
+            this.ItemDataEntities =
+                changed.Items.Map(i => i.ToItemDataEntity(this.Id, this)).ToList();
+            return this;
+        }
+
+        //todo:
+        // public static implicit operator ShoppingListEntity(ShoppingListUpdateDto updateDto) =>
+        //     new ShoppingListEntity
+        //     {
+        //         Id = updateDto.Id,
+        //         Name = updateDto.Name,
+        //         Password = updateDto.Password,
+        //         ItemDataEntities = updateDto.Items
+        //     };
     }
 }

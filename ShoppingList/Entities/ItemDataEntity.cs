@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using Microsoft.FSharp.Core;
 using ShoppingData;
@@ -15,6 +16,9 @@ namespace ShoppingList.Entities
         [Required] public int Quantity { get; set; }
 
         [Required] public string ItemType { get; set; }
+
+        [Required] public int ShoppingListEntityRefId { get; set; }
+        public ShoppingListEntity ShoppingListEntity { get; set; }
 
         public static implicit operator ItemDataEntity(ShoppingItemModule.ItemData itemData) =>
             new ItemDataEntity

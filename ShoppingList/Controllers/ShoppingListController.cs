@@ -32,8 +32,10 @@ namespace ShoppingList.Controllers
                             i));
 
         [HttpPut]
-        public ActionResult<ShoppingListReadDto> Put(ShoppingListUpdateDto entity) =>
-            _repository.UpdateShoppingListEntity(entity)
-                .Match<ActionResult>(NotFound, Ok);
+        public ActionResult Put(ShoppingListUpdateDto entity)
+        {
+            _repository.UpdateShoppingListEntity(entity);
+            return NoContent();
+        }
     }
 }

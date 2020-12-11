@@ -12,7 +12,6 @@ namespace ShoppingList.Dtos
 
         [Required] public string Password { get; set; }
 
-        [Required] public IEnumerable<ItemDataEntity> Items { get; set; }
-        
+        [Required] public ICollection<ItemDataUpdateDto> Items { get; set; }
     }
 }

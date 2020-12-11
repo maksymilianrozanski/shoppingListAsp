@@ -9,6 +9,12 @@ namespace ShoppingList.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+            modelBuilder.Entity<ItemDataEntity>()
+                .HasOne(i => i.ShoppingListEntity)
+                .WithMany(j => j.ItemDataEntities)
+                .HasForeignKey(i => i.ShoppingListEntityRefId);
+
         public DbSet<ItemDataEntity> ItemDataEntities { get; set; }
         public DbSet<ShoppingListEntity> ShoppingListEntities { get; set; }
     }
