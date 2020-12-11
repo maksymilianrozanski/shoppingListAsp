@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using LaYumba.Functional;
+using Microsoft.EntityFrameworkCore;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
 using static LaYumba.Functional.F;
-using LaYumba.Functional.Option;
-using Microsoft.EntityFrameworkCore;
-using static LaYumba.Functional.OptionExt;
-using None = LaYumba.Functional.Option.None;
 
 namespace ShoppingList.Data
 {
@@ -44,15 +40,15 @@ namespace ShoppingList.Data
                         var (updateDto, entityFromDb) = bothNonEmpty;
                         var itemToSave = _context.Update(entityFromDb).Entity.Merge(updateDto);
                         return Try(SaveChanges)
+                            .Map(result => result
+                                ? Some((ShoppingListReadDto) itemToSave)
+                                : null)
                             .Run()
                             .Match(exception =>
-                                {
-                                    Console.WriteLine($"Exception during saving: ${exception}");
-                                    return null;
-                                },
-                                noException => noException
-                                    ? Some((ShoppingListReadDto) itemToSave)
-                                    : null);
+                            {
+                                Console.WriteLine($"Exception during saving: ${exception}");
+                                return null;
+                            }, x => x);
                     }
                 );
 
