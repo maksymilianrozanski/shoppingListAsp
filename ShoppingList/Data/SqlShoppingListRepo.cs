@@ -37,6 +37,7 @@ namespace ShoppingList.Data
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id);
 
+        //todo: fix crashing when adding new items to the list
         public Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated) =>
             updated.Bind(i => GetShoppingListWithChildrenById(i.Id).Map(j => (i, j)))
                 .Bind(bothNonEmpty =>
