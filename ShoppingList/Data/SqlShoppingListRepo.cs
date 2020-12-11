@@ -36,21 +36,16 @@ namespace ShoppingList.Data
             _context.ShoppingListEntities
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id);
-        
-        public void Update(ShoppingListEntity shoppingListEntity)
-        {
-        }
 
         public Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated) =>
-            updated
-                .Map(i => (i, GetShoppingListWithChildrenById(i.Id)))
-                .Map(i => (i.i, i.Item2.Map(i => _context.Update(i).Entity)))
-                .Bind(i =>
-                {
-                    var merged = i.Item2.Map(dbItem => dbItem.Merge(i.i));
-                    return merged.Bind(i => SaveChanges() ? Some(i) : null);
-                })
-                .Map(i => (ShoppingListReadDto) i);
+            updated.Bind(i => GetShoppingListWithChildrenById(i.Id).Map(j => (i, j)))
+                .Bind(bothNonEmpty =>
+                    {
+                        var (updateDto, entityFromDb) = bothNonEmpty;
+                        var itemToSave = _context.Update(entityFromDb).Entity.Merge(updateDto);
+                        return SaveChanges() ? Some((ShoppingListReadDto) itemToSave) : null;
+                    }
+                );
 
         public bool SaveChanges() => _context.SaveChanges() >= 0;
     }
