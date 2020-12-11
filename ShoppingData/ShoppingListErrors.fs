@@ -1,6 +1,7 @@
 namespace ShoppingData
 
-type ShoppingListErrors =
+module ShoppingListErrors =
+    type ShoppingListErrors =
         | IncorrectPassword
         | IncorrectUser
         | ForbiddenOperation

@@ -12,6 +12,8 @@ namespace ShoppingList.Data
 
         Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updatedList);
 
+        Option<ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
+
         bool SaveChanges();
     }
 }

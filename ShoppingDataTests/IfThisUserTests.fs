@@ -1,7 +1,7 @@
 module ShoppingDataTests.IfThisUserTests
 
 open ShoppingData.ShoppingItemModule
-open ShoppingData
+open ShoppingData.ShoppingListErrors
 
 open NUnit.Framework
 

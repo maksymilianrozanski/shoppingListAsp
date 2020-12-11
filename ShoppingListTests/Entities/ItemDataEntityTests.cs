@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using LaYumba.Functional;
+using Microsoft.FSharp.Core;
 using NUnit.Framework;
 using ShoppingData;
 using ShoppingList.Entities;
+using static ShoppingData.ShoppingItemModule.ItemType;
+
 
 namespace ShoppingListTests.Entities
 {
@@ -18,11 +22,11 @@ namespace ShoppingListTests.Entities
         {
             var itemsToConvert = new List<ShoppingItemModule.ItemData>
             {
-                new ShoppingItemModule.ItemData(10, "sugar", 1, ShoppingItemModule.ItemType.Bought),
-                new ShoppingItemModule.ItemData(11, "coffee", 20, ShoppingItemModule.ItemType.NewAssigned("Garfield")),
-                new ShoppingItemModule.ItemData(12, "milk", 21, ShoppingItemModule.ItemType.ToBuy),
-                new ShoppingItemModule.ItemData(13, "apples", 22, ShoppingItemModule.ItemType.Cancelled),
-                new ShoppingItemModule.ItemData(14, "pineapple", 23, ShoppingItemModule.ItemType.NotFound),
+                new ShoppingItemModule.ItemData(10, "sugar", 1, Bought),
+                new ShoppingItemModule.ItemData(11, "coffee", 20, NewAssigned("Garfield")),
+                new ShoppingItemModule.ItemData(12, "milk", 21, ToBuy),
+                new ShoppingItemModule.ItemData(13, "apples", 22, Cancelled),
+                new ShoppingItemModule.ItemData(14, "pineapple", 23, NotFound),
             };
 
             var expectedItems = new List<ItemDataEntity>
@@ -41,9 +45,9 @@ namespace ShoppingListTests.Entities
         public void ConvertedItemShouldNotBeEqual()
         {
             var item = new ShoppingItemModule.ItemData(11, "coffee", 20,
-                ShoppingItemModule.ItemType.NewAssigned("Garfield"));
+                NewAssigned("Garfield"));
 
-            var notEqual = new ShoppingItemModule.ItemData(11, "coffee", 20, ShoppingItemModule.ItemType.ToBuy);
+            var notEqual = new ShoppingItemModule.ItemData(11, "coffee", 20, ToBuy);
             Assert.AreNotEqual(item, notEqual);
         }
 
@@ -60,6 +64,45 @@ namespace ShoppingListTests.Entities
                    expected.Name == actual.Name &&
                    expected.Quantity == actual.Quantity &&
                    expected.ItemType == actual.ItemType;
+        }
+
+        [Test]
+        public void ShouldConvertStringToItemType()
+        {
+            var items = new List<string>
+                {"ToBuy", "Bought", "Cancelled", "NotFound", "Assigned Garfield", "Assigned Some Cat"};
+            var expected = new List<ShoppingItemModule.ItemType>
+                {ToBuy, Bought, Cancelled, NotFound, NewAssigned("Garfield"), NewAssigned("Some Cat")};
+
+            var results = items.Map(ItemDataEntity.ItemTypeFromString).ToList();
+
+            expected.Zip(results).ForEach(i => Assert.AreEqual(i.First, i.Second));
+            Assert.AreEqual(expected.Count, results.Count);
+        }
+
+        [Test]
+        public void ShouldThrowMatchFailureException()
+        {
+            var invalidItems = new List<string> {"Cat", "AssignedCat", "", "Assigned", "Assigned "};
+            invalidItems.ForEach(i =>
+                    Assert.Throws<MatchFailureException>(
+                        () => ItemDataEntity.ItemTypeFromString(i)));
+        }
+
+        [Test]
+        public void ShouldConvertItemDataEntityToItemData()
+        {
+            var item = new ItemDataEntity
+            {
+                Id = 21,
+                Name = "Milk",
+                Quantity = 3,
+                ItemType = "Assigned somebody",
+                ShoppingListEntityRefId = 10
+            };
+
+            var expected = new ShoppingItemModule.ItemData(21, "Milk", 3, NewAssigned("somebody"));
+            Assert.True(expected.Equals(item));
         }
     }
 }

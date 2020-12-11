@@ -2,7 +2,7 @@ module ShoppingDataTests.ItemDataActionsTests
 
 open NUnit.Framework
 open ShoppingData.ShoppingItemModule
-open ShoppingData
+open ShoppingData.ShoppingListErrors
 
 [<SetUp>]
 let Setup () = ()

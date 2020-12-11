@@ -1,5 +1,9 @@
 ﻿namespace ShoppingData
 
+open ShoppingData
+
+open ShoppingData.ShoppingListErrors
+
 module ShoppingItemModule =
     let hello name = printfn "Hello %s" name
 

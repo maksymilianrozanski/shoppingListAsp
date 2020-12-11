@@ -1,13 +1,9 @@
 module ShoppingDataTests.ShoppingListTests
 
-open FSharpPlus
-open FSharpPlus.Control
-open NUnit.Framework
-open NUnit.Framework
 open NUnit.Framework
 open ShoppingData.ShoppingListModule
 open ShoppingData.ShoppingItemModule
-open ShoppingData
+open ShoppingData.ShoppingListErrors
 
 [<SetUp>]
 let Setup () = ()

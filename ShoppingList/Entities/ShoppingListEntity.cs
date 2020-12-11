@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using FSharpPlus;
 using LaYumba.Functional;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.FSharp.Collections;
@@ -26,6 +27,22 @@ namespace ShoppingList.Entities
                 Name = createDto.Name,
                 Password = createDto.Password,
                 ItemDataEntities = new List<ItemDataEntity>()
+            };
+
+        public static implicit operator ShoppingListModule.ShoppingList(ShoppingListEntity entity) =>
+            new ShoppingListModule.ShoppingList(entity.Id, entity.Name, entity.Password,
+                ListModule.OfSeq(
+                    entity.ItemDataEntities.Map(i =>
+                        (ShoppingItemModule.ItemData) i))
+            );
+
+        public static implicit operator ShoppingListEntity(ShoppingListModule.ShoppingList list) =>
+            new ShoppingListEntity
+            {
+                Id = list.Id,
+                Name = list.Name,
+                Password = list.Password,
+                ItemDataEntities = list.Items.Map(i => (ItemDataEntity) i).ToList()
             };
 
         public ShoppingListEntity Merge(ShoppingListUpdateDto changed)

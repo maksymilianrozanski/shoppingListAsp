@@ -2,7 +2,7 @@ namespace ShoppingData
 
 open FSharpPlus
 open ShoppingData.ShoppingItemModule
-open ShoppingData
+open ShoppingData.ShoppingListErrors
 
 module ShoppingListModule =
 

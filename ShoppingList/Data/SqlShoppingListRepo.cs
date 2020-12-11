@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using LaYumba.Functional;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FSharp.Core;
+using ShoppingData;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
 using static LaYumba.Functional.F;
@@ -51,6 +53,73 @@ namespace ShoppingList.Data
                             }, x => x);
                     }
                 );
+
+        public Option<ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd)
+        {
+            Console.WriteLine("received itemToAdd");
+            return itemToAdd.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId).Map(dbList => (i, dbList)))
+                .Bind<(ItemDataCreateDto, ShoppingListEntity), ShoppingListReadDto>(
+                    ((ItemDataCreateDto i, ShoppingListEntity dbList) pair) =>
+                    {
+                        var (itemDataCreateDto, shoppingListEntity) = pair;
+
+                        var result =
+                            ShoppingListModule.addItemIfPassword.Invoke((ItemDataEntity) itemDataCreateDto)
+                                .Invoke(shoppingListEntity).Invoke(
+                                    itemDataCreateDto.Password);
+
+                        switch (result)
+                        {
+                            case FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>.
+                                Choice1Of2 list:
+
+                                var withAddedItem = list.Item;
+
+                                _context.Entry(shoppingListEntity).CurrentValues.SetValues(withAddedItem);
+                                _context.ItemDataEntities.RemoveRange(shoppingListEntity.ItemDataEntities);
+                                withAddedItem.Items.ToList().ForEach(i => shoppingListEntity.ItemDataEntities.Add(i));
+
+                                return Try(SaveChanges)
+                                    .Map(r => r
+                                        ? Some(shoppingListEntity)
+                                        : null)
+                                    .Map(
+                                        i =>
+                                            i.Bind<ShoppingListEntity, ShoppingListReadDto>(
+                                                j => (ShoppingListReadDto) j))
+                                    .Run()
+                                    .Match(exception =>
+                                    {
+                                        Console.WriteLine($"Exception during saving: ${exception}");
+                                        return null;
+                                    }, x =>
+                                    {
+                                        Console.WriteLine("Success");
+                                        return x;
+                                    });
+                            case FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>.
+                                Choice2Of2 error:
+                                Console.WriteLine("error during adding new item: " + ErrorTextValue(error.Item));
+                                return None;
+                            default:
+                                throw new MatchFailureException();
+                        }
+                    });
+        }
+
+        private static string ErrorTextValue(ShoppingListErrors.ShoppingListErrors error)
+        {
+            return error switch
+            {
+                var x when x.IsForbiddenOperation => nameof(ShoppingListErrors.ShoppingListErrors.ForbiddenOperation),
+                var x when x.IsIncorrectPassword => nameof(ShoppingListErrors.ShoppingListErrors.IncorrectPassword),
+                var x when x.IsIncorrectUser => nameof(ShoppingListErrors.ShoppingListErrors.IncorrectUser),
+                var x when x.IsListItemNotFound => nameof(ShoppingListErrors.ShoppingListErrors.ListItemNotFound),
+                var x when x.IsItemWithIdAlreadyExists => nameof(ShoppingListErrors.ShoppingListErrors
+                    .ItemWithIdAlreadyExists),
+                _ => throw new MatchFailureException()
+            };
+        }
 
         public bool SaveChanges() => _context.SaveChanges() >= 0;
     }
