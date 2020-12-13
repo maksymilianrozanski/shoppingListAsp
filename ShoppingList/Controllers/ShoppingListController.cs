@@ -49,5 +49,16 @@ namespace ShoppingList.Controllers
             return _repository.AddItemToShoppingList(itemDataCreateDto)
                 .Match<ActionResult>(NotFound, Ok);
         }
+
+        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.Route("modifyItem")]
+        public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDto itemDataActionDto)
+        {
+            Console.WriteLine("modifyItem endpoint");
+            Console.WriteLine(itemDataActionDto.ToString());
+            Console.WriteLine("action: " + itemDataActionDto.ActionNumber);
+            throw new NotImplementedException();
+            return NotFound();
+        }
     }
 }
