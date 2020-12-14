@@ -1,6 +1,5 @@
 using LaYumba.Functional;
 using ShoppingList.Dtos;
-using ShoppingList.Entities;
 
 namespace ShoppingList.Data
 {
@@ -13,6 +12,8 @@ namespace ShoppingList.Data
         Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updatedList);
 
         Option<ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
+
+        Option<ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction);
 
         bool SaveChanges();
     }

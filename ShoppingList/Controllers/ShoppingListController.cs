@@ -57,8 +57,8 @@ namespace ShoppingList.Controllers
             Console.WriteLine("modifyItem endpoint");
             Console.WriteLine(itemDataActionDto.ToString());
             Console.WriteLine("action: " + itemDataActionDto.ActionNumber);
-            throw new NotImplementedException();
-            return NotFound();
+            return _repository.ModifyShoppingListItem(itemDataActionDto)
+                .Match<ActionResult>(NotFound, Ok);
         }
     }
 }
