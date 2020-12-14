@@ -83,31 +83,7 @@ namespace ShoppingList.Data
                         {
                             case FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>.
                                 Choice1Of2 list:
-
-                                var withAddedItem = list.Item;
-
-                                _context.Entry(shoppingListEntity).CurrentValues.SetValues(withAddedItem);
-                                _context.ItemDataEntities.RemoveRange(shoppingListEntity.ItemDataEntities);
-                                withAddedItem.Items.ToList().ForEach(i => shoppingListEntity.ItemDataEntities.Add(i));
-
-                                return Try(SaveChanges)
-                                    .Map(r => r
-                                        ? Some(shoppingListEntity)
-                                        : null)
-                                    .Map(
-                                        i =>
-                                            i.Bind<ShoppingListEntity, ShoppingListReadDto>(
-                                                j => (ShoppingListReadDto) j))
-                                    .Run()
-                                    .Match(exception =>
-                                    {
-                                        Console.WriteLine($"Exception during saving: ${exception}");
-                                        return null;
-                                    }, x =>
-                                    {
-                                        Console.WriteLine("Success");
-                                        return x;
-                                    });
+                                return TrySaveShoppingList((shoppingListEntity, list.Item).ToTuple());
                             case FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>.
                                 Choice2Of2 error:
                                 Console.WriteLine("error during adding new item: " + ErrorTextValue(error.Item));
@@ -153,27 +129,7 @@ namespace ShoppingList.Data
                             switch (r.result)
                             {
                                 case ShoppingListUpdatedChoice1Of2 success:
-                                    _context.Entry(r.entityFromDb).CurrentValues.SetValues(success.Item);
-                                    _context.ItemDataEntities.RemoveRange(r.entityFromDb.ItemDataEntities);
-                                    success.Item.Items.ToList()
-                                        .ForEach(i => r.entityFromDb.ItemDataEntities.Add(i));
-                                    return Try(SaveChanges)
-                                        .Map(isSuccessful => isSuccessful
-                                            ? Some(r.entityFromDb)
-                                            : null)
-                                        .Map(i =>
-                                            i.Bind<ShoppingListEntity, ShoppingListReadDto>(j =>
-                                                (ShoppingListReadDto) j)
-                                        ).Run()
-                                        .Match(exception =>
-                                        {
-                                            Console.WriteLine($"Exception during saving: ${exception}");
-                                            return null;
-                                        }, x =>
-                                        {
-                                            Console.WriteLine("Success");
-                                            return x;
-                                        });
+                                    return TrySaveShoppingList((r.entityFromDb, success.Item).ToTuple());
                                 case FSharpChoice<ShoppingListModule.ShoppingList,
                                         ShoppingListErrors.ShoppingListErrors>.
                                     Choice2Of2 error:
@@ -185,6 +141,33 @@ namespace ShoppingList.Data
                             }
                         }
                     );
+
+        private Option<ShoppingListReadDto> TrySaveShoppingList(Tuple<ShoppingListEntity,
+            ShoppingListModule.ShoppingList> values)
+        {
+            var (entityFromDb, result) = values;
+            _context.Entry(entityFromDb).CurrentValues.SetValues(result);
+            _context.ItemDataEntities.RemoveRange(entityFromDb.ItemDataEntities);
+            result.Items.ToList()
+                .ForEach(i => entityFromDb.ItemDataEntities.Add(i));
+            return Try(SaveChanges)
+                .Map(isSuccessful => isSuccessful
+                    ? Some(entityFromDb)
+                    : null)
+                .Map(i =>
+                    i.Bind<ShoppingListEntity, ShoppingListReadDto>(j =>
+                        (ShoppingListReadDto) j)
+                ).Run()
+                .Match(exception =>
+                {
+                    Console.WriteLine($"Exception during saving: ${exception}");
+                    return null;
+                }, x =>
+                {
+                    Console.WriteLine("Success");
+                    return x;
+                });
+        }
 
         private static string ErrorTextValue(ShoppingListErrors.ShoppingListErrors error)
         {
