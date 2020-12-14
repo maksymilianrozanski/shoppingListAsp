@@ -75,9 +75,10 @@ namespace ShoppingList.Data
                         var (itemDataCreateDto, shoppingListEntity) = pair;
 
                         var result =
-                            ShoppingListModule.addItemIfPassword.Invoke((ItemDataEntity) itemDataCreateDto)
-                                .Invoke(shoppingListEntity).Invoke(
-                                    itemDataCreateDto.Password);
+                            ShoppingListModule.addItemIfPassword
+                                .Invoke((ItemDataEntity) itemDataCreateDto)
+                                .Invoke(shoppingListEntity)
+                                .Invoke(itemDataCreateDto.Password);
 
                         switch (result)
                         {
