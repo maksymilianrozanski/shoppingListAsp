@@ -7,9 +7,9 @@ using ShoppingData;
 
 namespace ShoppingList.Dtos
 {
-    using ItemDataAction =
-        Func<string, int, ShoppingListModule.ShoppingList, string,
-            FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>;
+    using ModifyItemDataAction = FSharpFunc<string, FSharpFunc<int, FSharpFunc<
+        ShoppingListModule.ShoppingList, FSharpFunc<string,
+            FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>>>>;
 
     public class ItemDataActionDto
     {
@@ -18,13 +18,9 @@ namespace ShoppingList.Dtos
         [Required] public int ShoppingListId { get; set; }
         [Required] public string Password { get; set; }
         [Required] public int ActionNumber { get; set; }
-        
-        public static ImmutableDictionary<ItemDataActions, FSharpFunc<string, FSharpFunc<int,
-            FSharpFunc<ShoppingListModule.ShoppingList, FSharpFunc<string,
-                FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>>>>> Actions =
-            new Dictionary<ItemDataActions, FSharpFunc<string, FSharpFunc<int, FSharpFunc<
-                ShoppingListModule.ShoppingList, FSharpFunc<string,
-                    FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>>>>>
+
+        public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
+            new Dictionary<ItemDataActions, ModifyItemDataAction>
             {
                 {(ItemDataActions) 0, ShoppingListModule.listItemToAssigned},
                 {(ItemDataActions) 1, ShoppingListModule.listItemToNotFound},
