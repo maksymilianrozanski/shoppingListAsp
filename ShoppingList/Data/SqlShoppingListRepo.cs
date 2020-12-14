@@ -7,6 +7,17 @@ using ShoppingData;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
 using static LaYumba.Functional.F;
+using ActionFoundResult =
+    System.Tuple<ShoppingList.Dtos.ItemDataActionDto, ShoppingList.Entities.ShoppingListEntity, Microsoft.FSharp.Core.
+        FSharpFunc<string, Microsoft.FSharp.Core.FSharpFunc<int, Microsoft.FSharp.Core.FSharpFunc<
+            ShoppingData.ShoppingListModule.ShoppingList, Microsoft.FSharp.Core.FSharpFunc<string, Microsoft.FSharp.Core
+                .FSharpChoice<ShoppingData.ShoppingListModule.ShoppingList,
+                    ShoppingData.ShoppingListErrors.ShoppingListErrors>>>>>
+    >;
+using ShoppingListUpdatedChoice1Of2 =
+    Microsoft.FSharp.Core.FSharpChoice<ShoppingData.ShoppingListModule.ShoppingList,
+        ShoppingData.ShoppingListErrors.ShoppingListErrors>.
+    Choice1Of2;
 
 namespace ShoppingList.Data
 {
@@ -106,6 +117,74 @@ namespace ShoppingList.Data
                         }
                     });
         }
+
+        public Option<ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction)
+            =>
+                itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
+                        .Map(j => (i, j).ToTuple()))
+                    .Bind(bothNonEmpty =>
+                    {
+                        var (updateDto, entityFromDb) = bothNonEmpty;
+
+                        if (ItemDataActionDto.Actions.TryGetValue(
+                            (ItemDataActionDto.ItemDataActions) updateDto.ActionNumber, out var modifyingFunction))
+                        {
+                            var r = (updateDto, entityFromDb, modifyingFunction);
+                            return Some(r.ToTuple());
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    })
+                    .Map(r =>
+                    {
+                        var (updateDto, entityFromDb, modifyingFunction) = r;
+                        var result = modifyingFunction
+                            .Invoke(updateDto.User)
+                            .Invoke(updateDto.ItemId)
+                            .Invoke(entityFromDb)
+                            .Invoke(updateDto.Password);
+                        return (entityFromDb, result);
+                    })
+                    .Bind
+                    (r =>
+                        {
+                            switch (r.result)
+                            {
+                                case ShoppingListUpdatedChoice1Of2 success:
+                                    _context.Entry(r.entityFromDb).CurrentValues.SetValues(success.Item);
+                                    _context.ItemDataEntities.RemoveRange(r.entityFromDb.ItemDataEntities);
+                                    success.Item.Items.ToList()
+                                        .ForEach(i => r.entityFromDb.ItemDataEntities.Add(i));
+                                    return Try(SaveChanges)
+                                        .Map(isSuccessful => isSuccessful
+                                            ? Some(r.entityFromDb)
+                                            : null)
+                                        .Map(i =>
+                                            i.Bind<ShoppingListEntity, ShoppingListReadDto>(j =>
+                                                (ShoppingListReadDto) j)
+                                        ).Run()
+                                        .Match(exception =>
+                                        {
+                                            Console.WriteLine($"Exception during saving: ${exception}");
+                                            return null;
+                                        }, x =>
+                                        {
+                                            Console.WriteLine("Success");
+                                            return x;
+                                        });
+                                case FSharpChoice<ShoppingListModule.ShoppingList,
+                                        ShoppingListErrors.ShoppingListErrors>.
+                                    Choice2Of2 error:
+                                    Console.WriteLine("error during adding new item: " +
+                                                      ErrorTextValue(error.Item));
+                                    return None;
+                                default:
+                                    throw new MatchFailureException();
+                            }
+                        }
+                    );
 
         private static string ErrorTextValue(ShoppingListErrors.ShoppingListErrors error)
         {
