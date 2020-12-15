@@ -51,6 +51,7 @@ namespace ShoppingList
             }
 
             // app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
