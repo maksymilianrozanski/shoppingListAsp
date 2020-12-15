@@ -2,6 +2,7 @@ using System;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingData;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
@@ -39,7 +40,7 @@ namespace ShoppingList.Controllers
         {
             Console.WriteLine("addItem endpoint");
             return _repository.AddItemToShoppingList(itemDataCreateDto)
-                .Match<ActionResult>(NotFound, Ok);
+                .Pipe(ShoppingListModificationResult);
         }
 
         [HttpPost]
@@ -50,7 +51,21 @@ namespace ShoppingList.Controllers
             Console.WriteLine(itemDataActionDto.ToString());
             Console.WriteLine("action: " + itemDataActionDto.ActionNumber);
             return _repository.ModifyShoppingListItem(itemDataActionDto)
-                .Match<ActionResult>(NotFound, Ok);
+                .Pipe(ShoppingListModificationResult);
         }
+
+        public ActionResult<ShoppingListReadDto> ShoppingListModificationResult(
+            Either<string, ShoppingListReadDto> repositoryOperationResult) =>
+            repositoryOperationResult.Match<ActionResult>(
+                left => left switch
+                {
+                    nameof(ShoppingListErrors.ShoppingListErrors.ForbiddenOperation) => Conflict(left),
+                    nameof(ShoppingListErrors.ShoppingListErrors.IncorrectPassword) => StatusCode(403),
+                    nameof(ShoppingListErrors.ShoppingListErrors.IncorrectUser) => Conflict(left),
+                    nameof(ShoppingListErrors.ShoppingListErrors.ListItemNotFound) => NotFound(left),
+                    nameof(ShoppingListErrors.ShoppingListErrors.ItemWithIdAlreadyExists) => Conflict(left),
+                    _ => StatusCode(500)
+                }, Ok
+            );
     }
 }
