@@ -67,7 +67,7 @@ namespace ShoppingList.Data
                 .Map(r =>
                     EitherUtils.FSharpChoiceToEither(r.result)
                         .Map(i => (r.shoppingListEntity, i).ToTuple())
-                        .Map(TrySaveShoppingList2))
+                        .Map(TryToSaveShoppingList))
                 .Map(i =>
                     i.Match(err => Left(ErrorTextValue(err)),
                         either =>
@@ -108,7 +108,7 @@ namespace ShoppingList.Data
                 .Map(r =>
                     EitherUtils.FSharpChoiceToEither(r.result)
                         .Map(i => (r.entityFromDb, i).ToTuple())
-                        .Map(TrySaveShoppingList2))
+                        .Map(TryToSaveShoppingList))
                 .Map(i =>
                     i.Match(err => Left(ErrorTextValue(err)),
                         either =>
@@ -116,7 +116,7 @@ namespace ShoppingList.Data
                     )).GetOrElse(Left("unknown error"));
         }
 
-        private Either<string, ShoppingListReadDto> TrySaveShoppingList2(
+        private Either<string, ShoppingListReadDto> TryToSaveShoppingList(
             Tuple<ShoppingListEntity, ShoppingListModule.ShoppingList> values)
         {
             var (entityFromDb, result) = values;
