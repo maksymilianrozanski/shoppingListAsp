@@ -1,0 +1,40 @@
+@page
+@model ShoppingList.Pages.ShoppingListCreateModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+
+    <form method="post" class="col-sm-6">
+        <div class="form-group row">
+            <label asp-for="ShoppingListCreateDto.Name" class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-7">
+                <input asp-for="ShoppingListCreateDto.Name" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="ShoppingListCreateDto.Password" class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-7">
+                <input asp-for="ShoppingListCreateDto.Password" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+
+            <div class="col-sm-7 offset-sm-3">
+                <button class="btn btn-primary" id="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
