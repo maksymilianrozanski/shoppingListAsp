@@ -32,6 +32,7 @@ namespace ShoppingList
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection")));
 
             services.AddControllers();
+            services.AddRazorPages();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -55,7 +56,11 @@ namespace ShoppingList
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
         }
     }
 }
