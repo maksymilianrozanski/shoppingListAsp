@@ -9,8 +9,6 @@ namespace ShoppingList.Data
 
         Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
 
-        Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updatedList);
-
         Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
 
         Either<string, ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction);

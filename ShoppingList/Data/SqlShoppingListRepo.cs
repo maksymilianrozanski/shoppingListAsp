@@ -48,25 +48,6 @@ namespace ShoppingList.Data
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id);
 
-        public Option<ShoppingListReadDto> UpdateShoppingListEntity(Option<ShoppingListUpdateDto> updated) =>
-            updated.Bind(i => GetShoppingListWithChildrenById(i.Id).Map(j => (i, j)))
-                .Bind(bothNonEmpty =>
-                    {
-                        var (updateDto, entityFromDb) = bothNonEmpty;
-                        var itemToSave = _context.Update(entityFromDb).Entity.Merge(updateDto);
-                        return Try(SaveChanges)
-                            .Map(result => result
-                                ? Some((ShoppingListReadDto) itemToSave)
-                                : null)
-                            .Run()
-                            .Match(exception =>
-                            {
-                                Console.WriteLine($"Exception during saving: ${exception}");
-                                return null;
-                            }, x => x);
-                    }
-                );
-
         public Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd)
         {
             Console.WriteLine("received AddItemToShoppingList request");

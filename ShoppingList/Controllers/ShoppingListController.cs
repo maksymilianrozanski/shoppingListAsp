@@ -33,14 +33,6 @@ namespace ShoppingList.Controllers
                         CreatedAtAction(nameof(GetShoppingListById), new {i.Id},
                             i));
 
-        [HttpPut]
-        [Microsoft.AspNetCore.Mvc.Route("updateList")]
-        public ActionResult Put(ShoppingListUpdateDto entity)
-        {
-            _repository.UpdateShoppingListEntity(entity);
-            return NoContent();
-        }
-
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("addItem")]
         public ActionResult<ShoppingListReadDto> AddItemToTheList(ItemDataCreateDto itemDataCreateDto)
