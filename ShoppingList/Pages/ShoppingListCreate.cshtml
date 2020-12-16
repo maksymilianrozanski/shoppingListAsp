@@ -2,7 +2,7 @@
 @model ShoppingList.Pages.ShoppingListCreateModel
 
 @{
-    Layout = null;
+    Layout = Layout;
 }
 
 <!DOCTYPE html>
@@ -14,27 +14,20 @@
 <body>
 <div>
 
-    <form method="post" class="col-sm-6">
-        <div class="form-group row">
-            <label asp-for="ShoppingListCreateDto.Name" class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-7">
-                <input asp-for="ShoppingListCreateDto.Name" class="form-control">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label asp-for="ShoppingListCreateDto.Password" class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-7">
-                <input asp-for="ShoppingListCreateDto.Password" class="form-control">
-            </div>
-        </div>
-        <div class="form-group row">
-
-            <div class="col-sm-7 offset-sm-3">
-                <button class="btn btn-primary" id="submit">Submit</button>
-            </div>
+    <form method="post">
+        <label for="name">Name</label>
+        <input id="name" type="text">
+        <label for="password">Password</label>
+        <input id="password" type="text">
+        <div >
+            <button id="submit">Submit</button>
         </div>
     </form>
 
 </div>
 </body>
 </html>
+
+@section Scripts {
+    <script src="~/js/addNewList.js"></script>
+}
