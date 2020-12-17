@@ -49,25 +49,9 @@
         }).forEach(i => savedItems.appendChild(i));
     }
 
-    const fetchUpdatedView = async () => {
-        await fetch("/shoppingList/" + formElement.elements[0].value, {
-            method: 'GET',
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Accept': 'application/json'
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-        }).then(r => {
-            if (r.status === 200) {
-                console.log("fetching shopping list data successful");
-                let responseJson = r.json();
-                displayListItems(responseJson)
-            }
-        })
-    }
+    const fetchUpdatedView = async () =>
+        fetchShoppingList(formElement.elements[0].value)
+            .then(response => displayListItems(response));
 
     window.addEventListener("load", () => {
         formElement.addEventListener("submit", event => {
