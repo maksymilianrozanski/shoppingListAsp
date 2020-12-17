@@ -68,6 +68,9 @@
                     if (r.status === 200) {
                         console.log("posting item action successful");
                         return r.json();
+                    } else {
+                        r.text()
+                            .then(errorResponseText => alert(errorResponseText));
                     }
                 })
             );
