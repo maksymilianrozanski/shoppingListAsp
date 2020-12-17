@@ -79,7 +79,7 @@
 
         const getPassword = () => document.getElementById("password").value;
 
-        const createItemActionButton = (itemDataReadDto) => (actionId) => () => {
+        const createItemActionButton = (itemDataReadDto) => (actionId) => {
             const actionButton = document.createElement("button")
             actionButton.innerText = itemActionText(actionId);
 
@@ -101,7 +101,7 @@
         const itemButtons = (itemDataReadDto) => {
             const itemType = itemDataReadDto.itemType;
             const actions = Array.from(getAllowedActions(itemType));
-            return actions.map(i => createItemActionButton(itemDataReadDto)(i)());
+            return actions.map(i => createItemActionButton(itemDataReadDto)(i));
         }
 
         const itemWithActions = (itemDataReadDto) => {
