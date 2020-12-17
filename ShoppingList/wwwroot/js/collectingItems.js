@@ -35,6 +35,22 @@
             }
         }
 
+        const itemTypeDisplayedText = (itemDataActionDto) => {
+            const itemType = itemDataActionDto.itemType;
+
+            if (itemType === "ToBuy")
+                return "To buy";
+            else if (itemType.startsWith("Assigned"))
+                return "Assigned to " + itemType.substring(9);
+            else if (itemType === "Bought")
+                return "Bought";
+            else if (itemType === "NotFound")
+                return "Not found";
+            else if (itemType === "Cancelled")
+                return "Cancelled";
+            else return "unknown";
+        }
+
         async function postItemAction(itemDataActionDto) {
             return Promise.resolve(
                 await fetch("/shoppingList/modifyItem", {
@@ -92,7 +108,8 @@
             const liElement = document.createElement("li");
 
             const displayedText = document.createElement("a")
-            displayedText.innerText = "id: " + itemDataReadDto.id.toString() + ", " + itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
+            displayedText.innerText = "id: " + itemDataReadDto.id.toString() + ", " + itemDataReadDto.name.toString() +
+                " - " + itemDataReadDto.quantity.toString() + ", " + itemTypeDisplayedText(itemDataReadDto);
             liElement.appendChild(displayedText);
 
             itemButtons(itemDataReadDto).forEach(i => liElement.appendChild(i));
