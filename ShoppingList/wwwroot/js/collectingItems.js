@@ -57,14 +57,14 @@
             );
         }
 
-        const createItemActionButton = (userNameAndPassword) => (itemDataReadDto) => (actionId) => {
+        const createItemActionButton = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => (actionId) => {
             const actionButton = document.createElement("button")
             actionButton.innerText = itemActionText(actionId);
             const actionDto = {
+                //todo: fix username not being updated when input field values change
                 user: userNameAndPassword.name,
                 itemId: itemDataReadDto.id,
-                //todo: pass real shoppingListId
-                shoppingListId: 1,
+                shoppingListId: shoppingListId,
                 password: userNameAndPassword.password,
                 actionNumber: actionId
             }
@@ -74,20 +74,20 @@
             return actionButton;
         }
 
-        const itemButtons = (userNameAndPassword) => (itemDataReadDto) => {
+        const itemButtons = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => {
             const itemType = itemDataReadDto.itemType;
             const actions = Array.from(getAllowedActions(itemType));
-            return actions.map(i => createItemActionButton(userNameAndPassword)(itemDataReadDto)(i));
+            return actions.map(i => createItemActionButton(shoppingListId)(userNameAndPassword)(itemDataReadDto)(i));
         }
 
-        const itemWithActions = (userNameAndPassword) => (itemDataReadDto) => {
+        const itemWithActions = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => {
             const liElement = document.createElement("li");
 
             const displayedText = document.createElement("a")
             displayedText.innerText = "id: " + itemDataReadDto.id.toString() + ", " + itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
             liElement.appendChild(displayedText);
 
-            itemButtons(userNameAndPassword)(itemDataReadDto).forEach(i => liElement.appendChild(i));
+            itemButtons(shoppingListId)(userNameAndPassword)(itemDataReadDto).forEach(i => liElement.appendChild(i));
             return liElement;
         }
 
@@ -98,9 +98,10 @@
             const password = document.getElementById("password").value;
             const username = document.getElementById("username").value;
             const userNameAndPassword = {name: username, password: password};
+            const shoppingListId = document.getElementById("shoppingListId").value;
 
             Array.from(items)
-                .map(i => itemWithActions(userNameAndPassword)(i))
+                .map(i => itemWithActions(shoppingListId)(userNameAndPassword)(i))
                 .forEach(i => olRoot.appendChild(i));
         }
 
