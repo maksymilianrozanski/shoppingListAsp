@@ -9,7 +9,7 @@
         ItemToCancelled: 3
     }
 
-    const getAllowedActions2 = (actionText) => {
+    const getAllowedActions = (actionText) => {
         if (actionText.startsWith("ToBuy"))
             return [itemActionsIds.AssignItem, itemActionsIds.ItemToCancelled];
         else if (actionText.startsWith("Assigned"))
@@ -21,13 +21,13 @@
         else if (actionText.startsWith("Cancelled"))
             return [];
     }
-
+    
     const itemWithActions = (itemDataReadDto) => {
         const liElement = document.createElement("li");
         const displayedText = document.createElement("a")
         displayedText.innerText = "id: " + itemDataReadDto.id.toString() + ", " + itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
         liElement.appendChild(displayedText);
-        const allowedActionsTextForDto = getAllowedActions2(itemDataReadDto.itemType.toString())
+        const allowedActionsTextForDto = getAllowedActions(itemDataReadDto.itemType.toString())
         const allowedActionsElement = document.createElement("div")
         allowedActionsElement.innerText = allowedActionsTextForDto.toString();
         liElement.appendChild(allowedActionsElement)
