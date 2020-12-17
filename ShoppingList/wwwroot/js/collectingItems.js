@@ -35,10 +35,42 @@
             }
         }
 
+        async function postItemAction(itemDataActionDto) {
+            return Promise.resolve(
+                await fetch("/shoppingList/modifyItem", {
+                    method: 'POST',
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify(itemDataActionDto)
+                }).then(r => {
+                    if (r.status === 200) {
+                        console.log("posting item action successful");
+                        return r.json();
+                    }
+                })
+            );
+        }
+
         const createItemActionButton = (itemDataReadDto) => (actionId) => {
             const actionButton = document.createElement("button")
             actionButton.innerText = itemActionText(actionId);
-            //todo: add sending data on button click
+            const actionDto = {
+                user: "Garfield",
+                itemId: itemDataReadDto.id,
+                //todo: pass real shopping list id, real password
+                shoppingListId: 1,
+                password: "password",
+                actionNumber: actionId
+            }
+            actionButton.addEventListener("click", async () => postItemAction(actionDto)
+                .then(r => displayItems(r.items))
+            );
             return actionButton;
         }
 
@@ -59,7 +91,7 @@
             return liElement;
         }
 
-        const displayItems = async (items) => {
+        async function displayItems(items) {
             const olRoot = document.getElementById("shoppingListItems");
             olRoot.innerHTML = "";
 
