@@ -47,7 +47,7 @@
                     },
                     redirect: 'follow',
                     referrerPolicy: 'no-referrer',
-                    body: JSON.stringify(itemDataActionDto)
+                    body: JSON.stringify(itemDataActionDto())
                 }).then(r => {
                     if (r.status === 200) {
                         console.log("posting item action successful");
@@ -57,17 +57,25 @@
             );
         }
 
-        const createItemActionButton = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => (actionId) => {
+        const getShoppingListId = () => document.getElementById("shoppingListId").value;
+
+        const getUsername = () => document.getElementById("username").value;
+
+        const getPassword = () => document.getElementById("password").value;
+
+        const createItemActionButton = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => (actionId) => () => {
             const actionButton = document.createElement("button")
             actionButton.innerText = itemActionText(actionId);
-            const actionDto = {
-                //todo: fix username not being updated when input field values change
-                user: userNameAndPassword.name,
-                itemId: itemDataReadDto.id,
-                shoppingListId: shoppingListId,
-                password: userNameAndPassword.password,
-                actionNumber: actionId
-            }
+
+            const actionDto = () =>
+                ({
+                    user: getUsername(),
+                    itemId: itemDataReadDto.id,
+                    shoppingListId: getShoppingListId(),
+                    password: getPassword(),
+                    actionNumber: actionId
+                });
+
             actionButton.addEventListener("click", async () => postItemAction(actionDto)
                 .then(r => displayItems(r.items))
             );
@@ -77,7 +85,7 @@
         const itemButtons = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => {
             const itemType = itemDataReadDto.itemType;
             const actions = Array.from(getAllowedActions(itemType));
-            return actions.map(i => createItemActionButton(shoppingListId)(userNameAndPassword)(itemDataReadDto)(i));
+            return actions.map(i => createItemActionButton(shoppingListId)(userNameAndPassword)(itemDataReadDto)(i)());
         }
 
         const itemWithActions = (shoppingListId) => (userNameAndPassword) => (itemDataReadDto) => {
