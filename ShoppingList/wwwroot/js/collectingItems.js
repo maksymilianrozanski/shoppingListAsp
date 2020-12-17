@@ -67,10 +67,19 @@
                 }).then(r => {
                     if (r.status === 200) {
                         console.log("posting item action successful");
-                        return r.json();
+                        return {
+                            successful: true,
+                            content: r.json()
+                        }
                     } else {
                         r.text()
-                            .then(errorResponseText => alert(errorResponseText));
+                            .then(errorText =>
+                                alert(notSuccessfulResponseText(r.status, errorText, r.headers.get("Content-Type"))));
+
+                        return {
+                            successful: false,
+                            content: null
+                        }
                     }
                 })
             );
@@ -96,7 +105,10 @@
                 });
 
             actionButton.addEventListener("click", async () => postItemAction(actionDto)
-                .then(r => displayItems(r.items))
+                .then(r => {
+                    if (r.successful)
+                        r.content.then(content => displayItems(content.items))
+                })
             );
             return actionButton;
         }
