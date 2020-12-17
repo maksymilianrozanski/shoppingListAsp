@@ -57,15 +57,15 @@
             );
         }
 
-        const createItemActionButton = (itemDataReadDto) => (actionId) => {
+        const createItemActionButton = (userNameAndPassword) => (itemDataReadDto) => (actionId) => {
             const actionButton = document.createElement("button")
             actionButton.innerText = itemActionText(actionId);
             const actionDto = {
-                user: "Garfield",
+                user: userNameAndPassword.name,
                 itemId: itemDataReadDto.id,
-                //todo: pass real shopping list id, real password
+                //todo: pass real shoppingListId
                 shoppingListId: 1,
-                password: "password",
+                password: userNameAndPassword.password,
                 actionNumber: actionId
             }
             actionButton.addEventListener("click", async () => postItemAction(actionDto)
@@ -74,20 +74,20 @@
             return actionButton;
         }
 
-        const itemButtons = (itemDataReadDto) => {
+        const itemButtons = (userNameAndPassword) => (itemDataReadDto) => {
             const itemType = itemDataReadDto.itemType;
             const actions = Array.from(getAllowedActions(itemType));
-            return actions.map(i => createItemActionButton(itemDataReadDto)(i));
+            return actions.map(i => createItemActionButton(userNameAndPassword)(itemDataReadDto)(i));
         }
 
-        const itemWithActions = (itemDataReadDto) => {
+        const itemWithActions = (userNameAndPassword) => (itemDataReadDto) => {
             const liElement = document.createElement("li");
 
             const displayedText = document.createElement("a")
             displayedText.innerText = "id: " + itemDataReadDto.id.toString() + ", " + itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
             liElement.appendChild(displayedText);
 
-            itemButtons(itemDataReadDto).forEach(i => liElement.appendChild(i));
+            itemButtons(userNameAndPassword)(itemDataReadDto).forEach(i => liElement.appendChild(i));
             return liElement;
         }
 
@@ -95,8 +95,12 @@
             const olRoot = document.getElementById("shoppingListItems");
             olRoot.innerHTML = "";
 
+            const password = document.getElementById("password").value;
+            const username = document.getElementById("username").value;
+            const userNameAndPassword = {name: username, password: password};
+
             Array.from(items)
-                .map(i => itemWithActions(i))
+                .map(i => itemWithActions(userNameAndPassword)(i))
                 .forEach(i => olRoot.appendChild(i));
         }
 
