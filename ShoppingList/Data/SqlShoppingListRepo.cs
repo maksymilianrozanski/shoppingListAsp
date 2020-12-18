@@ -43,19 +43,17 @@ namespace ShoppingList.Data
                 .FirstOrDefault(i => i.Id == id))
             .Map(i => (ShoppingListReadDto) i);
 
-        public Either<string, Option<ShoppingListReadDto>> GetShoppingListEntityByIdIfPassword(
+        public Either<string, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
             Option<ShoppingListGetRequest> request) =>
             request
                 .Bind(r =>
                     _context.ShoppingListEntities.Find(i => i.Id == r.Id)
                         .Map(list => (r, list))
                         .Map<(ShoppingListGetRequest, ShoppingListEntity),
-                            Either<string, Option<ShoppingListReadDto>>>(
-                            tuple =>
-                                tuple.Item1.Password == tuple.Item2.Password
-                                    ? (Either<string, Option<ShoppingListReadDto>>) Right(
-                                        Some((ShoppingListReadDto) tuple.Item2))
-                                    : Left("incorrect password")))
+                            Either<string, ShoppingListReadDto>>(
+                            tuple => tuple.Item1.Password == tuple.Item2.Password
+                                ? (Either<string, ShoppingListReadDto>) Right((ShoppingListReadDto) tuple.Item2)
+                                : Left("incorrect password")))
                 .GetOrElse(Left("not found"));
 
         private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
