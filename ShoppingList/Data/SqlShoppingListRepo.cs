@@ -9,6 +9,8 @@ using ShoppingList.Dtos;
 using ShoppingList.Entities;
 using ShoppingList.Utils;
 using static LaYumba.Functional.F;
+using static ShoppingList.Data.IShoppingListRepo;
+using static ShoppingList.Data.IShoppingListRepo.RepoRequestError;
 using ActionFoundResult =
     System.Tuple<ShoppingList.Dtos.ItemDataActionDto, ShoppingList.Entities.ShoppingListEntity, Microsoft.FSharp.Core.
         FSharpFunc<string, Microsoft.FSharp.Core.FSharpFunc<int, Microsoft.FSharp.Core.FSharpFunc<
@@ -43,18 +45,19 @@ namespace ShoppingList.Data
                 .FirstOrDefault(i => i.Id == id))
             .Map(i => (ShoppingListReadDto) i);
 
-        public Either<string, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
+        public Either<RepoRequestError, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
             Option<ShoppingListGetRequest> request) =>
             request
                 .Bind(r =>
                     _context.ShoppingListEntities.Find(i => i.Id == r.Id)
                         .Map(list => (r, list))
                         .Map<(ShoppingListGetRequest, ShoppingListEntity),
-                            Either<string, ShoppingListReadDto>>(
+                            Either<RepoRequestError, ShoppingListReadDto>>(
                             tuple => tuple.Item1.Password == tuple.Item2.Password
-                                ? (Either<string, ShoppingListReadDto>) Right((ShoppingListReadDto) tuple.Item2)
-                                : Left("incorrect password")))
-                .GetOrElse(Left("not found"));
+                                ? (Either<RepoRequestError, ShoppingListReadDto>) Right(
+                                    (ShoppingListReadDto) tuple.Item2)
+                                : Left(IncorrectPassword)))
+                .GetOrElse(Left(NotFound));
 
         private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
             _context.ShoppingListEntities

@@ -7,6 +7,8 @@ using ShoppingList.Data;
 using ShoppingList.Dtos;
 using ShoppingList.Entities;
 using static LaYumba.Functional.F;
+using static ShoppingList.Data.IShoppingListRepo;
+using static ShoppingList.Data.IShoppingListRepo.RepoRequestError;
 
 namespace ShoppingList.Controllers
 {
@@ -24,6 +26,18 @@ namespace ShoppingList.Controllers
         [HttpGet("{id}", Name = "GetShoppingListById")]
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
             _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound, Ok);
+
+        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.Route("listById")]
+        public ActionResult<ShoppingListReadDto> GetShoppingListById2(ShoppingListGetRequest request) =>
+            _repository.GetShoppingListEntityByIdIfPassword(request)
+                .Match<ActionResult>(left =>
+                    left switch
+                    {
+                        IncorrectPassword => Forbid(),
+                        RepoRequestError.NotFound => NotFound(),
+                        _ => throw new ArgumentOutOfRangeException(nameof(left), left, null)
+                    }, Ok);
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("createList")]
