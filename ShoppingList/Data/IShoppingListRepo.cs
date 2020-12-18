@@ -9,6 +9,8 @@ namespace ShoppingList.Data
 
         Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
 
+        Either<string, Option<ShoppingListReadDto>> GetShoppingListEntityByIdIfPassword(Option<ShoppingListGetRequest> request);
+
         Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
 
         Either<string, ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction);
