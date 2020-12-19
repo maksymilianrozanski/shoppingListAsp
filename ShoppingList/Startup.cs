@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
+using ShoppingList.Auth;
+using ShoppingList.Controllers;
 using ShoppingList.Data;
 
 namespace ShoppingList
@@ -54,8 +56,9 @@ namespace ShoppingList
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
+            
+            app.UseWhen(context => context.Request.Path.StartsWithSegments($"/shoppingList"),
+                builder => builder.UseMiddleware<BasicAuthMiddleware>("localhost"));
 
             app.UseEndpoints(endpoints =>
             {

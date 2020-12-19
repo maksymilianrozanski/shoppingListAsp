@@ -1,4 +1,7 @@
 using System;
+using System.Net.Http.Headers;
+using System.Security.Principal;
+using System.Text;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -45,8 +48,7 @@ namespace ShoppingList.Controllers
             _repository.CreateShoppingList(listCreateDto)
                 .Match<ActionResult>(NotFound,
                     Some: i =>
-                        CreatedAtAction(nameof(GetShoppingListById), new {i.Id},
-                            i));
+                        StatusCode(201, i));
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("addItem")]
