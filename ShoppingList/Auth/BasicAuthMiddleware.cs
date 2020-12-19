@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +44,8 @@ namespace ShoppingList.Auth
                 // Check if login is correct
                 if (IsAuthorized(username, password))
                 {
+                    context.User = new GenericPrincipal(new GenericIdentity($"{username}:{password}"), null);
+
                     await next.Invoke(context);
                     return;
                 }
