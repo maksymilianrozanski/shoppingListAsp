@@ -52,8 +52,8 @@ namespace ShoppingList.Data
                     _context.ShoppingListEntities.Find(i => i.Id == r.Id)
                         .Map(list => (r, list))
                         .Map(VerifyPassword))
-                .Map(verified =>
-                    verified.Map(GetShoppingListEntityById))
+                .Map(maybeVerified =>
+                    maybeVerified.Map(GetShoppingListEntityById))
                 .Map(MapToNotFoundIfEmpty)
                 .GetOrElse(NotFound);
 
