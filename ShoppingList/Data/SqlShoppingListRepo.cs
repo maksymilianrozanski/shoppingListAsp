@@ -54,14 +54,12 @@ namespace ShoppingList.Data
                         .Map(VerifyPassword))
                 .Map(verified =>
                     verified.Map(GetShoppingListEntityById))
-                .Map(MapToErrorIfEmpty)
+                .Map(MapToNotFoundIfEmpty)
                 .GetOrElse(NotFound);
 
-        private Either<RepoRequestError, ShoppingListReadDto>
-            MapToErrorIfEmpty(Either<RepoRequestError, Option<ShoppingListReadDto>> input) =>
-            input.Bind(i =>
-                i.Map(j => (Either<RepoRequestError, ShoppingListReadDto>) Right(j))
-                    .GetOrElse(Left(NotFound)));
+        private static Either<RepoRequestError, T> MapToNotFoundIfEmpty<T>(Either<RepoRequestError, Option<T>> input) =>
+            input.Bind(i => i.Map(j => (Either<RepoRequestError, T>) Right(j))
+                .GetOrElse(Left(NotFound)));
 
         private Either<RepoRequestError, int> VerifyPassword(
             (ShoppingListGetRequest, ShoppingListEntity) tuple) =>
