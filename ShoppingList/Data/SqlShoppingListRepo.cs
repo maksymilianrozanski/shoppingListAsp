@@ -51,13 +51,23 @@ namespace ShoppingList.Data
                 .Bind(r =>
                     _context.ShoppingListEntities.Find(i => i.Id == r.Id)
                         .Map(list => (r, list))
-                        .Map<(ShoppingListGetRequest, ShoppingListEntity),
-                            Either<RepoRequestError, ShoppingListReadDto>>(
-                            tuple => tuple.Item1.Password == tuple.Item2.Password
-                                ? (Either<RepoRequestError, ShoppingListReadDto>) Right(
-                                    (ShoppingListReadDto) tuple.Item2)
-                                : Left(IncorrectPassword)))
-                .GetOrElse(Left(NotFound));
+                        .Map(VerifyPassword))
+                .Map(verified =>
+                    verified.Map(GetShoppingListEntityById))
+                .Map(MapToErrorIfEmpty)
+                .GetOrElse(NotFound);
+
+        private Either<RepoRequestError, ShoppingListReadDto>
+            MapToErrorIfEmpty(Either<RepoRequestError, Option<ShoppingListReadDto>> input) =>
+            input.Bind(i =>
+                i.Map(j => (Either<RepoRequestError, ShoppingListReadDto>) Right(j))
+                    .GetOrElse(Left(NotFound)));
+
+        private Either<RepoRequestError, int> VerifyPassword(
+            (ShoppingListGetRequest, ShoppingListEntity) tuple) =>
+            tuple.Item1.Password == tuple.Item2.Password
+                ? Right(tuple.Item2.Id)
+                : Left(IncorrectPassword);
 
         private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
             _context.ShoppingListEntities

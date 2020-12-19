@@ -34,7 +34,7 @@ namespace ShoppingList.Controllers
                 .Match<ActionResult>(left =>
                     left switch
                     {
-                        IncorrectPassword => Forbid(),
+                        IncorrectPassword => StatusCode(403),
                         RepoRequestError.NotFound => NotFound(),
                         _ => throw new ArgumentOutOfRangeException(nameof(left), left, null)
                     }, Ok);
