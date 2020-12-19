@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.Text;
@@ -42,11 +43,15 @@ namespace ShoppingList.Auth
                 var password = decodedUsernamePassword.Split(':', 2)[1];
 
                 // Check if login is correct
-                if (IsAuthorized(username, password))
+                if (CredentialsValidated(username, password))
                 {
                     context.User = new GenericPrincipal(new GenericIdentity($"{username}:{password}"), null);
-
                     await next.Invoke(context);
+                    return;
+                }
+                else
+                {
+                    context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                     return;
                 }
             }
@@ -64,12 +69,7 @@ namespace ShoppingList.Auth
             context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
         }
 
-        // Make your own implementation of this
-        public bool IsAuthorized(string username, string password)
-        {
-            // Check that username and password are correct
-            return username.Equals("User1", StringComparison.InvariantCultureIgnoreCase)
-                   && password.Equals("SecretPassword!");
-        }
+        private bool CredentialsValidated(string username, string password) =>
+            username.All(char.IsLetterOrDigit) && password.All(char.IsLetterOrDigit);
     }
 }
