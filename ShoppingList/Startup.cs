@@ -41,7 +41,7 @@ namespace ShoppingList
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            services.AddScoped<IShoppingListRepo, SqlShoppingListRepo>();
+            services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

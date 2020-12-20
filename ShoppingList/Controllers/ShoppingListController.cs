@@ -27,28 +27,13 @@ namespace ShoppingList.Controllers
         }
 
         [HttpGet("{id}", Name = "GetShoppingListById")]
-        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
-            _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound, Ok);
-
-        [HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("listById")]
-        public ActionResult<ShoppingListReadDto> GetShoppingListById2(ShoppingListGetRequest request) =>
-            _repository.GetShoppingListEntityByIdIfPassword(request)
-                .Match<ActionResult>(left =>
-                    left switch
-                    {
-                        IncorrectPassword => StatusCode(403),
-                        RepoRequestError.NotFound => NotFound(),
-                        _ => throw new ArgumentOutOfRangeException(nameof(left), left, null)
-                    }, Ok);
-
-        [HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("createList")]
-        public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto) =>
-            _repository.CreateShoppingList(listCreateDto)
-                .Match<ActionResult>(NotFound,
-                    Some: i =>
-                        StatusCode(201, i));
+        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id)
+        {
+            Console.Write("User's Identity?.Name");
+            HttpContext.User.Identity?.Name.Pipe(Console.WriteLine);
+            //todo: add verifying password
+            return _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound, Ok);
+        }
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("addItem")]
