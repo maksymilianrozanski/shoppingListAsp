@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Text;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingData;
 using ShoppingList.Data;
@@ -27,13 +28,24 @@ namespace ShoppingList.Controllers
         }
 
         [HttpGet("{id}", Name = "GetShoppingListById")]
-        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id)
-        {
-            Console.Write("User's Identity?.Name");
-            HttpContext.User.Identity?.Name.Pipe(Console.WriteLine);
-            //todo: add verifying password
-            return _repository.GetShoppingListEntityById(id).Match<ActionResult>(NotFound, Ok);
-        }
+        public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
+            ParseIdentity(HttpContext).Map(i => new ShoppingListGetRequest(id, i.Item2))
+                .Map(i => _repository.GetShoppingListEntityByIdIfPassword(i))
+                .Map(r =>
+                    r.Match<ActionResult>(left =>
+                        left switch
+                        {
+                            IncorrectPassword => StatusCode(403),
+                            RepoRequestError.NotFound => NotFound(),
+                            _ => throw new ArgumentOutOfRangeException(nameof(left), left, null)
+                        }, Ok)).GetOrElse(NotFound);
+
+        private static Option<(string, string)> ParseIdentity(HttpContext context) =>
+            (Option<(string, string)>) context.User.Identity?.Name?
+                .Pipe(i =>
+                    i != null
+                        ? Some((i.Split(':', 2)[0], i.Split(':', 2)[1]))
+                        : None)!;
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("addItem")]
