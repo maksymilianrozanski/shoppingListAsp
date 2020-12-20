@@ -13,5 +13,14 @@ namespace ShoppingList.Dtos
         [Required] public int Quantity { get; set; }
 
         [Required] public string ItemType { get; set; }
+
+        public ItemDataCreateDto(int shoppingListId, string password, string name, int quantity, string itemType)
+        {
+            ShoppingListId = shoppingListId;
+            Password = password;
+            Name = name;
+            Quantity = quantity;
+            ItemType = itemType;
+        }
     }
 }
