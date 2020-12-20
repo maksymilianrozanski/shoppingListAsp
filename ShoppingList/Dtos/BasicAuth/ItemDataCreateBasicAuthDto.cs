@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ShoppingList.Dtos
+namespace ShoppingList.Dtos.BasicAuth
 {
     public class ItemDataCreateBasicAuthDto
     {

@@ -21,9 +21,11 @@
             referrerPolicy: 'no-referrer',
             body: JSON.stringify(requestData)
         }).then(r => {
-                if (r.status === 200) {
+                if (r.status === 201 || r.status === 200) {
                     // 3. un-hide the alertElement when the request has been successful
-                    alertElement.style.display = "block";
+                    // const jsonResponse = r.json();
+                    // sessionStorage.setItem(jsonResponse.id, jsonResponse.password)
+                    window.location.replace("/shoppingList/addItems")
                     console.log("success");
                 }
             }

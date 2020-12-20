@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingData;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
+using ShoppingList.Dtos.BasicAuth;
 using ShoppingList.Entities;
 using static LaYumba.Functional.F;
 using static ShoppingList.Data.IShoppingListRepo;
