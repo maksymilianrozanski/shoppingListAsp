@@ -28,6 +28,15 @@ namespace ShoppingList.Dtos
                 {(ItemDataActions) 3, ShoppingListModule.listItemToCancelled}
             }.ToImmutableDictionary();
 
+        public ItemDataActionDto(string user, int itemId, int shoppingListId, string password, int actionNumber)
+        {
+            User = user;
+            ItemId = itemId;
+            ShoppingListId = shoppingListId;
+            Password = password;
+            ActionNumber = actionNumber;
+        }
+        
         public enum ItemDataActions
         {
             AssignItem = 0,

@@ -61,14 +61,13 @@ namespace ShoppingList.Controllers
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("modifyItem")]
-        public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDto itemDataActionDto)
-        {
-            Console.WriteLine("modifyItem endpoint");
-            Console.WriteLine(itemDataActionDto.ToString());
-            Console.WriteLine("action: " + itemDataActionDto.ActionNumber);
-            return _repository.ModifyShoppingListItem(itemDataActionDto)
-                .Pipe(ShoppingListModificationResult);
-        }
+        public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionBasicAuthDto itemDataActionDto) =>
+            ParseIdentity(HttpContext)
+                .Map(itemDataActionDto.ToItemDataActionDto)
+                .Map(i =>
+                    _repository.ModifyShoppingListItem(i)
+                        .Pipe(ShoppingListModificationResult)
+                ).GetOrElse(NotFound());
 
         public ActionResult<ShoppingListReadDto> ShoppingListModificationResult(
             Either<string, ShoppingListReadDto> repositoryOperationResult) =>

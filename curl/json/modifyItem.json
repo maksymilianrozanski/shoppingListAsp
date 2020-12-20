@@ -1,7 +1,5 @@
 {
-  "user": "John",
-  "itemId" : 24,
-  "shoppingListId" : 2,
-  "password" : "password",
-  "actionNumber" : 3
+  "itemId" : 54,
+  "shoppingListId" : 33,
+  "actionNumber" : 2
 }

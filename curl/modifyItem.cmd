@@ -1,2 +1,2 @@
 rem requests modifying existing shopping list item
-curl -X POST --user user:password "localhost:5000/shoppingList/modifyItem" -d "@json/modifyItem.json" -H "Content-Type: application/json" -v --ssl-no-revoke
+curl -X POST --user santa:winter "localhost:5000/shoppingList/modifyItem" -d "@json/modifyItem.json" -H "Content-Type: application/json" -v --ssl-no-revoke
