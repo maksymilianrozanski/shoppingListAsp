@@ -50,22 +50,13 @@ namespace ShoppingList.Controllers
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("addItem")]
-        public ActionResult<ShoppingListReadDto> AddItemToTheList(ItemDataCreateDto itemDataCreateDto)
-        {
-            Console.WriteLine("addItem endpoint");
-            return _repository.AddItemToShoppingList(itemDataCreateDto)
-                .Pipe(ShoppingListModificationResult);
-        }
-
-        [HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("addItem2")]
-        public ActionResult<ShoppingListReadDto> AddItemToTheList2(ItemDataCreateDto2 itemDataCreateDto2) =>
+        public ActionResult<ShoppingListReadDto>
+            AddItemToTheList(ItemDataCreateBasicAuthDto itemDataCreateBasicAuthDto) =>
             ParseIdentity(HttpContext).Map(i =>
-                new ItemDataCreateDto(itemDataCreateDto2.ShoppingListId, i.Item2, itemDataCreateDto2.Name,
-                    itemDataCreateDto2.Quantity, itemDataCreateDto2.ItemType)
-            ).Map(r => _repository.AddItemToShoppingList(r)
-                .Pipe(ShoppingListModificationResult)
-            ).GetOrElse(NotFound());
+                    itemDataCreateBasicAuthDto.ToItemDataCreateDto(i.Item2))
+                .Map(r => _repository.AddItemToShoppingList(r)
+                    .Pipe(ShoppingListModificationResult)
+                ).GetOrElse(NotFound());
 
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("modifyItem")]

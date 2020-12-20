@@ -1,7 +1,6 @@
 {
   "shoppingListId": 33,
-  "password": "winter",
-  "name": "x-mas tree",
-  "quantity": 3,
+  "name": "x-mas candles",
+  "quantity": 1,
   "itemType": "ToBuy"
 }
