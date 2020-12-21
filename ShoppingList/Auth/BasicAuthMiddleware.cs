@@ -22,7 +22,6 @@ namespace ShoppingList.Auth
         public BasicAuthMiddleware(RequestDelegate next, string realm)
         {
             this.next = next;
-            this.realm = realm;
         }
 
         public async Task Invoke(HttpContext context)
@@ -54,15 +53,6 @@ namespace ShoppingList.Auth
                     context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                     return;
                 }
-            }
-
-            // Return authentication type (causes browser to show login dialog)
-            context.Response.Headers["WWW-Authenticate"] = "Basic";
-
-            // Add realm if it is not null
-            if (!string.IsNullOrWhiteSpace(realm))
-            {
-                context.Response.Headers["WWW-Authenticate"] += $" realm=\"{realm}\"";
             }
 
             // Return unauthorized
