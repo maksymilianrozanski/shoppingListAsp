@@ -14,23 +14,9 @@
 <body>
 <div>
 
-    <label for="username">Username</label>
-    <input type="text" id="username">
-
-    <form method="post">
-        <div>
-            <label for="shoppingListId">Shopping list id</label>
-            <input type="number" id="shoppingListId">
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="text" id="password">
-        </div>
-
-        <div>
-            <button id="submit">Fetch list</button>
-        </div>
-    </form>
+    <div>
+        <button id="fetchListButton">Fetch list</button>
+    </div>
 
     <ol id="shoppingListItems">
 
@@ -41,6 +27,7 @@
 </html>
 
 @section Scripts {
+    <script src="~/js/credentials.js"></script>
     <script src="~/js/errorTextMessages.js"></script>
     <script src="~/js/fetchShoppingList.js"></script>
     <script src="~/js/collectingItems.js"></script>

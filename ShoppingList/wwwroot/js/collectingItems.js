@@ -1,7 +1,4 @@
 (function () {
-        const alertElement = document.getElementById("success-alert");
-        const shoppingListNameAndPassword = document.forms[0];
-
         const itemActionsIds = {
             AssignItem: 0,
             ItemToNotFound: 1,
@@ -59,7 +56,8 @@
                     cache: "no-cache",
                     credentials: 'same-origin',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        "Authorization": authorizationHeaderValue()
                     },
                     redirect: 'follow',
                     referrerPolicy: 'no-referrer',
@@ -72,24 +70,17 @@
                             content: r.json()
                         }
                     } else {
-                        r.text()
-                            .then(errorText =>
-                                alert(notSuccessfulResponseText(r.status, errorText, r.headers.get("Content-Type"))));
-
-                        return {
-                            successful: false,
-                            content: null
-                        }
+                        return handleFailure(r);
                     }
                 })
             );
         }
 
-        const getShoppingListId = () => document.getElementById("shoppingListId").value;
+        const getShoppingListId = () => credentialsFromStorage().id;
 
-        const getUsername = () => document.getElementById("username").value;
+        const getUsername = () => credentialsFromStorage().name;
 
-        const getPassword = () => document.getElementById("password").value;
+        const getPassword = () => credentialsFromStorage().password;
 
         const createItemActionButton = (itemDataReadDto) => (actionId) => {
             const actionButton = document.createElement("button")
@@ -106,8 +97,7 @@
 
             actionButton.addEventListener("click", async () => postItemAction(actionDto)
                 .then(r => {
-                    if (r.successful)
-                        r.content.then(content => displayItems(content.items))
+                    return displayItemsIfSuccessful(r);
                 })
             );
             return actionButton;
@@ -131,22 +121,43 @@
             return liElement;
         }
 
-        async function displayItems(items) {
+        async function displayItems(responseContent) {
+            let itemsAwaited = await responseContent;
+
             const olRoot = document.getElementById("shoppingListItems");
             olRoot.innerHTML = "";
 
-            Array.from(items)
+            Array.from(itemsAwaited.items)
                 .map(i => itemWithActions(i))
                 .forEach(i => olRoot.appendChild(i));
         }
 
+        function displayItemsIfSuccessful(response) {
+            if (response !== undefined && response.successful) {
+                return displayItems(response.content);
+            }
+        }
+
+        const fetchUpdatedView = async () => {
+            if (credentialsFromStorage() == null) {
+                window.location.replace("/loginPage");
+            } else {
+                fetchShoppingList(credentialsFromStorage().id)
+                    .then(response => {
+                        return displayItemsIfSuccessful(response);
+                    });
+            }
+        }
+
         window.addEventListener("load", () => {
-            shoppingListNameAndPassword.addEventListener("submit", event => {
-                event.preventDefault();
-                fetchShoppingList(shoppingListNameAndPassword.elements[0].value)
-                    .then(r => displayItems(r.items));
-            });
-        });
+                fetchUpdatedView().then();
+
+                document.getElementById("fetchListButton").addEventListener("click", event => {
+                    event.preventDefault();
+                    fetchUpdatedView().then();
+                });
+            }
+        );
     }
 )
 ();

@@ -10,17 +10,20 @@ async function fetchShoppingList(id) {
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                "Authorization": authorizationHeaderValue()
             },
             redirect: 'follow',
             referrerPolicy: 'no-referrer',
         }).then(r => {
             if (r.status === 200) {
                 console.log("fetching shopping list data successful");
-                return r.json();
-            } else {
-                console.log("fetching shopping list data not successful, response status: " + r.status);
-            }
+                return {
+                    successful: true,
+                    content: r.json()
+                }
+                // return r.json();
+            } else return handleFailure(r);
         })
     );
 }

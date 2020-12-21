@@ -1,5 +1,4 @@
 (function () {
-    const alertElement = document.getElementById("success-alert");
     const formElement = document.forms[0];
     const addNewItem = async () => {
         // 1. read data from the form
@@ -27,7 +26,7 @@
                     // sessionStorage.setItem(jsonResponse.id, jsonResponse.password)
                     window.location.replace("/shoppingList/addItems")
                     console.log("success");
-                }
+                } else return handleFailure(r);
             }
         )
     };

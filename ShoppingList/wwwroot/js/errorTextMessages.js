@@ -16,3 +16,33 @@ function notSuccessfulResponseText(code, text, contentType) {
         }
     } else return "Unknown error";
 }
+
+/**
+ * @param {Response} unsuccessfulResponse
+ * displays alert; Redirects to /loginPage when response status code 400, 401, 402, 403
+ */
+function handleFailure(unsuccessfulResponse) {
+    if (unsuccessfulResponse.status >= 400 && unsuccessfulResponse.status < 404) {
+        unsuccessfulResponse.text()
+            .then(errorText => {
+                    alert(notSuccessfulResponseText(unsuccessfulResponse.status, errorText, unsuccessfulResponse.headers.get("Content-Type")));
+                    window.location.replace("/loginPage");
+                }
+            ).then(r => {
+            return {
+                successful: false,
+                content: null
+            }
+        });
+    } else {
+        unsuccessfulResponse.text()
+            .then(errorText =>
+                alert(notSuccessfulResponseText(unsuccessfulResponse.status, errorText, unsuccessfulResponse.headers.get("Content-Type"))))
+            .then(r => {
+                return {
+                    successful: false,
+                    content: null
+                }
+            });
+    }
+}

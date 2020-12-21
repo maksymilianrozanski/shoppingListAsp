@@ -1,0 +1,46 @@
+@page
+@model ShoppingList.Pages.LoginPage
+
+@{
+    Layout = Layout;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title></title>
+</head>
+
+<div>
+
+    <form method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password">
+        </div>
+        <div>
+            <label for="shoppingListId">Shopping list id:</label>
+            <input type="number" id="shoppingListId">
+        </div>
+        <div>
+            <button id="submit">Sign in</button>
+        </div>
+    </form>
+</div>
+
+
+<body>
+<div>
+
+</div>
+</body>
+</html>
+
+@section Scripts {
+    <script src="~/js/login.js"></script>
+}
