@@ -1,14 +1,22 @@
 (function () {
     const formElement = document.forms[0];
+
+    function createCredentials(name, password, id) {
+        return {
+            "name": name,
+            "password": password,
+            "id": id
+        }
+    }
+
     const addNewItem = async () => {
-        // 1. read data from the form
         const requestData =
             {
-                "Name": formElement.elements[0].value.toString(),
-                "Password": formElement.elements[1].value.toString(),
+                "Name": document.getElementById("name").value,
+                "Username": document.getElementById("username").value,
+                "Password": document.getElementById("password").value,
             };
-        // 2. call the application server using fetch method
-        await fetch("/shoppingList/createList", {
+        await fetch("/create/createList", {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -21,11 +29,10 @@
             body: JSON.stringify(requestData)
         }).then(r => {
                 if (r.status === 201 || r.status === 200) {
-                    // 3. un-hide the alertElement when the request has been successful
-                    // const jsonResponse = r.json();
-                    // sessionStorage.setItem(jsonResponse.id, jsonResponse.password)
-                    window.location.replace("/shoppingList/addItems")
-                    console.log("success");
+                    r.json().then(json => {
+                        saveCredentials(createCredentials(requestData.Username, requestData.Password, json.id));
+                        window.location.replace("/addItems");
+                    })
                 } else return handleFailure(r);
             }
         )

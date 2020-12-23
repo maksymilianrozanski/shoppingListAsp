@@ -1,9 +1,5 @@
 (function () {
 
-    function saveCredentials(credentials) {
-        sessionStorage.setItem("credentials", JSON.stringify(credentials));
-    }
-
     const loginForm = document.forms[0];
 
     function readCredentials() {

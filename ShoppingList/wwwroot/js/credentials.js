@@ -2,6 +2,10 @@ function credentialsFromStorage() {
     return JSON.parse(sessionStorage.getItem("credentials"));
 }
 
+function saveCredentials(credentials) {
+    sessionStorage.setItem("credentials", JSON.stringify(credentials));
+}
+
 function forgetCredentials() {
     sessionStorage.removeItem("credentials");
 }
