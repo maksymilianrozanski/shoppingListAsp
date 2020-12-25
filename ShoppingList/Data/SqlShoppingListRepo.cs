@@ -57,6 +57,16 @@ namespace ShoppingList.Data
                 .Map(MapToNotFoundIfEmpty)
                 .GetOrElse(NotFound);
 
+        public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
+            string password) =>
+            GetShoppingListEntityById(shoppingListId)
+                .Map<ShoppingListReadDto, Either<ShoppingListErrors.ShoppingListErrors, int>>(i =>
+                {
+                    if (i.Password == password) return Right(i.Id);
+                    else return Left(ShoppingListErrors.ShoppingListErrors.IncorrectPassword);
+                })
+                .GetOrElse(Left(ShoppingListErrors.ShoppingListErrors.ListItemNotFound));
+
         private static Either<RepoRequestError, T> MapToNotFoundIfEmpty<T>(Either<RepoRequestError, Option<T>> input) =>
             input.Bind(i => i.Map(j => (Either<RepoRequestError, T>) Right(j))
                 .GetOrElse(Left(NotFound)));

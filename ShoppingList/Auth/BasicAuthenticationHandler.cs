@@ -1,10 +1,12 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ShoppingList.Data;
 using static LaYumba.Functional.F;
 
 namespace ShoppingList.Auth
@@ -12,15 +14,19 @@ namespace ShoppingList.Auth
     public class BasicAuthenticationHandler
     {
         private readonly IUserService<UserLoginData, User> _userService;
+        private readonly IShoppingListRepo _shoppingListRepo;
 
         public BasicAuthenticationHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            IUserService<UserLoginData, User> userService)
+            IUserService<UserLoginData, User> userService,
+            IShoppingListRepo shoppingListRepo
+        )
         {
             _userService = userService;
+            _shoppingListRepo = shoppingListRepo;
         }
 
         public Try<ClaimsPrincipal> CreateClaims(UserLoginData user) =>
@@ -43,8 +49,17 @@ namespace ShoppingList.Auth
 
         public class UserServiceImpl : IUserService<UserLoginData, User>
         {
+            private readonly IShoppingListRepo _shoppingListRepo;
+
+            public UserServiceImpl(IShoppingListRepo shoppingListRepo)
+            {
+                _shoppingListRepo = shoppingListRepo;
+            }
+
             public Task<User> Authenticate(UserLoginData t) =>
-                Task.FromResult((User) t);
+                (Task<User>) _shoppingListRepo.PasswordMatchesShoppingList(t.ShoppingListId, t.Password)
+                    .Match(l => Task.FromException(null),
+                        r => Task.FromResult((User) t));
         }
 
         public class UserLoginData

@@ -1,4 +1,5 @@
 using LaYumba.Functional;
+using ShoppingData;
 using ShoppingList.Dtos;
 
 namespace ShoppingList.Data
@@ -6,8 +7,12 @@ namespace ShoppingList.Data
     public interface IShoppingListRepo
     {
         Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
-        
-        Either<RepoRequestError, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(Option<ShoppingListGetRequest> request);
+
+        Either<RepoRequestError, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
+            Option<ShoppingListGetRequest> request);
+
+        Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
+            string password);
 
         Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
 
