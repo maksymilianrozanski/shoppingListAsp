@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ShoppingList.Pages.Protected
 {
-    [Authorize]
+    // [Authorize]
     public class ProtectedPage : PageModel
     {
         public void OnGet()

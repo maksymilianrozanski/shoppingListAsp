@@ -1,6 +1,7 @@
 using System.Net;
 using LaYumba.Functional.Option;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +29,37 @@ namespace ShoppingList
             services.AddDbContext<ShoppingListDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection")));
 
+            // services
+            //     .AddAuthentication("CookieAuthentication")
+            //     // .AddAuthentication("BasicAuthentication")
+            //     // .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
+            //         // ("BasicAuthentication", null)
+            //     .AddCookie("CookieAuthentication", config =>
+            //     {
+            //         config.Cookie.Name = "UserLoginCookie";
+            //         config.LoginPath = "/LoginPage2";
+            //     })
+            //     ;
+            //
+            // services.AddSession(options =>
+            // {
+            //     options.Cookie.IsEssential = true;
+            // });
+            services
+                .AddTransient<BasicAuthenticationHandler.IUserService, BasicAuthenticationHandler.UserServiceImpl>();
+            services.AddTransient<BasicAuthenticationHandler>();
+            
+            services.AddAuthentication("CookieAuthentication")  
+                .AddCookie("CookieAuthentication", config =>  
+                {  
+                    config.Cookie.Name = "UserLoginCookie";  
+                    config.LoginPath = "/LoginPage2";  
+                });  
+            
             services.AddControllers();
             services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Protected"));
 
-            services.AddAuthentication("BasicAuthentication")
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
-                    ("BasicAuthentication", null);
+            
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -41,8 +67,6 @@ namespace ShoppingList
             });
 
             services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
-            services
-                .AddTransient<BasicAuthenticationHandler.IUserService, BasicAuthenticationHandler.UserServiceImpl>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,14 +80,14 @@ namespace ShoppingList
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseStatusCodePages(async context =>
-            {
-                var response = context.HttpContext.Response;
-
-                if (response.StatusCode == (int) HttpStatusCode.Unauthorized ||
-                    response.StatusCode == (int) HttpStatusCode.Forbidden)
-                    response.Redirect("/LoginPage2");
-            });
+            // app.UseStatusCodePages(async context =>
+            // {
+            //     var response = context.HttpContext.Response;
+            //
+            //     if (response.StatusCode == (int) HttpStatusCode.Unauthorized ||
+            //         response.StatusCode == (int) HttpStatusCode.Forbidden)
+            //         response.Redirect("/LoginPage2");
+            // });
 
             app.UseRouting();
 

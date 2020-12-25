@@ -26,5 +26,11 @@
       <_ContentIncludedByDefault Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Pages\Protected\Protected.cshtml.cs">
+        <DependentUpon>Protected.cshtml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 
 </Project>
