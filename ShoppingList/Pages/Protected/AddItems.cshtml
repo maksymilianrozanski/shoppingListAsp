@@ -1,0 +1,48 @@
+@page
+@using LaYumba.Functional
+@using static ShoppingList.Auth.BasicAuthenticationHandler.User
+@model ShoppingList.Pages.Protected.AddItems
+
+
+@{
+    Layout = Layout;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+
+    <form method="post">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="itemName">
+        </div>
+        <div>
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" name="quantity">
+        </div>
+
+        <div>
+            <button id="submit">Save item</button>
+        </div>
+    </form>
+
+    existing items:
+    <ol id="savedItemsList">
+        <li>todo</li>
+    </ol>
+
+    current list id
+    <div>
+        @ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}, current shopping list id: {i.ShoppingListId}").GetOrElse("")
+    </div>
+
+
+</div>
+</body>
+</html>

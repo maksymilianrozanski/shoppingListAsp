@@ -1,9 +1,11 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShoppingList.Data;
@@ -81,14 +83,23 @@ namespace ShoppingList.Auth
             public int ShoppingListId { get; }
             public string Username { get; }
 
-            public User(int shoppingListId, string username, string password)
+            public User(int shoppingListId, string username)
             {
                 ShoppingListId = shoppingListId;
                 Username = username;
             }
 
             public static implicit operator User(UserLoginData u) =>
-                new(u.ShoppingListId, u.Username, u.Password);
+                new(u.ShoppingListId, u.Username);
+
+            public static Option<User> ToOptionUser(HttpContext context)
+            {
+                var claims = context.User.Claims;
+                var listId = claims.Find(i =>
+                    i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Map(i => i.Value);
+                var username = (Option<string>) context.User.Identity?.Name;
+                return listId.Map(i => username.Map(u => new BasicAuthenticationHandler.User(int.Parse(i), u))).GetOrElse(None);
+            }
         }
     }
 }
