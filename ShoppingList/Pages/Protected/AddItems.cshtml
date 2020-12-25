@@ -1,6 +1,6 @@
 @page
 @using LaYumba.Functional
-@using static ShoppingList.Auth.BasicAuthenticationHandler.User
+@using static Auth.BasicAuthenticationHandler.User
 @model ShoppingList.Pages.Protected.AddItems
 
 
@@ -17,6 +17,12 @@
 <body>
 <div>
 
+    <div>
+        @ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}, current shopping list id: {i.ShoppingListId}").GetOrElse("")
+    </div>
+
+    <br>
+
     <form method="post">
         <div>
             <label for="name">Name</label>
@@ -28,21 +34,23 @@
         </div>
 
         <div>
-            <button id="submit">Save item</button>
+            <button id="submit">Save new item</button>
         </div>
     </form>
 
     existing items:
     <ol id="savedItemsList">
-        <li>todo</li>
+        @{
+            foreach (var s in Model.ShoppingListReadDto.Map(list => list.Items)
+                .Map(itemData =>
+                    itemData.Map(i => $"{i.Name} --- {i.Quantity} times")).GetOrElse(new List<string>()))
+            {
+                <li>
+                    @s
+                </li>
+            }
+        }
     </ol>
-
-    current list id
-    <div>
-        @ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}, current shopping list id: {i.ShoppingListId}").GetOrElse("")
-    </div>
-
-
 </div>
 </body>
 </html>

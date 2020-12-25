@@ -8,6 +8,8 @@ namespace ShoppingList.Data
     {
         Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
 
+        Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
+        
         Either<RepoRequestError, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
             Option<ShoppingListGetRequest> request);
 

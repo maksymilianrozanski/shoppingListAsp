@@ -39,7 +39,7 @@ namespace ShoppingList.Data
                 .Bind(i => SaveChanges() ? Some(i) : null)
                 .Map(i => (ShoppingListReadDto) i);
 
-        private Option<ShoppingListReadDto> GetShoppingListEntityById(int id) =>
+        public Option<ShoppingListReadDto> GetShoppingListEntityById(int id) =>
             ((Option<ShoppingListEntity>) _context.ShoppingListEntities
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id))
