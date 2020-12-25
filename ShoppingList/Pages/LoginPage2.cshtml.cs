@@ -31,7 +31,7 @@ namespace ShoppingList.Pages
 
         private void SignIn()
         {
-            _authenticationHandler.CreateClaims(new User(ShoppingListId.ToString(), Username))
+            _authenticationHandler.CreateClaims(new UserLoginData(ShoppingListId, Username, Password))
                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                 .Run()
                 .ForEach(r =>

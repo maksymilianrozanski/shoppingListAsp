@@ -29,37 +29,22 @@ namespace ShoppingList
             services.AddDbContext<ShoppingListDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection")));
 
-            // services
-            //     .AddAuthentication("CookieAuthentication")
-            //     // .AddAuthentication("BasicAuthentication")
-            //     // .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
-            //         // ("BasicAuthentication", null)
-            //     .AddCookie("CookieAuthentication", config =>
-            //     {
-            //         config.Cookie.Name = "UserLoginCookie";
-            //         config.LoginPath = "/LoginPage2";
-            //     })
-            //     ;
-            //
-            // services.AddSession(options =>
-            // {
-            //     options.Cookie.IsEssential = true;
-            // });
             services
-                .AddTransient<BasicAuthenticationHandler.IUserService, BasicAuthenticationHandler.UserServiceImpl>();
+                .AddTransient<
+                    BasicAuthenticationHandler.IUserService<BasicAuthenticationHandler.UserLoginData,
+                        BasicAuthenticationHandler.User>, BasicAuthenticationHandler.UserServiceImpl>();
             services.AddTransient<BasicAuthenticationHandler>();
-            
-            services.AddAuthentication("CookieAuthentication")  
-                .AddCookie("CookieAuthentication", config =>  
-                {  
-                    config.Cookie.Name = "UserLoginCookie";  
-                    config.LoginPath = "/LoginPage2";  
-                });  
-            
+
+            services.AddAuthentication("CookieAuthentication")
+                .AddCookie("CookieAuthentication", config =>
+                {
+                    config.Cookie.Name = "UserLoginCookie";
+                    config.LoginPath = "/LoginPage2";
+                });
+
             services.AddControllers();
             services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Protected"));
 
-            
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -93,9 +78,6 @@ namespace ShoppingList
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            // app.UseWhen(context => context.Request.Path.StartsWithSegments($"/shoppingList"),
-            // builder => builder.UseMiddleware<BasicAuthMiddleware>("localhost"));
 
             app.UseEndpoints(endpoints =>
             {
