@@ -1,0 +1,99 @@
+@page
+@model ShoppingList.Pages.Protected.CollectingItems
+@using System.Collections.Immutable
+@using LaYumba.Functional
+@using Microsoft.FSharp.Core
+@using ShoppingData
+@using ShoppingList.Dtos
+@using ShoppingList.Dtos.Protected
+@using static Auth.BasicAuthenticationHandler.User
+@using static LaYumba.Functional.F;
+@using static Dtos.ItemDataActionDto.ItemDataActions;
+@using static Entities.ItemDataEntity;
+@using static Dtos.Protected.ItemDataActionDtoNoPassword;
+
+@{
+    Layout = Layout;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Collecting items page</title>
+</head>
+<body>
+
+<div>
+    @ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}, current shopping list id: {i.ShoppingListId}").GetOrElse("")
+</div>
+
+<div>
+
+    existing items:
+    <ol id="savedItemsList">
+        @{
+            var shoppingListItemOperations = new Dictionary<ItemDataActionDto.ItemDataActions, (string, FSharpFunc<string, FSharpFunc<int, FSharpFunc<ShoppingListModule.ShoppingList, FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>>> listItemToCancelled)>
+            {
+                {AssignItem, ("Assign item", ShoppingListNoPassModule.listItemToAssigned)},
+                {ItemToNotFound, ("Item Not Found", ShoppingListNoPassModule.listItemToNotFound)},
+                {ItemToBought, ("Item found", ShoppingListNoPassModule.listItemToBought)},
+                {ItemToCancelled, ("Cancel item", ShoppingListNoPassModule.listItemToCancelled)}
+            };
+
+            var items = Model.ShoppingListReadDto.Map(list => list.Items).Map(i => i.ToList());
+
+            string CreateItemDescription(ItemDataReadDto i) => $"{i.Name} --- {i.Quantity} times --- {i.ItemType}";
+
+            List<ItemDataActionDto.ItemDataActions> AllowedActionsForUser(ItemDataReadDto i, string username)
+                => (ItemTypeFromString(i.ItemType)) switch
+                {
+                    var x when x.IsToBuy  => new List<ItemDataActionDto.ItemDataActions>() {AssignItem, ItemToCancelled},
+                    var x when x.IsBought => new List<ItemDataActionDto.ItemDataActions>() ,
+                    var x when x.IsCancelled => new List<ItemDataActionDto.ItemDataActions>(),
+                    var x when x.IsNotFound => new List<ItemDataActionDto.ItemDataActions>() {AssignItem, ItemToCancelled},
+                    ShoppingItemModule.ItemType.Assigned assigned when username == assigned.Item =>
+                        new List<ItemDataActionDto.ItemDataActions>() {ItemToNotFound, ItemToBought, ItemToCancelled},
+                    ShoppingItemModule.ItemType.Assigned assigned => new List<ItemDataActionDto.ItemDataActions>() {ItemToCancelled},
+                    _ => throw new MatchFailureException()
+                    };
+
+            List<ItemDataActionDtoNoPassword> CreateItemActions(ItemDataReadDto i) => ToOptionUser(HttpContext)
+                .Bind(u => AllowedActionsForUser(i, u.Username)
+                    .Map(action => FromItemDataReadDto(i, action, u.ShoppingListId))).ToList();
+
+            var buttonsData = Model.ShoppingListReadDto
+                .Bind(i => i.Items)
+                .Map(i => (CreateItemDescription(i), CreateItemActions(i)))
+                .ToList();
+
+            var textsOfItemActions = new Dictionary<ItemDataActionDto.ItemDataActions, string>
+            {
+                {AssignItem, "Assign item"},
+                {ItemToNotFound, "Not found"},
+                {ItemToBought, "Item found"},
+                {ItemToCancelled, "Cancel"}
+            }.ToImmutableDictionary();
+
+            foreach (var tuple in buttonsData)
+            {
+                <li>
+                    <div>
+                        @tuple.Item1
+                    </div>
+                    <div>
+                        @foreach (var itemActionNumber in tuple.Item2.Map(i => @i.ActionNumber))
+                        {
+                            <button>
+                                @textsOfItemActions[(ItemDataActionDto.ItemDataActions) itemActionNumber]
+                            </button>
+                        }
+                    </div>
+                </li>
+            }
+        }
+    </ol>
+
+</div>
+</body>
+</html>

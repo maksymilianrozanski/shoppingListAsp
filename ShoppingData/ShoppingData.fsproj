@@ -8,6 +8,7 @@
         <Compile Include="ShoppingListErrors.fs" />
         <Compile Include="ShoppingItemModule.fs" />
         <Compile Include="ShoppingListModule.fs" />
+        <Compile Include="ShoppingListNoPassModule.fs" />
     </ItemGroup>
 
     <ItemGroup>
