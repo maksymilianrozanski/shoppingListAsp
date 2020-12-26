@@ -1,9 +1,14 @@
+using System;
 using LaYumba.Functional;
+using LaYumba.Functional.Option;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShoppingList.Auth;
 using ShoppingList.Data;
 using ShoppingList.Dtos;
+using ShoppingList.Dtos.Protected;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
+using static LaYumba.Functional.F;
 
 namespace ShoppingList.Pages.Protected
 {
@@ -13,11 +18,12 @@ namespace ShoppingList.Pages.Protected
 
         [BindProperty] public string ItemName { get; set; }
         [BindProperty] public int Quantity { get; set; }
-        [BindProperty] public Option<ShoppingListReadDto> ShoppingListReadDto { get; set; }
+        public Option<ShoppingListReadDto> ShoppingListReadDto { get; set; }
 
         public AddItems(IShoppingListRepo shoppingListRepo)
         {
             _shoppingListRepo = shoppingListRepo;
+            ShoppingListReadDto = (Option<ShoppingListReadDto>) null!;
         }
 
         public void OnGet()
@@ -26,6 +32,17 @@ namespace ShoppingList.Pages.Protected
                 ToOptionUser(HttpContext)
                     .Map(i => i.ShoppingListId)
                     .Bind(_shoppingListRepo.GetShoppingListEntityById);
+        }
+
+        public void OnPost()
+        {
+            var newItem = ToOptionUser(HttpContext)
+                .Map(i => new ItemDataCreateDtoNoPassword(i.ShoppingListId, ItemName, Quantity))
+                .Map(i => _shoppingListRepo.AddItemToShoppingListNoPassword(i));
+
+            newItem.ForEach(i =>
+                i.Match(left => throw new NotImplementedException(),
+                    right => ShoppingListReadDto = right));
         }
     }
 }

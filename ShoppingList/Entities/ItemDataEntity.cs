@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.FSharp.Core;
 using ShoppingData;
 using ShoppingList.Dtos;
+using ShoppingList.Dtos.Protected;
 
 namespace ShoppingList.Entities
 {
@@ -68,6 +69,16 @@ namespace ShoppingList.Entities
                 ShoppingListEntityRefId = itemData.ShoppingListId
             };
 
+        public static implicit operator ItemDataEntity(ItemDataCreateDtoNoPassword itemData) =>
+            new ItemDataEntity
+            {
+                Id = 0,
+                Name = itemData.Name,
+                Quantity = itemData.Quantity,
+                ItemType = "ToBuy",
+                ShoppingListEntityRefId = itemData.ShoppingListId
+            };
+        
         public static implicit operator ShoppingItemModule.ItemData(ItemDataEntity entity) =>
             new ShoppingItemModule.ItemData(entity.Id, entity.Name, entity.Quantity,
                 ItemTypeFromString(entity.ItemType));

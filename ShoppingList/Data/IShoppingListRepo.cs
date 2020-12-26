@@ -1,6 +1,7 @@
 using LaYumba.Functional;
 using ShoppingData;
 using ShoppingList.Dtos;
+using ShoppingList.Dtos.Protected;
 
 namespace ShoppingList.Data
 {
@@ -17,6 +18,8 @@ namespace ShoppingList.Data
             string password);
 
         Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
+
+        Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(Option<ItemDataCreateDtoNoPassword> itemToAdd);
 
         Either<string, ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction);
 

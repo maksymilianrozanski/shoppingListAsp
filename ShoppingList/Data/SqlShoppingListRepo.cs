@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.FSharp.Core;
 using ShoppingData;
 using ShoppingList.Dtos;
+using ShoppingList.Dtos.Protected;
 using ShoppingList.Entities;
 using ShoppingList.Utils;
 using static LaYumba.Functional.F;
@@ -84,7 +85,7 @@ namespace ShoppingList.Data
 
         public Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd)
         {
-            Console.WriteLine("received AddItemToShoppingList request");
+            Console.WriteLine("received AddItemToShoppingListNoPassword request");
             return itemToAdd
                 .Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
                     .Map(dbList => (i, dbList)))
@@ -104,6 +105,27 @@ namespace ShoppingList.Data
                         .Map(TryToSaveShoppingList))
                 .Map(i =>
                     i.Match(err => Left(ErrorTextValue(err)),
+                        either =>
+                            either
+                    )).GetOrElse(Left("unknown error"));
+        }
+
+        public Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(Option<ItemDataCreateDtoNoPassword> itemToAdd)
+        {
+            Console.WriteLine("received AddItemToShoppingListNoPassword (without password)request");
+            return itemToAdd
+                .Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
+                    .Map(dbList => (i, dbList)))
+                .Map(pair =>
+                {
+                    var (itemDataCreateDto, shoppingListEntity) = pair;
+                    var result = ShoppingListModule.addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
+                    return (shoppingListEntity, result);
+                })
+                .Map(i => (i.shoppingListEntity, i.result).ToTuple())
+                .Map(TryToSaveShoppingList)
+                .Map(i => i
+                    .Match<Either<string, ShoppingListReadDto>>(err => Left(err),
                         either =>
                             either
                     )).GetOrElse(Left("unknown error"));
