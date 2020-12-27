@@ -40,6 +40,7 @@ namespace ShoppingList
                 {
                     config.Cookie.Name = "UserLoginCookie";
                     config.LoginPath = "/LoginPage";
+                    config.LogoutPath = "/Logout";
                 });
 
             services.AddControllers();

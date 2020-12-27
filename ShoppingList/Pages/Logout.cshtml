@@ -1,0 +1,38 @@
+@page
+@model ShoppingList.Pages.Logout
+@using LaYumba.Functional
+@using static ShoppingList.Auth.BasicAuthenticationHandler.User;
+@using static ShoppingList.Auth.BasicAuthenticationHandler;
+@using LaYumba.Functional.Option;
+@using ShoppingList.Auth
+@using static LaYumba.Functional.F
+
+@{
+    Layout = Layout;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Logout page</title>
+</head>
+<body>
+<div>
+    @{
+        string DisplayedText() => ToOptionUser(HttpContext)
+            .Match(() => "You are signed out",
+                u => $"Signed in, as {u.Username}, shopping list id: {u.ShoppingListId}");
+
+        @DisplayedText()
+
+        foreach (var unused in ToOptionUser(HttpContext).Bind(i => new List<User> {i}))
+        {
+            <form method="post">
+                <input type="submit" value="Logout" id="logoutButton">
+            </form>
+        }
+    }
+</div>
+</body>
+</html>
