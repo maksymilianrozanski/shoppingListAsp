@@ -10,7 +10,7 @@ using static LaYumba.Functional.F;
 
 namespace ShoppingList.Pages
 {
-    public class LoginPage2 : PageModel
+    public class LoginPage : PageModel
     {
         private readonly BasicAuthenticationHandler _authenticationHandler;
 
@@ -24,7 +24,7 @@ namespace ShoppingList.Pages
         {
         }
 
-        public LoginPage2(BasicAuthenticationHandler authenticationHandler)
+        public LoginPage(BasicAuthenticationHandler authenticationHandler)
         {
             _authenticationHandler = authenticationHandler;
         }

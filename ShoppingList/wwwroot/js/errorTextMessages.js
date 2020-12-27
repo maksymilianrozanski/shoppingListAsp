@@ -26,7 +26,7 @@ function handleFailure(unsuccessfulResponse) {
         unsuccessfulResponse.text()
             .then(errorText => {
                     alert(notSuccessfulResponseText(unsuccessfulResponse.status, errorText, unsuccessfulResponse.headers.get("Content-Type")));
-                    window.location.replace("/LoginPage2");
+                    window.location.replace("/LoginPage");
                 }
             ).then(r => {
             return {

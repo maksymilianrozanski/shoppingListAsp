@@ -39,7 +39,7 @@ namespace ShoppingList
                 .AddCookie("CookieAuthentication", config =>
                 {
                     config.Cookie.Name = "UserLoginCookie";
-                    config.LoginPath = "/LoginPage2";
+                    config.LoginPath = "/LoginPage";
                 });
 
             services.AddControllers();
@@ -71,7 +71,7 @@ namespace ShoppingList
             //
             //     if (response.StatusCode == (int) HttpStatusCode.Unauthorized ||
             //         response.StatusCode == (int) HttpStatusCode.Forbidden)
-            //         response.Redirect("/LoginPage2");
+            //         response.Redirect("/LoginPage");
             // });
 
             app.UseRouting();
