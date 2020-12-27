@@ -10,7 +10,7 @@ namespace ShoppingList.Data
         Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
 
         Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
-        
+
         Either<RepoRequestError, ShoppingListReadDto> GetShoppingListEntityByIdIfPassword(
             Option<ShoppingListGetRequest> request);
 
@@ -19,9 +19,13 @@ namespace ShoppingList.Data
 
         Either<string, ShoppingListReadDto> AddItemToShoppingList(Option<ItemDataCreateDto> itemToAdd);
 
-        Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(Option<ItemDataCreateDtoNoPassword> itemToAdd);
+        Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(
+            Option<ItemDataCreateDtoNoPassword> itemToAdd);
 
         Either<string, ShoppingListReadDto> ModifyShoppingListItem(Option<ItemDataActionDto> itemDataAction);
+
+        Either<string, ShoppingListReadDto> ModifyShoppingListItemNoPassword(
+            Option<ItemDataActionDtoNoPassword> itemDataAction);
 
         bool SaveChanges();
 

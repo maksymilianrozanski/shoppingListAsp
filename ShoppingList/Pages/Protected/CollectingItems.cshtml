@@ -82,10 +82,14 @@
                         @tuple.Item1
                     </div>
                     <div>
-                        @foreach (var itemActionNumber in tuple.Item2.Map(i => @i.ActionNumber))
+                        @foreach (var itemAction in tuple.Item2)
                         {
-                            <button>
-                                @textsOfItemActions[(ItemDataActionDto.ItemDataActions) itemActionNumber]
+                            <button myData='{"user":"@itemAction.User",
+                            "itemId":@itemAction.ItemId,
+                            "shoppingListId":"@itemAction.ShoppingListId",
+                            "actionNumber":@itemAction.ActionNumber
+                            }' onclick="buttonClicked(this.getAttribute('myData'))">
+                                @textsOfItemActions[(ItemDataActionDto.ItemDataActions) itemAction.ActionNumber]
                             </button>
                         }
                     </div>

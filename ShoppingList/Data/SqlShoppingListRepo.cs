@@ -110,7 +110,8 @@ namespace ShoppingList.Data
                     )).GetOrElse(Left("unknown error"));
         }
 
-        public Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(Option<ItemDataCreateDtoNoPassword> itemToAdd)
+        public Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(
+            Option<ItemDataCreateDtoNoPassword> itemToAdd)
         {
             Console.WriteLine("received AddItemToShoppingListNoPassword (without password)request");
             return itemToAdd
@@ -161,6 +162,46 @@ namespace ShoppingList.Data
                         .Invoke(updateDto.Password);
                     return (entityFromDb, result);
                 })
+                .Map(r =>
+                    EitherUtils.FSharpChoiceToEither(r.result)
+                        .Map(i => (r.entityFromDb, i).ToTuple())
+                        .Map(TryToSaveShoppingList))
+                .Map(i =>
+                    i.Match(err => Left(ErrorTextValue(err)),
+                        either =>
+                            either
+                    )).GetOrElse(Left("unknown error"));
+        }
+
+        public Either<string, ShoppingListReadDto> ModifyShoppingListItemNoPassword(
+            Option<ItemDataActionDtoNoPassword> itemDataAction)
+        {
+            return itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
+                    .Map(j => (i, j).ToTuple()))
+                .Bind(bothNonEmpty =>
+                {
+                    var (updateDto, entityFromDb) = bothNonEmpty;
+                    if (ItemDataActionDtoNoPassword.Actions.TryGetValue(
+                        (ItemDataActionDto.ItemDataActions) updateDto.ActionNumber, out var modifyingFunction))
+                    {
+                        var r = (updateDto, entityFromDb, modifyingFunction);
+                        return Some(r.ToTuple());
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                })
+                .Map(r =>
+                {
+                    var (updateDto, entityFromDb, modifyingFunction) = r;
+                    var result = modifyingFunction
+                        .Invoke(updateDto.User)
+                        .Invoke(updateDto.ItemId)
+                        .Invoke((entityFromDb));
+                    return (entityFromDb, result);
+                })
+                //todo: remove duplicated code
                 .Map(r =>
                     EitherUtils.FSharpChoiceToEither(r.result)
                         .Map(i => (r.entityFromDb, i).ToTuple())
