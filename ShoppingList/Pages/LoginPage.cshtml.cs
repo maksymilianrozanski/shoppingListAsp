@@ -50,7 +50,7 @@ namespace ShoppingList.Pages
             Console.WriteLine($"entered password: {Password}");
             Console.WriteLine($"entered shopping list id: {ShoppingListId}");
             SignIn();
-            Redirect("/");
+            Response.Redirect("/");
         }
     }
 }
