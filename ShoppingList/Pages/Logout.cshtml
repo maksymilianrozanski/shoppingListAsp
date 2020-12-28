@@ -20,17 +20,20 @@
 <body>
 <div>
     @{
-        string DisplayedText() => ToOptionUser(HttpContext)
-            .Match(() => "You are signed out",
-                u => $"Signed in, as {u.Username}, shopping list id: {u.ShoppingListId}");
-
-        @DisplayedText()
-
-        foreach (var unused in ToOptionUser(HttpContext).Bind(i => new List<User> {i}))
+        @if (Model.IsSignedIn)
         {
-            <form method="post">
-                <input type="submit" value="Logout" id="logoutButton">
-            </form>
+            foreach (var u in ToOptionUser(HttpContext).Bind(i => new List<User> {i}))
+            {
+                <p>@($"Signed in, as {u.Username}, shopping list id: {u.ShoppingListId}")</p>
+
+                <form method="post">
+                    <input type="submit" value="Logout" id="logoutButton">
+                </form>
+            }
+        }
+        else
+        {
+            <p>You are signed out</p>
         }
     }
 </div>

@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,14 +95,20 @@ namespace ShoppingList.Auth
             public static implicit operator User(UserLoginData u) =>
                 new(u.ShoppingListId, u.Username);
 
-            public static Option<User> ToOptionUser(HttpContext context)
-            {
-                var claims = context.User.Claims;
-                var listId = claims.Find(i =>
-                    i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Map(i => i.Value);
-                var username = (Option<string>) context.User.Identity?.Name;
-                return listId.Map(i => username.Map(u => new BasicAuthenticationHandler.User(int.Parse(i), u))).GetOrElse(None);
-            }
+            public static Option<User> ToOptionUser(HttpContext context) =>
+                ((Option<HttpContext>) context)
+                .Pipe(c => ExtractShoppingListId(c)
+                    .Bind(id => ExtractUsername(c)
+                        .Map(username => (id, username))))
+                .Map(tuple => new User(int.Parse(tuple.id), tuple.username));
+            
+            private static Option<string> ExtractShoppingListId(Option<HttpContext> context) =>
+                context.Bind(c => c.User.Claims.Find(i =>
+                        i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+                    .Map(i => i.Value));
+
+            private static Option<string> ExtractUsername(Option<HttpContext> context) =>
+                context.Map(c => c.User.Identity).Map(i => i.Name);
         }
     }
 }
