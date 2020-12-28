@@ -95,20 +95,19 @@ namespace ShoppingList.Auth
             public static implicit operator User(UserLoginData u) =>
                 new(u.ShoppingListId, u.Username);
 
-            public static Option<User> ToOptionUser(HttpContext context) =>
-                ((Option<HttpContext>) context)
-                .Pipe(c => ExtractShoppingListId(c)
+            public static Option<User> ToOptionUser(Option<HttpContext> c) =>
+                ExtractShoppingListId(c)
                     .Bind(id => ExtractUsername(c)
-                        .Map(username => (id, username))))
-                .Map(tuple => new User(int.Parse(tuple.id), tuple.username));
-            
+                        .Map(username => (id, username)))
+                    .Map(tuple => new User(int.Parse(tuple.id), tuple.username));
+
             private static Option<string> ExtractShoppingListId(Option<HttpContext> context) =>
                 context.Bind(c => c.User.Claims.Find(i =>
                         i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
                     .Map(i => i.Value));
 
             private static Option<string> ExtractUsername(Option<HttpContext> context) =>
-                context.Map(c => c.User.Identity).Map(i => i.Name);
+                context.Map(c => c.User.Identity).Bind(i => i != null ? Some(i.Name!) : None);
         }
     }
 }
