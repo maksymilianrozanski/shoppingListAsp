@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShoppingList.Auth;
 using static ShoppingList.Auth.BasicAuthenticationHandler;
 using static LaYumba.Functional.F;
+using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages
 {
@@ -34,14 +35,8 @@ namespace ShoppingList.Pages
             _authenticationHandler.CreateClaims(new UserLoginData(ShoppingListId, Username, Password))
                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                 .Run()
-                .ForEach(r =>
-                {
-                    Console.WriteLine(r);
-                    if (r.IsCompletedSuccessfully)
-                        Console.WriteLine("Signed in successfully");
-                    else
-                        Console.Write($"Signing in failed, {r.ToString()}");
-                });
+                .Match(l => Response.Redirect("/LoginPage"),
+                    r => Response.Redirect("/"));
         }
 
         public void OnPost()
@@ -50,7 +45,6 @@ namespace ShoppingList.Pages
             Console.WriteLine($"entered password: {Password}");
             Console.WriteLine($"entered shopping list id: {ShoppingListId}");
             SignIn();
-            Response.Redirect("/");
         }
     }
 }
