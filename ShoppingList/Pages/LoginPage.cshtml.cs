@@ -42,6 +42,7 @@ namespace ShoppingList.Pages
         public void OnPost()
         {
             Console.WriteLine($"entered username: {Username}");
+            //todo: remove logging password
             Console.WriteLine($"entered password: {Password}");
             Console.WriteLine($"entered shopping list id: {ShoppingListId}");
             SignIn();
