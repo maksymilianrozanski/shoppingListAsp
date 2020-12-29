@@ -51,7 +51,7 @@ namespace ShoppingList.Pages
                                         createDto.Password))
                                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                                 .Run()
-                                .Match(l => throw new NotImplementedException(),
+                                .Match(l => Response.Redirect("/Error"),
                                     r => Response.Redirect("/Protected/AddItems"))));
         }
     }
