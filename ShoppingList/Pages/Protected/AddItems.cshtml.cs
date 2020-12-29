@@ -41,7 +41,7 @@ namespace ShoppingList.Pages.Protected
                 .Map(i => _shoppingListRepo.AddItemToShoppingListNoPassword(i));
 
             newItem.ForEach(i =>
-                i.Match(left => throw new NotImplementedException(),
+                i.Match(left => Response.Redirect("/Error"),
                     right => ShoppingListReadDto = right));
         }
     }
