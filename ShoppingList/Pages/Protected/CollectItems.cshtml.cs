@@ -6,14 +6,14 @@ using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages.Protected
 {
-    public class CollectingItems : PageModel
+    public class CollectItems : PageModel
     {
         private readonly IShoppingListRepo _shoppingListRepo;
 
         public string CurrentUsername { get; private set; }
         public int CurrentShoppingListId { get; private set; }
 
-        public CollectingItems(IShoppingListRepo shoppingListRepo)
+        public CollectItems(IShoppingListRepo shoppingListRepo)
         {
             _shoppingListRepo = shoppingListRepo;
             CurrentUsername = "";
