@@ -4,6 +4,7 @@ using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static LaYumba.Functional.F;
@@ -15,6 +16,9 @@ namespace ShoppingList.Pages
     public class Logout : PageModel
     {
         public bool IsSignedIn => ToOptionUser(HttpContext).Match(() => false, user => true);
+
+        public static bool IsSignedInFunc(HttpContext context) =>
+            ToOptionUser(context).Match(() => false, user => true);
 
         public Logout()
         {
