@@ -14,12 +14,18 @@
 <body>
 <div>
     <form method="post">
-        <label for="name">Shopping list name</label>
-        <input id="name" type="text" name="ShoppingListName">
-        <label for="username">Username</label>
-        <input id="username" type="text" name="Username">
-        <label for="password">Password</label>
-        <input id="password" type="text" name="Password">
+        <label asp-for="ShoppingListName">Shopping list name</label>
+        <input id="name" type="text" asp-for="ShoppingListName">
+        <span asp-validation-for="ShoppingListName" class="text-danger"></span>
+
+        <label asp-for="Username">Username</label>
+        <input id="username" type="text" asp-for="Username">
+        <span asp-validation-for="Username" class="text-danger"></span>
+
+        <label asp-for="Password">Password</label>
+        <input id="password" type="password" asp-for="Password">
+        <span asp-validation-for="Password" class="text-danger"></span>
+
         <div>
             <button id="submit">Submit</button>
         </div>
@@ -27,3 +33,7 @@
 </div>
 </body>
 </html>
+
+@section scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}
