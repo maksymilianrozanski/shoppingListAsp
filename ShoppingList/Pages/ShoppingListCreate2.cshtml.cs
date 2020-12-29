@@ -34,11 +34,10 @@ namespace ShoppingList.Pages
         {
             new ShoppingListCreateDto(ShoppingListName, Password).Pipe(createDto =>
                 _repository.CreateShoppingList(createDto)
-                    .Match(() => throw new NotImplementedException(), readDto =>
+                    .Map(readDto =>
                         _authenticationHandler
-                            .CreateClaims(new BasicAuthenticationHandler.UserLoginData(readDto.Id,
-                                Username,
-                                createDto.Password))
+                            .CreateClaims(
+                                new BasicAuthenticationHandler.UserLoginData(readDto.Id, Username, createDto.Password))
                             .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                             .Run()
                             .Match(l => throw new NotImplementedException(),
