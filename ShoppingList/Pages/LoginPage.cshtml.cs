@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
@@ -15,11 +16,11 @@ namespace ShoppingList.Pages
     {
         private readonly BasicAuthenticationHandler _authenticationHandler;
 
-        [BindProperty] public string Username { get; set; }
+        [BindProperty] [Required] public string Username { get; set; }
 
-        [BindProperty] public string Password { get; set; }
+        [BindProperty] [Required] public string Password { get; set; }
 
-        [BindProperty] public int ShoppingListId { get; set; }
+        [BindProperty] [Required] public int ShoppingListId { get; set; }
 
         public void OnGet()
         {
@@ -42,10 +43,9 @@ namespace ShoppingList.Pages
         public void OnPost()
         {
             Console.WriteLine($"entered username: {Username}");
-            //todo: remove logging password
-            Console.WriteLine($"entered password: {Password}");
             Console.WriteLine($"entered shopping list id: {ShoppingListId}");
-            SignIn();
+            if (ModelState.IsValid)
+                SignIn();
         }
     }
 }
