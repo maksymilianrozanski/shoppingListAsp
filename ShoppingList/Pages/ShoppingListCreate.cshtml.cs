@@ -10,7 +10,7 @@ using ShoppingList.Dtos;
 
 namespace ShoppingList.Pages
 {
-    public class ShoppingListCreate2 : PageModel
+    public class ShoppingListCreate : PageModel
     {
         [BindProperty]
         [Required(ErrorMessage = "Shopping list name is required"),
@@ -29,7 +29,7 @@ namespace ShoppingList.Pages
         private readonly BasicAuthenticationHandler _authenticationHandler;
         private readonly IShoppingListRepo _repository;
 
-        public ShoppingListCreate2(BasicAuthenticationHandler authenticationHandler, IShoppingListRepo repository)
+        public ShoppingListCreate(BasicAuthenticationHandler authenticationHandler, IShoppingListRepo repository)
         {
             _authenticationHandler = authenticationHandler;
             _repository = repository;
