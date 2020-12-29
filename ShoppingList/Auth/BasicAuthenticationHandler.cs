@@ -109,5 +109,8 @@ namespace ShoppingList.Auth
             private static Option<string> ExtractUsername(Option<HttpContext> context) =>
                 context.Map(c => c.User.Identity).Bind(i => i != null ? Some(i.Name!) : None);
         }
+
+        public static bool IsSignedIn(HttpContext context) =>
+            User.ToOptionUser(context).Match(() => false, user => true);
     }
 }

@@ -17,9 +17,6 @@ namespace ShoppingList.Pages
     {
         public bool IsSignedIn => ToOptionUser(HttpContext).Match(() => false, user => true);
 
-        public static bool IsSignedInFunc(HttpContext context) =>
-            ToOptionUser(context).Match(() => false, user => true);
-
         public Logout()
         {
         }

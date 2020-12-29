@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static ShoppingList.Pages.Logout;
+using ShoppingList.Auth;
 
 namespace ShoppingList.Pages
 {
     public class SignInSignOut : PageModel
     {
-        public bool IsSignedIn => IsSignedInFunc(HttpContext);
+        public bool IsSignedIn => BasicAuthenticationHandler.IsSignedIn(HttpContext);
 
         public void OnGet()
         {
