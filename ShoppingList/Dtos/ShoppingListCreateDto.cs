@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.FSharp.Collections;
-using ShoppingData;
 
 namespace ShoppingList.Dtos
 {

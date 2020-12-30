@@ -1,24 +1,19 @@
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShoppingList.Data;
-using ShoppingList.Dtos;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages.Protected
 {
     public class CollectItems : PageModel
     {
-        private readonly IShoppingListRepo _shoppingListRepo;
-
-        public string CurrentUsername { get; private set; }
-        public int CurrentShoppingListId { get; private set; }
-
         public CollectItems(IShoppingListRepo shoppingListRepo)
         {
-            _shoppingListRepo = shoppingListRepo;
-            CurrentUsername = "";
             RefreshUserData();
         }
+
+        public string CurrentUsername { get; private set; } = "";
+        public int CurrentShoppingListId { get; private set; }
 
         public void OnGet() => RefreshUserData();
 

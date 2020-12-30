@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
@@ -13,16 +12,18 @@ namespace ShoppingList.Dtos
 
     public class ItemDataActionDto
     {
-        [Required] public string User { get; set; }
-        [Required] public int ItemId { get; set; }
-        [Required] public int ShoppingListId { get; set; }
-        [Required] public string Password { get; set; }
-        [Required] public int ActionNumber { get; set; }
+        public enum ItemDataActions
+        {
+            AssignItem = 0,
+            ItemToNotFound = 1,
+            ItemToBought = 2,
+            ItemToCancelled = 3
+        }
 
         public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
             new Dictionary<ItemDataActions, ModifyItemDataAction>
             {
-                {(ItemDataActions) 0, ShoppingListModule.listItemToAssigned},
+                {0, ShoppingListModule.listItemToAssigned},
                 {(ItemDataActions) 1, ShoppingListModule.listItemToNotFound},
                 {(ItemDataActions) 2, ShoppingListModule.listItemToBought},
                 {(ItemDataActions) 3, ShoppingListModule.listItemToCancelled}
@@ -36,13 +37,11 @@ namespace ShoppingList.Dtos
             Password = password;
             ActionNumber = actionNumber;
         }
-        
-        public enum ItemDataActions
-        {
-            AssignItem = 0,
-            ItemToNotFound = 1,
-            ItemToBought = 2,
-            ItemToCancelled = 3
-        }
+
+        [Required] public string User { get; set; }
+        [Required] public int ItemId { get; set; }
+        [Required] public int ShoppingListId { get; set; }
+        [Required] public string Password { get; set; }
+        [Required] public int ActionNumber { get; set; }
     }
 }

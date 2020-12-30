@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
 using Microsoft.FSharp.Core;
 using ShoppingData;
 using ShoppingList.Dtos;
@@ -16,17 +10,17 @@ namespace ShoppingList.Entities
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required] public string Name { get; set; } = "";
 
         [Required] public int Quantity { get; set; }
 
-        [Required] public string ItemType { get; set; }
+        [Required] public string ItemType { get; set; } = "";
 
         [Required] public int ShoppingListEntityRefId { get; set; }
-        public ShoppingListEntity ShoppingListEntity { get; set; }
+        public ShoppingListEntity? ShoppingListEntity { get; set; }
 
         public static implicit operator ItemDataEntity(ShoppingItemModule.ItemData itemData) =>
-            new ItemDataEntity
+            new()
             {
                 Id = itemData.Id,
                 Name = itemData.Name,
@@ -59,18 +53,8 @@ namespace ShoppingList.Entities
                 _ => throw new MatchFailureException()
             };
 
-        public static implicit operator ItemDataEntity(ItemDataCreateDto itemData) =>
-            new ItemDataEntity
-            {
-                Id = 0,
-                Name = itemData.Name,
-                Quantity = itemData.Quantity,
-                ItemType = itemData.ItemType,
-                ShoppingListEntityRefId = itemData.ShoppingListId
-            };
-
         public static implicit operator ItemDataEntity(ItemDataCreateDtoNoPassword itemData) =>
-            new ItemDataEntity
+            new()
             {
                 Id = 0,
                 Name = itemData.Name,
@@ -78,9 +62,9 @@ namespace ShoppingList.Entities
                 ItemType = "ToBuy",
                 ShoppingListEntityRefId = itemData.ShoppingListId
             };
-        
+
         public static implicit operator ShoppingItemModule.ItemData(ItemDataEntity entity) =>
-            new ShoppingItemModule.ItemData(entity.Id, entity.Name, entity.Quantity,
+            new(entity.Id, entity.Name, entity.Quantity,
                 ItemTypeFromString(entity.ItemType));
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
@@ -15,16 +14,16 @@ namespace ShoppingList.Pages
         [BindProperty]
         [Required(ErrorMessage = "Shopping list name is required"),
          MaxLength(100)]
-        public string ShoppingListName { get; set; }
+        public string ShoppingListName { get; set; } = "";
 
         [BindProperty]
         [Required(ErrorMessage = "Username is required"),
          MaxLength(100)]
-        public string Username { get; set; }
+        public string Username { get; set; } = "";
 
         [BindProperty]
         [Required, MinLength(8), MaxLength(20)]
-        public string Password { get; set; }
+        public string Password { get; set; } = "";
 
         private readonly BasicAuthenticationHandler _authenticationHandler;
         private readonly IShoppingListRepo _repository;
@@ -51,8 +50,8 @@ namespace ShoppingList.Pages
                                         createDto.Password))
                                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                                 .Run()
-                                .Match(l => Response.Redirect("/Error"),
-                                    r => Response.Redirect("/Protected/AddItems"))));
+                                .Match(_ => Response.Redirect("/Error"),
+                                    _ => Response.Redirect("/Protected/AddItems"))));
         }
     }
 }

@@ -10,7 +10,8 @@ namespace ShoppingList.Utils
             choice switch
             {
                 FSharpChoice<T1, T2>.Choice1Of2 right => Right(right.Item),
-                FSharpChoice<T1, T2>.Choice2Of2 left => Left(left.Item)
+                FSharpChoice<T1, T2>.Choice2Of2 left => Left(left.Item),
+                _ => throw new MatchFailureException()
             };
     }
 }

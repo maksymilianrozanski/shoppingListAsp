@@ -14,7 +14,7 @@ namespace ShoppingList.Dtos
         [Required] public string ItemType { get; set; }
 
         public static implicit operator ItemDataReadDto(ItemDataEntity itemDataEntity) =>
-            new ItemDataReadDto
+            new()
             {
                 Id = itemDataEntity.Id,
                 Name = itemDataEntity.Name,

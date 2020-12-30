@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using FSharpPlus;
 using LaYumba.Functional;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.FSharp.Collections;
 using ShoppingData;
 using ShoppingList.Dtos;
@@ -14,14 +12,14 @@ namespace ShoppingList.Entities
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required] public string Name { get; set; } = "";
 
-        [Required] public string Password { get; set; }
+        [Required] public string Password { get; set; } = "";
 
-        [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; }
+        [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; } = new List<ItemDataEntity>();
 
         public static implicit operator ShoppingListEntity(ShoppingListCreateDto createDto) =>
-            new ShoppingListEntity
+            new()
             {
                 Id = 0,
                 Name = createDto.Name,
@@ -30,28 +28,19 @@ namespace ShoppingList.Entities
             };
 
         public static implicit operator ShoppingListModule.ShoppingList(ShoppingListEntity entity) =>
-            new ShoppingListModule.ShoppingList(entity.Id, entity.Name, entity.Password,
+            new(entity.Id, entity.Name, entity.Password,
                 ListModule.OfSeq(
                     entity.ItemDataEntities.Map(i =>
                         (ShoppingItemModule.ItemData) i))
             );
 
         public static implicit operator ShoppingListEntity(ShoppingListModule.ShoppingList list) =>
-            new ShoppingListEntity
+            new()
             {
                 Id = list.Id,
                 Name = list.Name,
                 Password = list.Password,
                 ItemDataEntities = list.Items.Map(i => (ItemDataEntity) i).ToList()
             };
-
-        public ShoppingListEntity Merge(ShoppingListUpdateDto changed)
-        {
-            this.Name = changed.Name;
-            this.Password = changed.Password;
-            this.ItemDataEntities =
-                changed.Items.Map(i => i.ToItemDataEntity(this.Id, this)).ToList();
-            return this;
-        }
     }
 }

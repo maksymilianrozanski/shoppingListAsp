@@ -1,14 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using LaYumba.Functional;
-using LaYumba.Functional.Option;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using static LaYumba.Functional.F;
-using static ShoppingList.Auth.BasicAuthenticationHandler;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages

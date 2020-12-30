@@ -1,16 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 using LaYumba.Functional;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ShoppingList.Data;
 using static LaYumba.Functional.F;
 
@@ -19,19 +10,10 @@ namespace ShoppingList.Auth
     public class BasicAuthenticationHandler
     {
         private readonly IUserService<UserLoginData, User> _userService;
-        private readonly IShoppingListRepo _shoppingListRepo;
 
-        public BasicAuthenticationHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock,
-            IUserService<UserLoginData, User> userService,
-            IShoppingListRepo shoppingListRepo
-        )
+        public BasicAuthenticationHandler(IUserService<UserLoginData, User> userService)
         {
             _userService = userService;
-            _shoppingListRepo = shoppingListRepo;
         }
 
         public Try<ClaimsPrincipal> CreateClaims(UserLoginData user) =>
@@ -63,8 +45,8 @@ namespace ShoppingList.Auth
 
             public Task<User> Authenticate(UserLoginData t) =>
                 (Task<User>) _shoppingListRepo.PasswordMatchesShoppingList(t.ShoppingListId, t.Password)
-                    .Match(l => Task.FromException(null),
-                        r => Task.FromResult((User) t));
+                    .Match(_ => Task.FromException(null),
+                        _ => Task.FromResult((User) t));
         }
 
         public class UserLoginData
@@ -111,6 +93,6 @@ namespace ShoppingList.Auth
         }
 
         public static bool IsSignedIn(HttpContext context) =>
-            User.ToOptionUser(context).Match(() => false, user => true);
+            User.ToOptionUser(context).Match(() => false, _ => true);
     }
 }

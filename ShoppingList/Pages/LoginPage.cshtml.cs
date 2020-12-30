@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +15,9 @@ namespace ShoppingList.Pages
     {
         private readonly BasicAuthenticationHandler _authenticationHandler;
 
-        [BindProperty] [Required] public string Username { get; set; }
+        [BindProperty] [Required] public string Username { get; set; } = "";
 
-        [BindProperty] [Required] public string Password { get; set; }
+        [BindProperty] [Required] public string Password { get; set; } = "";
 
         [BindProperty] [Required] public int ShoppingListId { get; set; }
 
@@ -36,8 +35,8 @@ namespace ShoppingList.Pages
             _authenticationHandler.CreateClaims(new UserLoginData(ShoppingListId, Username, Password))
                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                 .Run()
-                .Match(l => Response.Redirect("/LoginPage"),
-                    r => Response.Redirect("/"));
+                .Match(_ => Response.Redirect("/LoginPage"),
+                    _ => Response.Redirect("/"));
         }
 
         public void OnPost()

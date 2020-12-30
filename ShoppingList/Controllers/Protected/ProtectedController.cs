@@ -1,6 +1,4 @@
-using System;
 using LaYumba.Functional;
-using LaYumba.Functional.Option;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingData;
@@ -9,12 +7,10 @@ using ShoppingList.Dtos;
 using ShoppingList.Dtos.Protected;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 using static LaYumba.Functional.F;
-using static LaYumba.Functional.Option.None;
-using static ShoppingList.Auth.BasicAuthenticationHandler;
 
 namespace ShoppingList.Controllers.Protected
 {
-    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
+    [Route("[controller]")]
     [Authorize]
     [ApiController]
     public class ProtectedController : ControllerBase
@@ -26,11 +22,8 @@ namespace ShoppingList.Controllers.Protected
             _repository = repository;
         }
 
-        [HttpGet]
-        public ActionResult<string> GetGreetings() => Ok("Welcome to protected controller!");
-
         [HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("modifyItem")]
+        [Route("modifyItem")]
         public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDtoNoPassword itemData) =>
             _repository.ModifyShoppingListItemNoPassword(itemData)
                 .Pipe(ShoppingListModificationResult);
@@ -43,7 +36,6 @@ namespace ShoppingList.Controllers.Protected
                 .Map<ShoppingListReadDto, ActionResult>(Ok)
                 .GetOrElse(NotFound());
 
-        //todo: remove duplicated code
         public ActionResult<ShoppingListReadDto> ShoppingListModificationResult(
             Either<string, ShoppingListReadDto> repositoryOperationResult) =>
             repositoryOperationResult.Match<ActionResult>(

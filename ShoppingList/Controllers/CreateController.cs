@@ -20,7 +20,7 @@ namespace ShoppingList.Controllers
         public ActionResult<string> GetGreetings() => Ok("Welcome!");
 
         [HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("createList")]
+        [Route("createList")]
         public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
         {
             Console.WriteLine("create list endpoint");

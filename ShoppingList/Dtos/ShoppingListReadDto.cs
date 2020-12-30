@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using LaYumba.Functional;
-using ShoppingData;
 using ShoppingList.Entities;
 
 namespace ShoppingList.Dtos
@@ -10,14 +9,14 @@ namespace ShoppingList.Dtos
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required] public string Name { get; set; } = "";
 
-        [Required] public string Password { get; set; }
+        [Required] public string Password { get; set; } = "";
 
-        [Required] public IEnumerable<ItemDataReadDto> Items { get; set; }
+        [Required] public IEnumerable<ItemDataReadDto> Items { get; set; } = new List<ItemDataReadDto>();
 
         public static implicit operator ShoppingListReadDto(ShoppingListEntity entity) =>
-            new ShoppingListReadDto
+            new()
             {
                 Id = entity.Id,
                 Name = entity.Name,
