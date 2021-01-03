@@ -44,4 +44,9 @@ module WaypointsModule =
         routing.SetArcCostEvaluatorOfAllVehicles(transitCallbackIndex)
 
         // Setting first solution heuristic.
-        //todo: add complete implementation
+        let searchParameters =
+            operations_research_constraint_solver.DefaultRoutingSearchParameters()
+
+        searchParameters.FirstSolutionStrategy <- FirstSolutionStrategy.Types.Value.PathCheapestArc
+
+        routing.SolveWithParameters(searchParameters)
