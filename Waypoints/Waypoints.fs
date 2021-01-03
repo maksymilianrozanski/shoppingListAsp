@@ -46,4 +46,15 @@ module WaypointsModule =
 
         searchParameters.FirstSolutionStrategy <- FirstSolutionStrategy.Types.Value.PathCheapestArc
 
-        routing.SolveWithParameters(searchParameters)
+        (routing.SolveWithParameters(searchParameters), routing, manager)
+
+    let describeSolution waypoints =
+        let (assignment, routingModel, manager) = sortWaypoints waypoints
+
+        let rec collectIndices i (indices: List<int>) =
+            if (routingModel.IsEnd(i))
+            then indices
+            else collectIndices (assignment.Value(routingModel.NextVar(i))) (manager.IndexToNode(i) :: indices)
+
+        (collectIndices (routingModel.Start(0)) [])
+        |> List.rev

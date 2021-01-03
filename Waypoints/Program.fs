@@ -8,17 +8,18 @@ module WaypointsMain =
 
     let from whom = sprintf "from %s" whom
 
-    let (waypoints: List<Waypoint>) =
-        [ { name = "point a"; x = 0; y = 0 }
-          { name = "point b"; x = 0; y = 3 }
-          { name = "point c"; x = 10; y = 10 }
-          { name = "point d"; x = 20; y = 30 } ]
+    let waypoints =
+        [ { name = "point a"; x = 0L; y = 0L }
+          { name = "point b"; x = 0L; y = 3L }
+          { name = "point c"; x = 10L; y = 10L }
+          { name = "point d"; x = 20L; y = 30L } ] |> List.toArray
 
     [<EntryPoint>]
     let main argv =
         let message = from "F#" // Call the function
         printfn "Hello world %s" message
 
-        let matrix = createMatrix waypoints
+        let result = describeSolution waypoints
+        printf "result %A" result
 
         0 // return an integer exit code
