@@ -12,10 +12,7 @@ module WaypointsModule =
     let manhattanDistance a b =
         Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y)
 
-    let createMatrix (waypoints: List<Waypoint>) =
-        List.map (fun x -> (List.map (manhattanDistance x)) waypoints) waypoints
-
-    let createMatrix2 (waypoints: Waypoint []) =
+    let createMatrix (waypoints: Waypoint []) =
         Array.map (fun x -> (Array.map (manhattanDistance x)) (waypoints)) (waypoints)
 
     type DataModel(distanceMatrix: int64 [] []) =
@@ -24,7 +21,7 @@ module WaypointsModule =
         member this.depot = 0
 
     let sortWaypoints waypoints =
-        let distanceMatrix: int64 [] [] = createMatrix2 waypoints
+        let distanceMatrix: int64 [] [] = createMatrix waypoints
 
         let dataModel = DataModel(distanceMatrix)
 
