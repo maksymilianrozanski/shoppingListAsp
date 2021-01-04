@@ -61,3 +61,6 @@ module WaypointsModule =
 
     let waypointNamesFromIndices (waypoints: Waypoint []) resultIndices =
         List.map (fun x -> waypoints.[x].name) resultIndices
+
+    let waypointNamesSorted (waypoints: Waypoint []) =
+        waypointNamesFromIndices waypoints (describeSolution waypoints)

@@ -19,10 +19,7 @@ module WaypointsMain =
         let message = from "F#" // Call the function
         printfn "Hello world %s" message
 
-        let result = describeSolution waypoints
-        printf "result %A" result
-        
-        let waypointNames  = waypointNamesFromIndices waypoints result
-        printf "waypoints names in order %A" waypointNames
+        let result = waypointNamesSorted waypoints
+        printf "sorted waypoint names %A" result
 
         0 // return an integer exit code
