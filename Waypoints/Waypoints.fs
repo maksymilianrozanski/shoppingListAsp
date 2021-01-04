@@ -18,7 +18,8 @@ module WaypointsModule =
     type private DataModel(distanceMatrix: int64 [] []) =
         member this.matrix = distanceMatrix
         member this.vehicleNumber = 1
-        member this.depot = 0
+        member this.starts = [| 0 |]
+        member this.ends = [| distanceMatrix.GetLength(0) - 1 |]
 
     let private sortWaypoints waypoints =
         let distanceMatrix: int64 [] [] = createMatrix waypoints
@@ -26,7 +27,10 @@ module WaypointsModule =
         let dataModel = DataModel(distanceMatrix)
 
         let manager: RoutingIndexManager =
-            new RoutingIndexManager(dataModel.matrix.GetLength(0), dataModel.vehicleNumber, dataModel.depot)
+            new RoutingIndexManager(dataModel.matrix.GetLength(0),
+                                    dataModel.vehicleNumber,
+                                    dataModel.starts,
+                                    dataModel.ends)
 
         let routing: RoutingModel = new RoutingModel(manager)
 

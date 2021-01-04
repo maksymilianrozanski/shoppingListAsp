@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListTests", "Shoppi
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Waypoints", "Waypoints\Waypoints.fsproj", "{598E6737-E108-471A-A84E-A3C3C8916B4C}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WaypointsTests", "WaypointsTests\WaypointsTests.fsproj", "{437BB11D-A6FB-4859-9F3A-26567CF1753A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{598E6737-E108-471A-A84E-A3C3C8916B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{598E6737-E108-471A-A84E-A3C3C8916B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{598E6737-E108-471A-A84E-A3C3C8916B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{437BB11D-A6FB-4859-9F3A-26567CF1753A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{437BB11D-A6FB-4859-9F3A-26567CF1753A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{437BB11D-A6FB-4859-9F3A-26567CF1753A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{437BB11D-A6FB-4859-9F3A-26567CF1753A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
