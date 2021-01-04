@@ -9,18 +9,18 @@ module WaypointsModule =
 
     type Waypoint = { name: string; x: int64; y: int64 }
 
-    let manhattanDistance a b =
+    let private manhattanDistance a b =
         Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y)
 
-    let createMatrix (waypoints: Waypoint []) =
+    let private createMatrix (waypoints: Waypoint []) =
         Array.map (fun x -> (Array.map (manhattanDistance x)) (waypoints)) (waypoints)
 
-    type DataModel(distanceMatrix: int64 [] []) =
+    type private DataModel(distanceMatrix: int64 [] []) =
         member this.matrix = distanceMatrix
         member this.vehicleNumber = 1
         member this.depot = 0
 
-    let sortWaypoints waypoints =
+    let private sortWaypoints waypoints =
         let distanceMatrix: int64 [] [] = createMatrix waypoints
 
         let dataModel = DataModel(distanceMatrix)
@@ -48,7 +48,7 @@ module WaypointsModule =
 
         (routing.SolveWithParameters(searchParameters), routing, manager)
 
-    let describeSolution waypoints =
+    let private describeSolution waypoints =
         let (assignment, routingModel, manager) = sortWaypoints waypoints
 
         let rec collectIndices i (indices: List<int>) =
@@ -59,7 +59,7 @@ module WaypointsModule =
         (collectIndices (routingModel.Start(0)) [])
         |> List.rev
 
-    let waypointNamesFromIndices (waypoints: Waypoint []) resultIndices =
+    let private waypointNamesFromIndices (waypoints: Waypoint []) resultIndices =
         List.map (fun x -> waypoints.[x].name) resultIndices
 
     let waypointNamesSorted (waypoints: Waypoint []) =
