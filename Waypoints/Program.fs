@@ -21,5 +21,8 @@ module WaypointsMain =
 
         let result = describeSolution waypoints
         printf "result %A" result
+        
+        let waypointNames  = waypointNamesFromIndices waypoints result
+        printf "waypoints names in order %A" waypointNames
 
         0 // return an integer exit code

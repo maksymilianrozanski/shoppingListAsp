@@ -58,3 +58,6 @@ module WaypointsModule =
 
         (collectIndices (routingModel.Start(0)) [])
         |> List.rev
+
+    let waypointNamesFromIndices (waypoints: Waypoint []) resultIndices =
+        List.map (fun x -> waypoints.[x].name) resultIndices
