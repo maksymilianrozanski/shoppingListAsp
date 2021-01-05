@@ -19,6 +19,8 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.1" />
+      <PackageReference Include="Microsoft.Extensions.ML" Version="1.5.4" />
+      <PackageReference Include="Microsoft.ML" Version="1.5.4" />
     </ItemGroup>
 
     <ItemGroup>
