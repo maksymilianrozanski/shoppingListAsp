@@ -1,9 +1,11 @@
+using GroceryClassification;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.ML;
 using Newtonsoft.Json.Serialization;
 using ShoppingList.Auth;
 using ShoppingList.Data;
@@ -24,6 +26,10 @@ namespace ShoppingList
         {
             services.AddDbContext<ShoppingListDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection")));
+
+            services.AddPredictionEnginePool<GroceryData, GroceryItemPrediction>()
+                .FromFile(modelName: "GroceryModel", filePath: "MLModels/model.zip",
+                    watchForChanges: false);
 
             services
                 .AddTransient<

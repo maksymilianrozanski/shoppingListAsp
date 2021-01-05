@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GroceryClassification\GroceryClassification.csproj" />
       <ProjectReference Include="..\ShoppingData\ShoppingData.fsproj" />
     </ItemGroup>
 
@@ -26,6 +27,12 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Pages\Shared\_Layout.cshtml" />
       <_ContentIncludedByDefault Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="MLModels\model.zip">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 

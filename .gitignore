@@ -41,3 +41,4 @@ msbuild.wrn
 
 .idea/.idea.ShoppingList
 /package-lock.json
+/ShoppingList/MLModels/
