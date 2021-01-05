@@ -31,8 +31,8 @@ namespace GroceryClassification
         public T2 PredictLabel(T1 data)
         {
             ITransformer loadedModel = _mlContext.Model.Load(_modelPath, out var modelInputSchema);
-            var predEngine = _mlContext.Model.CreatePredictionEngine<T1, T2>(loadedModel);
-            return predEngine.Predict(data);
+            return _mlContext.Model.CreatePredictionEngine<T1, T2>(loadedModel)
+                .Predict(data);
         }
 
         private static IEstimator<ITransformer> ProcessData(MLContext mlContext) =>
