@@ -17,7 +17,7 @@ namespace ShoppingList.Controllers
 
         [HttpPost]
         [Route("predictItem")]
-        public ActionResult<string> Post(GroceryData input)
+        public ActionResult<string> Post(GroceryToPredict input)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
