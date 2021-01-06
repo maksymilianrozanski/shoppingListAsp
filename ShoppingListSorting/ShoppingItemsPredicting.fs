@@ -23,10 +23,10 @@ module ShoppingItemsPredicting =
     let predictUsingEngine (predictionEngine: PredictionEnginePool<GroceryData, GroceryItemPrediction>) itemName =
         predictionEngine.Predict(GroceryData.op_Implicit (GroceryToPredict(itemName)))
 
-    let addPredictionToItemData (predictingFun: ItemData -> string) (itemData: ItemData) =
+    let private addPredictionToItemData (predictingFun: ItemData -> string) (itemData: ItemData) =
         (itemData, PredictedShopsDepartment(predictingFun (itemData)))
 
-    let predictShopDepartments (predictingFun: ItemData -> string) items =
+    let private predictShopDepartments (predictingFun: ItemData -> string) items =
         List.map (addPredictionToItemData predictingFun) items
 
     let predictAllItems (predictingFun: ItemData -> string) (shoppingList: ShoppingList) =
