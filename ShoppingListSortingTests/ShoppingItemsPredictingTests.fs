@@ -21,7 +21,7 @@ let ``should add predicted values to shopping list`` () =
     let predictSingleItemMock (item: ItemData) =
         if (item.Id = 0) then "JUICES" else "VEGETABLES"
 
-    let shoppingList =
+    let shoppingListInput =
         { Id = 0
           Name = "My-shopping-list"
           Password = "pass"
@@ -30,38 +30,33 @@ let ``should add predicted values to shopping list`` () =
                   Name = "Orange juice"
                   Quantity = 1
                   ItemType = ToBuy }
-
                 { Id = 1
                   Name = "Carrot"
                   Quantity = 2
                   ItemType = ToBuy } ] }
 
-    let zipped1 =
-        ({ Id = 0
-           Name = "Orange juice"
-           Quantity = 1
-           ItemType = ItemType.ToBuy },
-         PredictedShopsDepartment("JUICES"))
-
-    let zipped2: ItemDataWithPredictedType =
-        ({ Id = 1
-           Name = "Carrot"
-           Quantity = 2
-           ItemType = ItemType.ToBuy },
-         PredictedShopsDepartment("VEGETABLES"))
-
-    let itemsTransformed: List<ItemDataWithPredictedType> =
-        ResizeArray<ItemDataWithPredictedType> [ zipped1; zipped2 ]
-
-    let expected: ShoppingListWithDepartment =
+    let expected =
         { Id = 0
           Name = "My-shopping-list"
           Password = "pass"
           ShopName = "todo"
-          Items = itemsTransformed }
+          Items =
+              ResizeArray<ItemDataWithPredictedType>
+                  [ ({ Id = 0
+                       Name = "Orange juice"
+                       Quantity = 1
+                       ItemType = ItemType.ToBuy },
+                     PredictedShopsDepartment("JUICES"))
+                    ({ Id = 1
+                       Name = "Carrot"
+                       Quantity = 2
+                       ItemType = ItemType.ToBuy },
+                     PredictedShopsDepartment("VEGETABLES")) ] }
 
     let result =
-        predictAllItems predictSingleItemMock shoppingList
+        predictAllItems predictSingleItemMock shoppingListInput
 
-    //todo: add assertion
-    Assert.AreEqual(2, 2)
+    Assert.AreEqual(expected.Id, result.Id)
+    Assert.AreEqual(expected.Name, result.Name)
+    Assert.AreEqual(expected.ShopName, result.ShopName)
+    Assert.AreEqual(expected.Items, result.Items)
