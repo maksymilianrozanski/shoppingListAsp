@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <Compile Include="ShoppingItemsPredictingTests.fs" />
+        <Compile Include="ShoppingItemsAddWaypointsTests.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

@@ -7,12 +7,14 @@
 
     <ItemGroup>
         <Compile Include="ShoppingItemsPredicting.fs" />
+        <Compile Include="ShoppingItemsAddWaypoints.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\GroceryClassification\GroceryClassification.csproj" />
       <ProjectReference Include="..\ShoppingData\ShoppingData.fsproj" />
+      <ProjectReference Include="..\ShoppingList\ShoppingList.csproj" />
       <ProjectReference Include="..\Waypoints\Waypoints.fsproj" />
     </ItemGroup>
 
