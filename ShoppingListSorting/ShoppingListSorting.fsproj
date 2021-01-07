@@ -8,6 +8,7 @@
     <ItemGroup>
         <Compile Include="ShoppingItemsPredicting.fs" />
         <Compile Include="ShoppingItemsAddWaypoints.fs" />
+        <Compile Include="WaypointsOrder.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

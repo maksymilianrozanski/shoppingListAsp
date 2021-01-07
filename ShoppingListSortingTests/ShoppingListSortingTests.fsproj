@@ -16,6 +16,7 @@
     <ItemGroup>
         <Compile Include="ShoppingItemsPredictingTests.fs" />
         <Compile Include="ShoppingItemsAddWaypointsTests.fs" />
+        <Compile Include="WaypointsOrderTests.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
