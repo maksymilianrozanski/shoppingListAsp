@@ -101,13 +101,13 @@ let ``should return list of waypoints sorted in expected order`` () =
     let expected1 = [ "JUICES"; "CHEESE" ]
 
     let result1 =
-        sortWaypoints (addWaypointsToShoppingList shoppingListWithDepartment waypoints1)
+        sortedWaypointNames (addWaypointsToShoppingList shoppingListWithDepartment waypoints1)
 
     Assert.AreEqual(expected1, result1)
 
     let expected2 = [ "CHEESE"; "JUICES" ]
 
     let result2 =
-        sortWaypoints (addWaypointsToShoppingList shoppingListWithDepartment waypoints2)
+        sortedWaypointNames (addWaypointsToShoppingList shoppingListWithDepartment waypoints2)
 
     Assert.AreEqual(expected2, result2)

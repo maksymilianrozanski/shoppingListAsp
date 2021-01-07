@@ -20,7 +20,7 @@ module WaypointsOrder =
         List.zip items ({ 0 .. items.Length } |> Seq.toList)
         |> dict
 
-    let sortWaypoints (shoppingList: ShoppingListWithWaypoints) =
+    let sortedWaypointNames (shoppingList: ShoppingListWithWaypoints) =
         match shoppingList.StartAndCheckout with
         | (start, checkout) ->
             [ start ]
