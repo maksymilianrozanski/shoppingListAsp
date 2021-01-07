@@ -33,7 +33,6 @@ module WaypointsOrder =
         // drops first item which is starting point
         |> fun x -> x.Tail
 
-    //todo: add test case
     let sortShoppingListItems (shoppingList: ShoppingListWithWaypoints) =
         let dictionary =
             sortedWaypointNames shoppingList

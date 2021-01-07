@@ -136,3 +136,128 @@ let ``should return ShoppingList with sorted items`` () =
     let result = sortShoppingListItems shoppingList
 
     Assert.AreEqual(expected, result)
+
+[<Test>]
+let ``should return ShoppingList with sorted items, when contains multiple items at one waypoint`` () =
+    let shoppingList: ShoppingListWithWaypoints =
+        { Id = 0
+          Name = "My-shopping-list"
+          Password = "pass"
+          ShopName = "todo"
+          Items =
+              [ ({ Id = 0
+                   Name = "Orange juice"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("JUICES"),
+                 Some(waypoints1.Waypoints.Item(0)))
+
+                ({ Id = 4
+                   Name = "Pineapple"
+                   Quantity = 3
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("FRUITS"),
+                 None)
+
+                ({ Id = 3
+                   Name = "Apple juice"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("JUICES"),
+                 Some(waypoints1.Waypoints.Item(0)))
+
+                ({ Id = 5
+                   Name = "Goat cheese"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("CHEESE"),
+                 Some(waypoints1.Waypoints.Item(2)))
+
+                ({ Id = 1
+                   Name = "Carrot"
+                   Quantity = 2
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("VEGETABLES"),
+                 None)
+
+                ({ Id = 2
+                   Name = "Cheddar cheese"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("CHEESE"),
+                 Some(waypoints1.Waypoints.Item(2))) ]
+          StartAndCheckout = (waypoints1.Start, waypoints1.Checkout) }
+
+    let result = sortShoppingListItems shoppingList
+
+    let resultItems = result.Items
+
+    let expected0 =
+        { Id = 0
+          Name = "Orange juice"
+          Quantity = 1
+          ItemType = ItemType.ToBuy }
+
+    let expected1 =
+        { Id = 3
+          Name = "Apple juice"
+          Quantity = 1
+          ItemType = ItemType.ToBuy }
+
+    let expected2 =
+        { Id = 5
+          Name = "Goat cheese"
+          Quantity = 1
+          ItemType = ItemType.ToBuy }
+
+    let expected3 =
+        { Id = 2
+          Name = "Cheddar cheese"
+          Quantity = 1
+          ItemType = ItemType.ToBuy }
+
+    let expected4 =
+        { Id = 4
+          Name = "Pineapple"
+          Quantity = 3
+          ItemType = ItemType.ToBuy }
+
+    let expected5 =
+        { Id = 1
+          Name = "Carrot"
+          Quantity = 2
+          ItemType = ItemType.ToBuy }
+
+    Assert.AreEqual(shoppingList.Items.Length, resultItems.Length)
+
+    Assert.True
+        (expected0 = resultItems.[0]
+         || expected1 = resultItems.[0],
+         "index-0 and index-1 items are expected to be matched to 'JUICES' waypoint")
+
+    Assert.True
+        (expected0 = resultItems.[1]
+         || expected1 = resultItems.[1],
+         "index-0 and index-1 items are expected to be matched to 'JUICES' waypoint")
+
+    Assert.True
+        (expected2 = resultItems.[2]
+         || expected3 = resultItems.[2],
+         "index-2 and index-3 items are expected to be matched to 'CHEESE' waypoint")
+
+    Assert.True
+        (expected2 = resultItems.[3]
+         || expected3 = resultItems.[3],
+         "index-2 and index-3 items are expected to be matched to 'CHEESE' waypoint")
+
+    Assert.True
+        (expected4 = resultItems.[4]
+         || expected5 = resultItems.[4],
+         "index-4 and index-5 items not matched to any waypoint are expected to be placed at the end of the list")
+
+    Assert.True
+        (expected4 = resultItems.[5]
+         || expected5 = resultItems.[5],
+         "index-4 and index-5 items not matched to any waypoint are expected to be placed at the end of the list")
+
+    Assert.AreEqual(resultItems.Length, (List.distinct resultItems).Length, "all items in the list should be unique")
