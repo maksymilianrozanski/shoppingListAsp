@@ -110,7 +110,8 @@ let ``should pick waypoints for all items`` () =
                    Quantity = 1
                    ItemType = ItemType.ToBuy },
                  PredictedShopsDepartment("CHEESE"),
-                 Some(waypoints.Waypoints.Item(2))) ] }
+                 Some(waypoints.Waypoints.Item(2))) ]
+          StartAndCheckout = (waypoints.Start, waypoints.Checkout) }
 
     let result =
         addWaypointsToShoppingList shoppingList waypoints
