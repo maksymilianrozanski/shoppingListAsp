@@ -13,7 +13,7 @@ open WaypointsOrder
 [<SetUp>]
 let Setup () = ()
 
-let waypoints =
+let waypoints1 =
     ShopWaypointsReadDto
         ("big-market",
          { name = "start"; x = 0L; y = 0L },
@@ -36,7 +36,7 @@ let shoppingList: ShoppingListWithWaypoints =
                Quantity = 1
                ItemType = ItemType.ToBuy },
              PredictedShopsDepartment("JUICES"),
-             Some(waypoints.Waypoints.Item(0)))
+             Some(waypoints1.Waypoints.Item(0)))
             ({ Id = 1
                Name = "Carrot"
                Quantity = 2
@@ -48,14 +48,14 @@ let shoppingList: ShoppingListWithWaypoints =
                Quantity = 1
                ItemType = ItemType.ToBuy },
              PredictedShopsDepartment("CHEESE"),
-             Some(waypoints.Waypoints.Item(2))) ]
-      StartAndCheckout = (waypoints.Start, waypoints.Checkout) }
+             Some(waypoints1.Waypoints.Item(2))) ]
+      StartAndCheckout = (waypoints1.Start, waypoints1.Checkout) }
 
 [<Test>]
 let ``should return list of distinct waypoints`` () =
     let expected =
-        [ waypoints.Waypoints.Item(0)
-          waypoints.Waypoints.Item(2) ]
+        [ waypoints1.Waypoints.Item(0)
+          waypoints1.Waypoints.Item(2) ]
 
     let result = distinctAndDefinedWaypoints shoppingList
 
@@ -63,6 +63,51 @@ let ``should return list of distinct waypoints`` () =
 
 [<Test>]
 let ``should return list of waypoints sorted in expected order`` () =
-    let expected = [ "JUICES"; "CHEESE" ]
-    let result = sortWaypoints shoppingList
-    Assert.AreEqual(expected, result)
+    let shoppingListWithDepartment: ShoppingListWithDepartment =
+        { Id = 0
+          Name = "My-shopping-list"
+          Password = "pass"
+          ShopName = "todo"
+          Items =
+              [ ({ Id = 0
+                   Name = "Orange juice"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("JUICES"))
+                ({ Id = 1
+                   Name = "Carrot"
+                   Quantity = 2
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("VEGETABLES"))
+                ({ Id = 2
+                   Name = "Cheddar cheese"
+                   Quantity = 1
+                   ItemType = ItemType.ToBuy },
+                 PredictedShopsDepartment("CHEESE")) ]
+              |> ResizeArray }
+
+    let waypoints2 =
+        ShopWaypointsReadDto
+            ("big-market",
+             { name = "start"; x = 0L; y = 0L },
+             { name = "checkout"
+               x = 100L
+               y = 100L },
+             [ { name = "JUICES"; x = 30L; y = 30L }
+               { name = "BREAD"; x = 20L; y = 20L }
+               { name = "CHEESE"; x = 10L; y = 10L } ]
+             |> ResizeArray)
+
+    let expected1 = [ "JUICES"; "CHEESE" ]
+
+    let result1 =
+        sortWaypoints (addWaypointsToShoppingList shoppingListWithDepartment waypoints1)
+
+    Assert.AreEqual(expected1, result1)
+
+    let expected2 = [ "CHEESE"; "JUICES" ]
+
+    let result2 =
+        sortWaypoints (addWaypointsToShoppingList shoppingListWithDepartment waypoints2)
+
+    Assert.AreEqual(expected2, result2)

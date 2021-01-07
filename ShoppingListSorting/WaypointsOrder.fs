@@ -28,4 +28,5 @@ module WaypointsOrder =
               @ [ checkout ]
         |> Array.ofList
         |> waypointNamesSorted
+        // drops first item which is starting point
         |> fun x -> x.Tail
