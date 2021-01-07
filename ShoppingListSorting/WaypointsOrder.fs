@@ -19,7 +19,7 @@ module WaypointsOrder =
         |> List.choose id
 
     let private indexDictionary (items: list<'a>) =
-        List.zip items ({ 0 .. items.Length } |> Seq.toList)
+        List.zip items ({ 1 .. items.Length } |> Seq.toList)
         |> dict
 
     let sortedWaypointNames (shoppingList: ShoppingListWithWaypoints) =

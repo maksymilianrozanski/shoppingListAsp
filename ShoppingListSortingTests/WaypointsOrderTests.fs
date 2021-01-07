@@ -3,6 +3,7 @@ module ShoppingListSortingTests.WaypointsOrderTests
 open NUnit.Framework
 open NUnit.Framework
 open ShoppingData.ShoppingItemModule
+open ShoppingData.ShoppingListModule
 open ShoppingList.Dtos
 open ShoppingListSorting.ShoppingItemsPredicting
 open ShoppingListSorting
@@ -111,3 +112,27 @@ let ``should return list of waypoints sorted in expected order`` () =
         sortedWaypointNames (addWaypointsToShoppingList shoppingListWithDepartment waypoints2)
 
     Assert.AreEqual(expected2, result2)
+
+[<Test>]
+let ``should return ShoppingList with sorted items`` () =
+    let expected: ShoppingList =
+        { Id = shoppingList.Id
+          Name = shoppingList.Name
+          Password = shoppingList.Password
+          Items =
+              [ { Id = 0
+                  Name = "Orange juice"
+                  Quantity = 1
+                  ItemType = ItemType.ToBuy }
+                { Id = 2
+                  Name = "Cheddar cheese"
+                  Quantity = 1
+                  ItemType = ItemType.ToBuy }
+                { Id = 1
+                  Name = "Carrot"
+                  Quantity = 2
+                  ItemType = ItemType.ToBuy } ] }
+
+    let result = sortShoppingListItems shoppingList
+
+    Assert.AreEqual(expected, result)
