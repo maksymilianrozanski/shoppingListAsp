@@ -25,6 +25,7 @@ namespace ShoppingList.Pages
         [Required, MinLength(8), MaxLength(20)]
         public string Password { get; set; } = "";
 
+        [BindProperty] [MaxLength(100)] public string ShopName { get; set; } = "";
         private readonly BasicAuthenticationHandler _authenticationHandler;
         private readonly IShoppingListRepo _repository;
 
@@ -41,7 +42,7 @@ namespace ShoppingList.Pages
         public void OnPost()
         {
             if (ModelState.IsValid)
-                new ShoppingListCreateDto(ShoppingListName, Password).Pipe(createDto =>
+                new ShoppingListCreateDto(ShoppingListName, Password, ShopName).Pipe(createDto =>
                     _repository.CreateShoppingList(createDto)
                         .Map(readDto =>
                             _authenticationHandler

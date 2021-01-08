@@ -27,8 +27,7 @@ namespace ShoppingList.Data
         private readonly ShoppingListDbContext _context;
         private readonly IWaypointsRepo _waypointsRepo;
         private readonly PredictionEnginePool<GroceryData, GroceryItemPrediction> _predictionEnginePool;
-
-
+        
         public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo,
             GroceryPredictionPool predictionEnginePool)
         {

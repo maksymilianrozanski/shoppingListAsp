@@ -26,6 +26,7 @@ namespace ShoppingList.Entities
                 Id = 0,
                 Name = createDto.Name,
                 Password = createDto.Password,
+                ShopName = createDto.ShopName,
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 
