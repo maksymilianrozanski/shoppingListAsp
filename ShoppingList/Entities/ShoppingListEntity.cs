@@ -16,6 +16,8 @@ namespace ShoppingList.Entities
 
         [Required] public string Password { get; set; } = "";
 
+        [Required] public string ShopName { get; set; } = "";
+
         [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; } = new List<ItemDataEntity>();
 
         public static implicit operator ShoppingListEntity(ShoppingListCreateDto createDto) =>
@@ -28,7 +30,7 @@ namespace ShoppingList.Entities
             };
 
         public static implicit operator ShoppingListModule.ShoppingList(ShoppingListEntity entity) =>
-            new(entity.Id, entity.Name, entity.Password,
+            new(entity.Id, entity.Name, entity.Password, entity.ShopName,
                 ListModule.OfSeq(
                     entity.ItemDataEntities.Map(i =>
                         (ShoppingItemModule.ItemData) i))

@@ -49,8 +49,9 @@ module WaypointsOrder =
             |> List.map (fun i ->
                 match i with
                 | (itemData, _, _) -> itemData)
-     
+
         { Name = shoppingList.Name
           Password = shoppingList.Password
           Items = sortedItems
+          ShopName = shoppingList.ShopName
           Id = shoppingList.Id }

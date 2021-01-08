@@ -10,13 +10,15 @@ module ShoppingListModule =
         { Id: int
           Name: string
           Password: string
+          ShopName: string
           Items: List<ItemData> }
 
     let emptyShoppingList name id password =
         { Name = name
           Password = password
           Items = List.empty
-          Id = id }
+          Id = id
+          ShopName = "" }
 
     let executeIfPassword f (list: ShoppingList) password =
         if (list.Password = password) then Choice.flatten (Choice1Of2(f (list))) else Choice2Of2(IncorrectPassword)

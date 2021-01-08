@@ -33,8 +33,7 @@ module ShoppingItemsPredicting =
         { Id = shoppingList.Id
           Name = shoppingList.Name
           Password = shoppingList.Password
-          //todo: add ShopName field to ShoppingList
-          ShopName = "todo"
+          ShopName = shoppingList.ShopName
           Items =
               predictShopDepartments predictingFun shoppingList.Items
               |> ResizeArray }

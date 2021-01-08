@@ -119,6 +119,7 @@ let ``should return ShoppingList with sorted items`` () =
         { Id = shoppingList.Id
           Name = shoppingList.Name
           Password = shoppingList.Password
+          ShopName = shoppingList.ShopName
           Items =
               [ { Id = 0
                   Name = "Orange juice"

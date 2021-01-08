@@ -21,10 +21,11 @@ let ``should add predicted values to shopping list`` () =
     let predictSingleItemMock (item: ItemData) =
         if (item.Id = 0) then "JUICES" else "VEGETABLES"
 
-    let shoppingListInput =
+    let shoppingListInput: ShoppingList =
         { Id = 0
           Name = "My-shopping-list"
           Password = "pass"
+          ShopName = "shopName"
           Items =
               [ { Id = 0
                   Name = "Orange juice"
@@ -39,7 +40,7 @@ let ``should add predicted values to shopping list`` () =
         { Id = 0
           Name = "My-shopping-list"
           Password = "pass"
-          ShopName = "todo"
+          ShopName = "shopName"
           Items =
               ResizeArray<ItemDataWithPredictedType>
                   [ ({ Id = 0

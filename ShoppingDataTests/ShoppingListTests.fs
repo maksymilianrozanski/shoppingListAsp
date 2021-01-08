@@ -60,7 +60,8 @@ let ``should return list with item added`` () =
         { Name = "myList"
           Password = "pass"
           Items = [ milk ]
-          Id = 11 }
+          Id = 11
+          ShopName = "shopName" }
 
     let expected =
         { initial with
@@ -74,7 +75,8 @@ let threeItemList =
     { Name = "myList"
       Password = "pass"
       Items = [ milk; coffee; chocolate ]
-      Id = 11 }
+      Id = 11
+      ShopName = "shopName" }
 
 [<Test>]
 let ``should update coffee item`` () =

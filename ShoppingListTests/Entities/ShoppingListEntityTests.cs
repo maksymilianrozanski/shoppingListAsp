@@ -16,6 +16,7 @@ namespace ShoppingListTests.Entities
                 Id = 10,
                 Name = "Some list",
                 Password = "pass",
+                ShopName = "shopName",
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 
@@ -63,7 +64,7 @@ namespace ShoppingListTests.Entities
                     ShoppingListEntity = shoppingListEntity
                 }
             };
-            var expected = new ShoppingListModule.ShoppingList(10, "Some list", "pass",
+            var expected = new ShoppingListModule.ShoppingList(10, "Some list", "pass", "shopName",
                 ListModule.OfSeq(convertedItemData));
 
             Assert.AreEqual(expected, (ShoppingListModule.ShoppingList) shoppingListEntity);
@@ -79,6 +80,7 @@ namespace ShoppingListTests.Entities
                 Id = 10,
                 Name = "Some list",
                 Password = "pass",
+                ShopName = "shopName",
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 
@@ -127,7 +129,7 @@ namespace ShoppingListTests.Entities
                 }
             };
 
-            var withOtherItem = new ShoppingListModule.ShoppingList(10, "Some list", "pass",
+            var withOtherItem = new ShoppingListModule.ShoppingList(10, "Some list", "pass", "shopName",
                 ListModule.OfSeq(otherItems));
 
             Assert.AreNotEqual(withOtherItem, (ShoppingListModule.ShoppingList) shoppingListEntity);
