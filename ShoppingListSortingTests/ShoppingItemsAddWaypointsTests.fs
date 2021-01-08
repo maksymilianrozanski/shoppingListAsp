@@ -1,18 +1,12 @@
 module ShoppingListSortingTests.ShoppingItemsAddWaypointsTests
 
 
-open FSharpPlus
 open NUnit.Framework
-open NUnit.Framework
-open NUnit.Framework
-open NUnit.Framework.Internal
+open SharedTypes.Dto
 open ShoppingData
-open ShoppingList.Dtos
 open ShoppingListSorting
 open ShoppingItemModule
-open ShoppingListModule
 open ShoppingItemsPredicting
-open System.Collections.Generic
 open ShoppingListSorting.ShoppingItemsAddWaypoints
 open Waypoints.WaypointsModule
 

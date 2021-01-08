@@ -1,9 +1,8 @@
 namespace ShoppingListSorting
 
-open System
 open FSharpPlus
+open SharedTypes.Dto
 open ShoppingData.ShoppingItemModule
-open ShoppingList.Dtos
 open ShoppingListSorting.ShoppingItemsPredicting
 open Waypoints.WaypointsModule
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using static Waypoints.WaypointsModule;
 
-namespace ShoppingList.Dtos
+namespace SharedTypes.Dto
 {
     public class ShopWaypointsReadDto
     {

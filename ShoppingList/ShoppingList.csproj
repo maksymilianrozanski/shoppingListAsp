@@ -8,7 +8,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GroceryClassification\GroceryClassification.csproj" />
+      <ProjectReference Include="..\SharedTypes\SharedTypes.csproj" />
       <ProjectReference Include="..\ShoppingData\ShoppingData.fsproj" />
+      <ProjectReference Include="..\ShoppingListSorting\ShoppingListSorting.fsproj" />
       <ProjectReference Include="..\Waypoints\Waypoints.fsproj" />
     </ItemGroup>
 

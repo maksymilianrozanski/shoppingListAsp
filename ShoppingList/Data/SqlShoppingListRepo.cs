@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using GroceryClassification;
 using LaYumba.Functional;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.ML;
 using Microsoft.FSharp.Core;
+using SharedTypes.Dto;
 using ShoppingData;
 using ShoppingList.Dtos;
 using ShoppingList.Dtos.Protected;
@@ -12,6 +15,9 @@ using static LaYumba.Functional.F;
 using ShoppingListUpdatedChoice1Of2 =
     Microsoft.FSharp.Core.FSharpChoice<ShoppingData.ShoppingListModule.ShoppingList,
         ShoppingData.ShoppingListErrors.ShoppingListErrors>.Choice1Of2;
+using GroceryPredictionPool =
+    Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
+        GroceryClassification.GroceryItemPrediction>;
 
 namespace ShoppingList.Data
 {
@@ -19,11 +25,15 @@ namespace ShoppingList.Data
     {
         private readonly ShoppingListDbContext _context;
         private readonly IWaypointsRepo _waypointsRepo;
+        private readonly PredictionEnginePool<GroceryData, GroceryItemPrediction> _predictionEnginePool;
 
-        public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo)
+
+        public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo,
+            GroceryPredictionPool predictionEnginePool)
         {
             _context = context;
             _waypointsRepo = waypointsRepo;
+            _predictionEnginePool = predictionEnginePool;
         }
 
         public Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList) =>
@@ -52,6 +62,16 @@ namespace ShoppingList.Data
                         (Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>)
                         ((ShoppingListModule.ShoppingList) shoppingListEntity, waypointsDto)
                     ).GetOrElse(new ShopWaypointsNotFound());
+
+        private static Func<GroceryPredictionPool, ShoppingItemModule.ItemData, string> PredictionFunc =>
+            (pool, itemData) => pool.Predict(modelName: "GroceryModel", example: new GroceryToPredict(itemData.Name))
+                .FoodTypeLabel;
+
+        private ShoppingListModule.ShoppingList SortToOptimalOrder(
+            (ShoppingListModule.ShoppingList, ShopWaypointsReadDto) listWithWaypoints) =>
+            ShoppingListSorting.WaypointsOrder.sortShoppingList
+            (FuncConvert.FromFunc(PredictionFunc.Apply(_predictionEnginePool)),
+                listWithWaypoints.Item2, listWithWaypoints.Item1);
 
         private sealed class ShopWaypointsNotFound : Error
         {
