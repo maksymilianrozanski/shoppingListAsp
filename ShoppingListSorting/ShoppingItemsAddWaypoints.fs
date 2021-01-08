@@ -34,7 +34,7 @@ module ShoppingItemsAddWaypoints =
     let private pickWaypoints (shoppingList: ShoppingListWithDepartment) (waypoints: ShopWaypointsReadDto) =
         List.map (addWaypointToItemData waypoints) (shoppingList.Items |> Seq.toList)
 
-    let addWaypointsToShoppingList (shoppingList: ShoppingListWithDepartment) (waypoints: ShopWaypointsReadDto) =
+    let addWaypointsToShoppingList (waypoints: ShopWaypointsReadDto) (shoppingList: ShoppingListWithDepartment) =
         { Id = shoppingList.Id
           Name = shoppingList.Name
           Password = shoppingList.Password

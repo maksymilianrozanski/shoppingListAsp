@@ -114,6 +114,6 @@ let ``should pick waypoints for all items`` () =
           StartAndCheckout = (waypoints.Start, waypoints.Checkout) }
 
     let result =
-        addWaypointsToShoppingList shoppingList waypoints
+        addWaypointsToShoppingList waypoints shoppingList
 
     Assert.AreEqual(expected, result)

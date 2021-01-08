@@ -1,12 +1,13 @@
 namespace ShoppingListSorting
 
 open System
-open FSharpPlus.Control
+open FSharpPlus
 open ShoppingData.ShoppingListModule
 open ShoppingListSorting.ShoppingItemsAddWaypoints
 
 open Waypoints
 open WaypointsModule
+open ShoppingItemsPredicting
 
 module WaypointsOrder =
 
@@ -50,8 +51,14 @@ module WaypointsOrder =
                 match i with
                 | (itemData, _, _) -> itemData)
 
+
         { Name = shoppingList.Name
           Password = shoppingList.Password
           Items = sortedItems
           ShopName = shoppingList.ShopName
-          Id = shoppingList.Id }
+          Id = shoppingList.Id }: ShoppingList
+
+    let sortShoppingList predictingFun waypoints shoppingList =
+        predictAllItems predictingFun shoppingList
+        |> addWaypointsToShoppingList waypoints
+        |> sortShoppingListItems
