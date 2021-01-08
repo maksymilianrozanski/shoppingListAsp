@@ -18,10 +18,12 @@ namespace ShoppingList.Data
     public class SqlShoppingListRepo : IShoppingListRepo
     {
         private readonly ShoppingListDbContext _context;
+        private readonly IWaypointsRepo _waypointsRepo;
 
-        public SqlShoppingListRepo(ShoppingListDbContext context)
+        public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo)
         {
             _context = context;
+            _waypointsRepo = waypointsRepo;
         }
 
         public Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList) =>
