@@ -12,6 +12,7 @@ using ShoppingList.Dtos.Protected;
 using ShoppingList.Entities;
 using ShoppingList.Utils;
 using static LaYumba.Functional.F;
+using static ShoppingData.ShoppingListModule;
 using ShoppingListUpdatedChoice1Of2 =
     Microsoft.FSharp.Core.FSharpChoice<ShoppingData.ShoppingListModule.ShoppingList,
         ShoppingData.ShoppingListErrors.ShoppingListErrors>.Choice1Of2;
@@ -41,17 +42,34 @@ namespace ShoppingList.Data
                 .Bind(i => SaveChanges() ? Some(i) : null!)
                 .Map(i => (ShoppingListReadDto) i);
 
-        public Option<ShoppingListReadDto> GetShoppingListEntityById(int id) =>
+        private Option<ShoppingListEntity> GetShoppingListById(int id) =>
             _context.ShoppingListEntities
                 .Include(i => i.ItemDataEntities)
                 .FirstOrDefault(i => i.Id == id)
-                .Pipe(i => (Option<ShoppingListEntity>) i!)
+                .Pipe(i => (Option<ShoppingListEntity>) i!);
+
+        public Option<ShoppingListReadDto> GetShoppingListReadDtoById(int id) =>
+            GetShoppingListById(id)
                 .Map(i => (ShoppingListReadDto) i);
 
-        private static Option<Either<ShoppingListEntity, ShoppingListEntity>>
+        public Option<ShoppingListReadDto> GetShoppingListReadDtoByIdWithSorting(int id) =>
+            GetShoppingListById(id)
+                .Map(entity => ShouldTryFindWaypoints(entity)
+                    .Map(k => MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
+                        .Map(SortToOptimalOrder)
+                        .Map(i => (ShoppingListEntity) i)
+                        .Match(_ =>
+                        {
+                            Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
+                            return entity;
+                        }, r => r)
+                    ).GetOrElse(entity))
+                .Map(i => (ShoppingListReadDto) i);
+
+        private static Option<ShoppingListEntity>
             ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
             shoppingListEntity.Map(i =>
-                i.ShopName.Length > 0 ? (Either<ShoppingListEntity, ShoppingListEntity>) Right(i) : Left(i));
+                i.ShopName.Length > 0 ? i : null!);
 
         private static Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>
             MatchWaypointsToShoppingList(ShoppingListEntity shoppingListEntity,
@@ -80,7 +98,7 @@ namespace ShoppingList.Data
 
         public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password) =>
-            GetShoppingListEntityById(shoppingListId)
+            GetShoppingListReadDtoById(shoppingListId)
                 .Map<ShoppingListReadDto, Either<ShoppingListErrors.ShoppingListErrors, int>>(i =>
                 {
                     if (i.Password == password) return Right(i.Id);
@@ -98,7 +116,7 @@ namespace ShoppingList.Data
                 .Map(pair =>
                 {
                     var (itemDataCreateDto, shoppingListEntity) = pair;
-                    var result = ShoppingListModule.addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
+                    var result = addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
                     return (shoppingListEntity, result);
                 })
                 .Map(i => (i.shoppingListEntity, i.result).ToTuple())

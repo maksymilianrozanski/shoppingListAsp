@@ -9,7 +9,7 @@ namespace ShoppingList.Data
     {
         Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
 
-        Option<ShoppingListReadDto> GetShoppingListEntityById(int id);
+        Option<ShoppingListReadDto> GetShoppingListReadDtoById(int id);
 
         Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password);

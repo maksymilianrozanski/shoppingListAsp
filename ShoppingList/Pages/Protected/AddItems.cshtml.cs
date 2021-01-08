@@ -27,7 +27,7 @@ namespace ShoppingList.Pages.Protected
             ShoppingListReadDto =
                 ToOptionUser(HttpContext)
                     .Map(i => i.ShoppingListId)
-                    .Bind(_shoppingListRepo.GetShoppingListEntityById);
+                    .Bind(_shoppingListRepo.GetShoppingListReadDtoById);
 
         public void OnPost()
         {
