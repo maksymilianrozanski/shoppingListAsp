@@ -38,6 +38,26 @@ namespace ShoppingList.Data
                 .Pipe(i => (Option<ShoppingListEntity>) i!)
                 .Map(i => (ShoppingListReadDto) i);
 
+        private static Option<Either<ShoppingListEntity, ShoppingListEntity>>
+            ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
+            shoppingListEntity.Map(i =>
+                i.ShopName.Length > 0 ? (Either<ShoppingListEntity, ShoppingListEntity>) Right(i) : Left(i));
+
+        private static Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>
+            MatchWaypointsToShoppingList(ShoppingListEntity shoppingListEntity,
+                Func<string, Option<ShopWaypointsReadDto>> getShopWaypoints)
+            =>
+                getShopWaypoints(shoppingListEntity.ShopName)
+                    .Map(waypointsDto =>
+                        (Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>)
+                        ((ShoppingListModule.ShoppingList) shoppingListEntity, waypointsDto)
+                    ).GetOrElse(new ShopWaypointsNotFound());
+
+        private sealed class ShopWaypointsNotFound : Error
+        {
+            public override string Message { get; } = "shop waypoints not found";
+        }
+
         public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password) =>
             GetShoppingListEntityById(shoppingListId)
