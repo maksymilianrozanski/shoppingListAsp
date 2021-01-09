@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Http;
 using ShoppingList.Data;
+using ShoppingList.Data.List;
 using static LaYumba.Functional.F;
 
 namespace ShoppingList.Auth

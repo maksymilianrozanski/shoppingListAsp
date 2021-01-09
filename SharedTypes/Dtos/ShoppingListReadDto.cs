@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using LaYumba.Functional;
-using ShoppingList.Entities;
+using SharedTypes.Entities;
 
-namespace ShoppingList.Dtos
+namespace SharedTypes.Dtos
 {
     public class ShoppingListReadDto
     {

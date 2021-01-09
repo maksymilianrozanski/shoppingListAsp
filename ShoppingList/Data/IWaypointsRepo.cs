@@ -1,5 +1,5 @@
 using LaYumba.Functional;
-using SharedTypes.Dto;
+using SharedTypes.Dtos;
 
 namespace ShoppingList.Data
 {

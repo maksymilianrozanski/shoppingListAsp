@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using ShoppingList.Entities;
+using SharedTypes.Entities;
 
-namespace ShoppingList.Dtos
+namespace SharedTypes.Dtos
 {
     public class ItemDataReadDto
     {

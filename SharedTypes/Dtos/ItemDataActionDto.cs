@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.FSharp.Core;
 using ShoppingData;
 
-namespace ShoppingList.Dtos
+namespace SharedTypes.Dtos
 {
     using ModifyItemDataAction = FSharpFunc<string, FSharpFunc<int, FSharpFunc<
         ShoppingListModule.ShoppingList, FSharpFunc<string,

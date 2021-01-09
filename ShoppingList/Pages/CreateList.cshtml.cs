@@ -3,9 +3,10 @@ using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SharedTypes.Dtos;
 using ShoppingList.Auth;
 using ShoppingList.Data;
-using ShoppingList.Dtos;
+using ShoppingList.Data.List;
 
 namespace ShoppingList.Pages
 {

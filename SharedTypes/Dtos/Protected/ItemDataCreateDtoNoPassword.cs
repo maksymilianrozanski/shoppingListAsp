@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ShoppingList.Dtos.Protected
+namespace SharedTypes.Dtos.Protected
 {
     public class ItemDataCreateDtoNoPassword
     {

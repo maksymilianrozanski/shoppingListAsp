@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using SharedTypes.Entities;
 using ShoppingData;
-using ShoppingList.Entities;
 
 namespace ShoppingListTests.Entities
 {

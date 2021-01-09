@@ -3,8 +3,8 @@ using System.Linq;
 using LaYumba.Functional;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
+using SharedTypes.Entities;
 using ShoppingData;
-using ShoppingList.Entities;
 using static ShoppingData.ShoppingItemModule.ItemType;
 
 

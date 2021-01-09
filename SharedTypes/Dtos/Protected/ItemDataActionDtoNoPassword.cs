@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using ShoppingData;
-using static ShoppingList.Dtos.ItemDataActionDto;
+using static SharedTypes.Dtos.ItemDataActionDto;
 using ModifyItemDataAction =
     Microsoft.FSharp.Core.FSharpFunc<string, Microsoft.FSharp.Core.FSharpFunc<int, Microsoft.FSharp.Core.FSharpFunc<
         ShoppingData.ShoppingListModule.ShoppingList, Microsoft.FSharp.Core.FSharpChoice<
             ShoppingData.ShoppingListModule.ShoppingList, ShoppingData.ShoppingListErrors.ShoppingListErrors>>>>;
 
-namespace ShoppingList.Dtos.Protected
+namespace SharedTypes.Dtos.Protected
 {
     public class ItemDataActionDtoNoPassword
     {

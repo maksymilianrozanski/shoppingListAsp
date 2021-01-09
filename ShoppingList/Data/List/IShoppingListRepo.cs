@@ -1,9 +1,9 @@
 using LaYumba.Functional;
+using SharedTypes.Dtos;
+using SharedTypes.Dtos.Protected;
 using ShoppingData;
-using ShoppingList.Dtos;
-using ShoppingList.Dtos.Protected;
 
-namespace ShoppingList.Data
+namespace ShoppingList.Data.List
 {
     public interface IShoppingListRepo
     {
@@ -16,10 +16,10 @@ namespace ShoppingList.Data
         Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password);
 
-        Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(
+        Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
             Option<ItemDataCreateDtoNoPassword> itemToAdd);
 
-        Either<string, ShoppingListReadDto> ModifyShoppingListItemNoPassword(
+        Either<Error, ShoppingListReadDto> ModifyShoppingList(
             Option<ItemDataActionDtoNoPassword> itemDataAction);
 
         bool SaveChanges();

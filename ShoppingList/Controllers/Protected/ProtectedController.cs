@@ -1,10 +1,13 @@
+using System;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FSharp.Core;
+using SharedTypes.Dtos;
+using SharedTypes.Dtos.Protected;
 using ShoppingData;
-using ShoppingList.Data;
-using ShoppingList.Dtos;
-using ShoppingList.Dtos.Protected;
+using ShoppingList.Data.List;
+using ShoppingList.Data.List.Errors;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 using static LaYumba.Functional.F;
 
@@ -25,8 +28,8 @@ namespace ShoppingList.Controllers.Protected
         [HttpPost]
         [Route("modifyItem")]
         public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDtoNoPassword itemData) =>
-            _repository.ModifyShoppingListItemNoPassword(itemData)
-                .Pipe(ShoppingListModificationResult);
+            _repository.ModifyShoppingList(itemData)
+                .Pipe(ShoppingListModificationResultTyped);
 
         [HttpGet("{id}")]
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
@@ -36,17 +39,28 @@ namespace ShoppingList.Controllers.Protected
                 .Map<ShoppingListReadDto, ActionResult>(Ok)
                 .GetOrElse(NotFound());
 
-        public ActionResult<ShoppingListReadDto> ShoppingListModificationResult(
-            Either<string, ShoppingListReadDto> repositoryOperationResult) =>
-            repositoryOperationResult.Match<ActionResult>(
-                left => left switch
+        public ActionResult<ShoppingListReadDto> ShoppingListModificationResultTyped(
+            Either<Error, ShoppingListReadDto> repositoryOperationResult)
+            => repositoryOperationResult.Match<ActionResult>(
+                l => l switch
                 {
-                    nameof(ShoppingListErrors.ShoppingListErrors.ForbiddenOperation) => Conflict(left),
-                    nameof(ShoppingListErrors.ShoppingListErrors.IncorrectPassword) => StatusCode(403),
-                    nameof(ShoppingListErrors.ShoppingListErrors.IncorrectUser) => Conflict(left),
-                    nameof(ShoppingListErrors.ShoppingListErrors.ListItemNotFound) => NotFound(left),
-                    nameof(ShoppingListErrors.ShoppingListErrors.ItemWithIdAlreadyExists) => Conflict(left),
-                    _ => StatusCode(500)
+                    SavingFailed savingFailed => StatusCode(500),
+                    ShopWaypointsNotFound shopWaypointsNotFound => NotFound(l),
+                    UnknownError unknownError => StatusCode(500),
+                    OtherError otherError => otherError.ErrorObject switch
+                    {
+                        var x when x.IsForbiddenOperation => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
+                            .ForbiddenOperation)),
+                        var x when x.IsIncorrectPassword => StatusCode(403),
+                        var x when x.IsIncorrectUser => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
+                            .IncorrectUser)),
+                        var x when x.IsListItemNotFound => NotFound(nameof(ShoppingListErrors.ShoppingListErrors
+                            .ListItemNotFound)),
+                        var x when x.IsItemWithIdAlreadyExists => Conflict(
+                            nameof(ShoppingListErrors.ShoppingListErrors)),
+                        _ => throw new MatchFailureException()
+                    },
+                    _ => throw new ArgumentOutOfRangeException(nameof(l)),
                 }, Ok
             );
     }

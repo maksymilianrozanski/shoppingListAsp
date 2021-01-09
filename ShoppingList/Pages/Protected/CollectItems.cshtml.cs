@@ -1,6 +1,7 @@
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShoppingList.Data;
+using ShoppingList.Data.List;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages.Protected

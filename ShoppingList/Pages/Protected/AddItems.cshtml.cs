@@ -1,9 +1,10 @@
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SharedTypes.Dtos;
+using SharedTypes.Dtos.Protected;
 using ShoppingList.Data;
-using ShoppingList.Dtos;
-using ShoppingList.Dtos.Protected;
+using ShoppingList.Data.List;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 using static LaYumba.Functional.F;
 
@@ -33,7 +34,7 @@ namespace ShoppingList.Pages.Protected
         {
             var newItem = ToOptionUser(HttpContext)
                 .Map(i => new ItemDataCreateDtoNoPassword(i.ShoppingListId, ItemName, Quantity))
-                .Map(i => _shoppingListRepo.AddItemToShoppingListNoPassword(i));
+                .Map(i => _shoppingListRepo.AddItemToShoppingListDto(i));
 
             newItem.ForEach(i =>
                 i.Match(_ => Response.Redirect("/Error"),

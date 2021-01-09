@@ -1,33 +1,29 @@
 using System;
 using System.Linq;
-using GroceryClassification;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.ML;
 using Microsoft.FSharp.Core;
-using SharedTypes.Dto;
+using SharedTypes.Dtos;
+using SharedTypes.Dtos.Protected;
+using SharedTypes.Entities;
 using ShoppingData;
-using ShoppingList.Dtos;
-using ShoppingList.Dtos.Protected;
-using ShoppingList.Entities;
+using ShoppingList.Data.List.Errors;
 using ShoppingList.Utils;
 using static LaYumba.Functional.F;
 using static ShoppingData.ShoppingListModule;
-using ShoppingListUpdatedChoice1Of2 =
-    Microsoft.FSharp.Core.FSharpChoice<ShoppingData.ShoppingListModule.ShoppingList,
-        ShoppingData.ShoppingListErrors.ShoppingListErrors>.Choice1Of2;
+using Error = LaYumba.Functional.Error;
 using GroceryPredictionPool =
     Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
         GroceryClassification.GroceryItemPrediction>;
 
-namespace ShoppingList.Data
+namespace ShoppingList.Data.List
 {
     public class SqlShoppingListRepo : IShoppingListRepo
     {
         private readonly ShoppingListDbContext _context;
         private readonly IWaypointsRepo _waypointsRepo;
-        private readonly PredictionEnginePool<GroceryData, GroceryItemPrediction> _predictionEnginePool;
+        private readonly GroceryPredictionPool _predictionEnginePool;
 
         public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo,
             GroceryPredictionPool predictionEnginePool)
@@ -54,22 +50,23 @@ namespace ShoppingList.Data
 
         public Option<ShoppingListReadDto> GetShoppingListReadDtoByIdWithSorting(int id) =>
             GetShoppingListById(id)
-                .Map(entity =>
-                    ShouldTryFindWaypoints(entity)
-                        .Map(k =>
-                            MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
-                                .Map(SortToOptimalOrder)
-                                .Map(i => (ShoppingListEntity) i)
-                        )
-                        .Match(() => entity, r =>
-                            r.Match(_ =>
-                            {
-                                Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
-                                return entity;
-                            }, right => right)
-                        )
-                )
+                .Bind(SortEntity)
                 .Map(i => (ShoppingListReadDto) i);
+
+        private Option<ShoppingListEntity> SortEntity(ShoppingListEntity entity) =>
+            ShouldTryFindWaypoints(entity)
+                .Map(k =>
+                    MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
+                        .Map(SortToOptimalOrder)
+                        .Map(i => (ShoppingListEntity) i)
+                )
+                .Match(() => entity, r =>
+                    r.Match(_ =>
+                    {
+                        Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
+                        return entity;
+                    }, right => right)
+                );
 
         private static Option<ShoppingListEntity>
             ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
@@ -94,11 +91,6 @@ namespace ShoppingList.Data
             (FuncConvert.FromFunc(PredictionAdapter.PredictionFunc.Apply(_predictionEnginePool)),
                 listWithWaypoints.Item1, listWithWaypoints.Item2);
 
-        private sealed class ShopWaypointsNotFound : Error
-        {
-            public override string Message { get; } = "shop waypoints not found";
-        }
-
         public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password) =>
             GetShoppingListReadDtoById(shoppingListId)
@@ -109,11 +101,30 @@ namespace ShoppingList.Data
                 })
                 .GetOrElse(Left(ShoppingListErrors.ShoppingListErrors.ListItemNotFound));
 
-        public Either<string, ShoppingListReadDto> AddItemToShoppingListNoPassword(
+        public Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
             Option<ItemDataCreateDtoNoPassword> itemToAdd)
         {
-            Console.WriteLine("received AddItemToShoppingListNoPassword (without password)request");
+            Console.WriteLine("received AddItemToShoppingListDto (without password)request");
             return itemToAdd
+                .Pipe(AddItemToShoppingList)
+                .Map(i => (ShoppingListReadDto) i);
+        }
+
+        private Either<Error, ShoppingListEntity> AddItemToShoppingList(
+            Option<ItemDataCreateDtoNoPassword> itemToAdd)
+        {
+            Console.WriteLine("received AddItemToShoppingListDto (without password)request");
+            return itemToAdd
+                .Pipe(AddItemToList)
+                .Map(WrapSaving)
+                .Pipe(SortOptionTry)
+                .Map(RunSaving)
+                .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
+        }
+
+        private Option<(ShoppingListEntity shoppingListEntity, ShoppingListModule.ShoppingList result)>
+            AddItemToList(Option<ItemDataCreateDtoNoPassword> itemToAdd) =>
+            itemToAdd
                 .Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
                     .Map(dbList => (i, dbList)))
                 .Map(pair =>
@@ -121,19 +132,39 @@ namespace ShoppingList.Data
                     var (itemDataCreateDto, shoppingListEntity) = pair;
                     var result = addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
                     return (shoppingListEntity, result);
-                })
-                .Map(i => (i.shoppingListEntity, i.result).ToTuple())
-                .Map(TryToSaveShoppingList)
-                .Map(i => i
-                    .Match<Either<string, ShoppingListReadDto>>(err => Left(err),
-                        either =>
-                            either
-                    )).GetOrElse(Left("unknown error"));
-        }
+                });
 
-        public Either<string, ShoppingListReadDto> ModifyShoppingListItemNoPassword(
+        private Option<Try<Either<Error, ShoppingListEntity>>> SortOptionTry(
+            Option<Try<Either<Error, ShoppingListEntity>>> entityToSort) =>
+            entityToSort.Map(i =>
+                i.Map(j =>
+                    j.Bind(k => SortEntity(k)
+                        .Map(m => (Either<Error, ShoppingListEntity>) Right(m))
+                        .GetOrElse(() => Left((Error) new UnknownError())))));
+
+        private Try<Either<Error, ShoppingListEntity>> SortTryEither(
+            Try<Either<Error, ShoppingListEntity>> entityToSort)
+            => entityToSort.Map(j =>
+                j.Bind(k => SortEntity(k)
+                    .Map(m => (Either<Error, ShoppingListEntity>) Right(m))
+                    .GetOrElse(() => Left((Error) new UnknownError()))));
+
+        public Either<Error, ShoppingListReadDto> ModifyShoppingList(
             Option<ItemDataActionDtoNoPassword> itemDataAction) =>
-            itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
+            itemDataAction
+                .Pipe(ApplyItemDataAction)
+                .Map(r =>
+                    EitherUtils.FSharpChoiceToEither(r.result)
+                        .Map(i => (r.entityFromDb, i)))
+                .Map(i => i.Map(WrapSaving))
+                .Map(i => i.Map(SortTryEither).Map(RunSaving))
+                .Pipe(HandleSavingResultTypedGeneric)
+                .Map(i => (ShoppingListReadDto) i);
+
+        private Option<(ShoppingListEntity entityFromDb,
+                FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>
+            ApplyItemDataAction(Option<ItemDataActionDtoNoPassword> itemDataAction)
+            => itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
                     .Map(j => (i, j).ToTuple()))
                 .Bind(bothNonEmpty =>
                 {
@@ -152,25 +183,10 @@ namespace ShoppingList.Data
                         .Invoke(updateDto.ItemId)
                         .Invoke(entityFromDb);
                     return (entityFromDb, result);
-                })
-                .Map(r =>
-                    EitherUtils.FSharpChoiceToEither(r.result)
-                        .Map(i => (r.entityFromDb, i).ToTuple())
-                        .Map(TryToSaveShoppingList))
-                .Map(i =>
-                    i.Match(error => Left(ErrorTextValue(error)),
-                        either => either
-                    )).GetOrElse(Left("unknown error"));
+                });
 
-        public bool SaveChanges() => _context.SaveChanges() >= 0;
-
-        private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
-            (Option<ShoppingListEntity>) _context.ShoppingListEntities
-                .Include(i => i.ItemDataEntities)
-                .FirstOrDefault(i => i.Id == id)!;
-
-        private Either<string, ShoppingListReadDto> TryToSaveShoppingList(
-            Tuple<ShoppingListEntity, ShoppingListModule.ShoppingList> values)
+        private Try<Either<Error, ShoppingListEntity>> WrapSaving(
+            (ShoppingListEntity, ShoppingListModule.ShoppingList) values)
         {
             var (entityFromDb, result) = values;
             _context.Entry(entityFromDb).CurrentValues.SetValues(result);
@@ -179,28 +195,34 @@ namespace ShoppingList.Data
                 .ForEach(i => entityFromDb.ItemDataEntities.Add(i));
             return Try(SaveChanges)
                 .Map
-                    <bool, Either<string, ShoppingListReadDto>>
+                    <bool, Either<Error, ShoppingListEntity>>
                     (isSuccessful => isSuccessful
-                        ? Right((ShoppingListReadDto) entityFromDb)
-                        : Left("saving failed"))
-                .Run()
-                .Match(exception =>
-                {
-                    Console.WriteLine($"Exception during saving: ${exception}");
-                    return Left($"Exception during saving: ${exception}");
-                }, x => x);
+                        ? Right(entityFromDb)
+                        : Left((Error) new SavingFailed()));
         }
 
-        private static string ErrorTextValue(ShoppingListErrors.ShoppingListErrors error) =>
-            error switch
-            {
-                var x when x.IsForbiddenOperation => nameof(ShoppingListErrors.ShoppingListErrors.ForbiddenOperation),
-                var x when x.IsIncorrectPassword => nameof(ShoppingListErrors.ShoppingListErrors.IncorrectPassword),
-                var x when x.IsIncorrectUser => nameof(ShoppingListErrors.ShoppingListErrors.IncorrectUser),
-                var x when x.IsListItemNotFound => nameof(ShoppingListErrors.ShoppingListErrors.ListItemNotFound),
-                var x when x.IsItemWithIdAlreadyExists => nameof(ShoppingListErrors.ShoppingListErrors
-                    .ItemWithIdAlreadyExists),
-                _ => throw new MatchFailureException()
-            };
+        private Either<Error, ShoppingListEntity> RunSaving(Try<Either<Error, ShoppingListEntity>> trySave) =>
+            trySave
+                .Run().Match(
+                    l => (Either<Error, ShoppingListEntity>) Left<Error>(new UnknownError()),
+                    r => r);
+
+        private static Either<Error, T> HandleSavingResultTypedGeneric<T>(
+            Option<Either<ShoppingData.ShoppingListErrors.ShoppingListErrors,
+                Either<Error, T>>> result) =>
+            result.Map(i =>
+                i.Match(error =>
+                        Left((Error) new OtherError(error)),
+                    either => either.Match(_ =>
+                            (Either<Error, T>) Left((Error) new UnknownError()),
+                        r => (Either<Error, T>) Right(r))
+                )).GetOrElse(Left((Error) new UnknownError()));
+
+        public bool SaveChanges() => _context.SaveChanges() >= 0;
+
+        private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
+            (Option<ShoppingListEntity>) _context.ShoppingListEntities
+                .Include(i => i.ItemDataEntities)
+                .FirstOrDefault(i => i.Id == id)!;
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.ML;
 using Newtonsoft.Json.Serialization;
 using ShoppingList.Auth;
 using ShoppingList.Data;
+using ShoppingList.Data.List;
 
 namespace ShoppingList
 {

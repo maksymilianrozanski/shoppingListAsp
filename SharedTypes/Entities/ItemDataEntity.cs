@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.FSharp.Core;
+using SharedTypes.Dtos.Protected;
 using ShoppingData;
-using ShoppingList.Dtos;
-using ShoppingList.Dtos.Protected;
 
-namespace ShoppingList.Entities
+namespace SharedTypes.Entities
 {
     public class ItemDataEntity
     {

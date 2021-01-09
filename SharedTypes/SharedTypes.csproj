@@ -5,7 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ShoppingData\ShoppingData.fsproj" />
       <ProjectReference Include="..\Waypoints\Waypoints.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LaYumba.Functional" Version="0.10.0" />
     </ItemGroup>
 
 </Project>

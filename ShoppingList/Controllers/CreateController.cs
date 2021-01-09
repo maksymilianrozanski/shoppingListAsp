@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using ShoppingList.Data;
-using ShoppingList.Dtos;
+using SharedTypes.Dtos;
+using ShoppingList.Data.List;
 
 namespace ShoppingList.Controllers
 {

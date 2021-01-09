@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ShoppingList.Entities;
+using SharedTypes.Entities;
 
 namespace ShoppingList.Data
 {

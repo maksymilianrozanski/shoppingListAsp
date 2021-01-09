@@ -1,7 +1,7 @@
 module ShoppingListSortingTests.WaypointsOrderTests
 
 open NUnit.Framework
-open SharedTypes.Dto
+open SharedTypes.Dtos
 open ShoppingData.ShoppingItemModule
 open ShoppingData.ShoppingListModule
 open ShoppingListSorting.ShoppingItemsPredicting

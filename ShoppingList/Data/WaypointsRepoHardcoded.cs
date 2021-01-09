@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
-using SharedTypes.Dto;
-using ShoppingList.Dtos;
+using SharedTypes.Dtos;
 using static LaYumba.Functional.F;
 using static Waypoints.WaypointsModule;
 

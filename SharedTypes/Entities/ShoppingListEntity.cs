@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using LaYumba.Functional;
 using Microsoft.FSharp.Collections;
+using SharedTypes.Dtos;
 using ShoppingData;
-using ShoppingList.Dtos;
 
-namespace ShoppingList.Entities
+namespace SharedTypes.Entities
 {
     public class ShoppingListEntity
     {
