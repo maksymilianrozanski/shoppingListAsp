@@ -32,7 +32,7 @@ namespace ShoppingList.Controllers.Protected
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
             ToOptionUser(HttpContext)
                 .Bind(user => user.ShoppingListId == id ? Some(user.ShoppingListId) : new Option<int>())
-                .Bind(valid => _repository.GetShoppingListReadDtoById(valid))
+                .Bind(valid => _repository.GetShoppingListReadDtoByIdWithSorting(valid))
                 .Map<ShoppingListReadDto, ActionResult>(Ok)
                 .GetOrElse(NotFound());
 

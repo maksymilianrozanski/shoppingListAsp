@@ -11,6 +11,8 @@ namespace ShoppingList.Data
 
         Option<ShoppingListReadDto> GetShoppingListReadDtoById(int id);
 
+        public Option<ShoppingListReadDto> GetShoppingListReadDtoByIdWithSorting(int id);
+
         Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password);
 
