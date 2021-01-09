@@ -27,7 +27,7 @@ namespace ShoppingList.Data
         private readonly ShoppingListDbContext _context;
         private readonly IWaypointsRepo _waypointsRepo;
         private readonly PredictionEnginePool<GroceryData, GroceryItemPrediction> _predictionEnginePool;
-        
+
         public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo,
             GroceryPredictionPool predictionEnginePool)
         {
@@ -80,14 +80,10 @@ namespace ShoppingList.Data
                         ((ShoppingListModule.ShoppingList) shoppingListEntity, waypointsDto)
                     ).GetOrElse(new ShopWaypointsNotFound());
 
-        private static Func<GroceryPredictionPool, ShoppingItemModule.ItemData, string> PredictionFunc =>
-            (pool, itemData) => pool.Predict(modelName: "GroceryModel", example: new GroceryToPredict(itemData.Name))
-                .FoodTypeLabel;
-
         private ShoppingListModule.ShoppingList SortToOptimalOrder(
             (ShoppingListModule.ShoppingList, ShopWaypointsReadDto) listWithWaypoints) =>
             ShoppingListSorting.WaypointsOrder.sortShoppingList
-            (FuncConvert.FromFunc(PredictionFunc.Apply(_predictionEnginePool)),
+            (FuncConvert.FromFunc(PredictionAdapter.PredictionFunc.Apply(_predictionEnginePool)),
                 listWithWaypoints.Item2, listWithWaypoints.Item1);
 
         private sealed class ShopWaypointsNotFound : Error
