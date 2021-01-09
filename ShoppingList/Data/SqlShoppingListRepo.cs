@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using GroceryClassification;
 using LaYumba.Functional;
+using LaYumba.Functional.Option;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.ML;
 using Microsoft.FSharp.Core;
@@ -38,7 +39,7 @@ namespace ShoppingList.Data
 
         public Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList) =>
             shoppingList.Map(i => _context.ShoppingListEntities.Add(i).Entity)
-                .Bind(i => SaveChanges() ? Some(i) : null!)
+                .Bind(i => SaveChanges() ? Some(i) : new None())
                 .Map(i => (ShoppingListReadDto) i);
 
         private Option<ShoppingListEntity> GetShoppingListById(int id) =>
@@ -53,38 +54,45 @@ namespace ShoppingList.Data
 
         public Option<ShoppingListReadDto> GetShoppingListReadDtoByIdWithSorting(int id) =>
             GetShoppingListById(id)
-                .Map(entity => ShouldTryFindWaypoints(entity)
-                    .Map(k => MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
-                        .Map(SortToOptimalOrder)
-                        .Map(i => (ShoppingListEntity) i)
-                        .Match(_ =>
-                        {
-                            Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
-                            return entity;
-                        }, r => r)
-                    ).GetOrElse(entity))
+                .Map(entity =>
+                    ShouldTryFindWaypoints(entity)
+                        .Map(k =>
+                            MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
+                                .Map(SortToOptimalOrder)
+                                .Map(i => (ShoppingListEntity) i)
+                        )
+                        .Match(() => entity, r =>
+                            r.Match(_ =>
+                            {
+                                Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
+                                return entity;
+                            }, right => right)
+                        )
+                )
                 .Map(i => (ShoppingListReadDto) i);
 
         private static Option<ShoppingListEntity>
             ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
-            shoppingListEntity.Map(i =>
-                i.ShopName.Length > 0 ? i : null!);
+            shoppingListEntity.Bind(i =>
+                i.ShopName.Length > 0 ? Some(i) : new None());
 
-        private static Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>
-            MatchWaypointsToShoppingList(ShoppingListEntity shoppingListEntity,
+        private static Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>
+            MatchWaypointsToShoppingList(
+                ShoppingListEntity shoppingListEntity,
                 Func<string, Option<ShopWaypointsReadDto>> getShopWaypoints)
             =>
                 getShopWaypoints(shoppingListEntity.ShopName)
                     .Map(waypointsDto =>
-                        (Either<ShopWaypointsNotFound, (ShoppingListModule.ShoppingList, ShopWaypointsReadDto)>)
-                        ((ShoppingListModule.ShoppingList) shoppingListEntity, waypointsDto)
-                    ).GetOrElse(new ShopWaypointsNotFound());
+                        (Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>)
+                        (waypointsDto, (ShoppingListModule.ShoppingList) shoppingListEntity)
+                    )
+                    .GetOrElse(new ShopWaypointsNotFound());
 
         private ShoppingListModule.ShoppingList SortToOptimalOrder(
-            (ShoppingListModule.ShoppingList, ShopWaypointsReadDto) listWithWaypoints) =>
+            (ShopWaypointsReadDto, ShoppingListModule.ShoppingList) listWithWaypoints) =>
             ShoppingListSorting.WaypointsOrder.sortShoppingList
             (FuncConvert.FromFunc(PredictionAdapter.PredictionFunc.Apply(_predictionEnginePool)),
-                listWithWaypoints.Item2, listWithWaypoints.Item1);
+                listWithWaypoints.Item1, listWithWaypoints.Item2);
 
         private sealed class ShopWaypointsNotFound : Error
         {
@@ -134,7 +142,7 @@ namespace ShoppingList.Data
                         (ItemDataActionDto.ItemDataActions)
                         updateDto.ActionNumber, out var modifyingFunction)
                         ? Some((updateDto, entityFromDb, modifyingFunction).ToTuple())
-                        : null!;
+                        : new None();
                 })
                 .Map(r =>
                 {
