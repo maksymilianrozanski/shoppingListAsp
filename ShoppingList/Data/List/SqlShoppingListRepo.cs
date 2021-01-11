@@ -10,11 +10,10 @@ using SharedTypes.Entities;
 using ShoppingData;
 using ShoppingList.Data.List.Errors;
 using ShoppingList.Utils;
+using ShoppingListSorting;
 using static LaYumba.Functional.F;
 using static ShoppingData.ShoppingListModule;
-using Error = LaYumba.Functional.Error;
-using GroceryPredictionPool =
-    Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
+using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
         GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
 
@@ -88,7 +87,7 @@ namespace ShoppingList.Data.List
 
         private ShoppingListModule.ShoppingList SortToOptimalOrder(
             (ShopWaypointsReadDto, ShoppingListModule.ShoppingList) listWithWaypoints) =>
-            ShoppingListSorting.WaypointsOrder.sortShoppingList
+            WaypointsOrder.sortShoppingList
             (FuncConvert.FromFunc(PredictionAdapter.PredictionFunc.Apply(_predictionEnginePool)),
                 listWithWaypoints.Item1, listWithWaypoints.Item2);
 
@@ -118,7 +117,7 @@ namespace ShoppingList.Data.List
             return itemToAdd
                 .Pipe(AddItemToList)
                 .Map(WrapSaving)
-                .Map(SortTryEither)
+                .Map(SortEntity, new UnknownError())
                 .Map(RunSaving)
                 .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
         }
@@ -202,16 +201,21 @@ namespace ShoppingList.Data.List
                     r => r);
 
         private static Either<Error, T> HandleSavingResultTypedGeneric<T>(
-            Option<Either<ShoppingData.ShoppingListErrors.ShoppingListErrors,
+            Option<Either<ShoppingListErrors.ShoppingListErrors,
                 Either<Error, T>>> result) =>
-            result.Map(i =>
-                i.Match(error =>
-                        Left((Error) new OtherError(error)),
-                    either => either.Match(_ =>
-                            (Either<Error, T>) Left((Error) new UnknownError()),
-                        r => (Either<Error, T>) Right(r))
-                )).GetOrElse(Left((Error) new UnknownError()));
+            result.Pipe(FlattenEitherErrors)
+                .GetOrElse(Left((Error) new UnknownError()));
 
+        private static Option<Either<Error, T>> FlattenEitherErrors<T>(
+            Option<Either<ShoppingListErrors.ShoppingListErrors, Either<Error, T>>> option) =>
+            OptionExt.Map(option, i =>
+                FlattenErrors(i, l1 => new OtherError(l1)));
+
+        private static Either<TL2, T> FlattenErrors<TL1, TL2, T>(
+            Either<TL1, Either<TL2, T>> either, Func<TL1, TL2> errorConversion) => either.Match(
+            l => Left(errorConversion(l)),
+            r => r);
+        
         public bool SaveChanges() => _context.SaveChanges() >= 0;
 
         private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
