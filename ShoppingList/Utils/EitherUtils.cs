@@ -1,6 +1,11 @@
+using System;
 using LaYumba.Functional;
 using Microsoft.FSharp.Core;
+using SharedTypes.Entities;
+using ShoppingData;
 using static LaYumba.Functional.F;
+using static ShoppingData.ShoppingListErrors;
+using ShoppingListErrors = ShoppingData.ShoppingListErrors;
 
 namespace ShoppingList.Utils
 {
@@ -13,5 +18,9 @@ namespace ShoppingList.Utils
                 FSharpChoice<T1, T2>.Choice2Of2 left => Left(left.Item),
                 _ => throw new MatchFailureException()
             };
+
+        public static Option<Either<TL, TR2>> Map<TL, TR, TR2>(this Option<Either<TL, TR>> @this,
+            Func<TR, TR2> f) =>
+            @this.Map(i => i.Map(f));
     }
 }

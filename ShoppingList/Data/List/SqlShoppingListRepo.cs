@@ -16,6 +16,7 @@ using Error = LaYumba.Functional.Error;
 using GroceryPredictionPool =
     Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
         GroceryClassification.GroceryItemPrediction>;
+using static ShoppingList.Utils.EitherUtils;
 
 namespace ShoppingList.Data.List
 {
@@ -154,10 +155,11 @@ namespace ShoppingList.Data.List
             itemDataAction
                 .Pipe(ApplyItemDataAction)
                 .Map(r =>
-                    EitherUtils.FSharpChoiceToEither(r.result)
+                    FSharpChoiceToEither(r.result)
                         .Map(i => (r.entityFromDb, i)))
-                .Map(i => i.Map(WrapSaving))
-                .Map(i => i.Map(SortTryEither).Map(RunSaving))
+                .Map(WrapSaving)
+                .Map(SortTryEither)
+                .Map(RunSaving)
                 .Pipe(HandleSavingResultTypedGeneric)
                 .Map(i => (ShoppingListReadDto) i);
 
