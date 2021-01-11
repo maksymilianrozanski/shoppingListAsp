@@ -118,7 +118,7 @@ namespace ShoppingList.Data.List
             return itemToAdd
                 .Pipe(AddItemToList)
                 .Map(WrapSaving)
-                .Pipe(SortOptionTry)
+                .Map(SortTryEither)
                 .Map(RunSaving)
                 .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
         }
@@ -134,14 +134,6 @@ namespace ShoppingList.Data.List
                     var result = addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
                     return (shoppingListEntity, result);
                 });
-
-        private Option<Try<Either<Error, ShoppingListEntity>>> SortOptionTry(
-            Option<Try<Either<Error, ShoppingListEntity>>> entityToSort) =>
-            entityToSort.Map(i =>
-                i.Map(j =>
-                    j.Bind(k => SortEntity(k)
-                        .Map(m => (Either<Error, ShoppingListEntity>) Right(m))
-                        .GetOrElse(() => Left((Error) new UnknownError())))));
 
         private Try<Either<Error, ShoppingListEntity>> SortTryEither(
             Try<Either<Error, ShoppingListEntity>> entityToSort)
