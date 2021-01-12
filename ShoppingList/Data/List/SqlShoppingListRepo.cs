@@ -117,7 +117,7 @@ namespace ShoppingList.Data.List
             return itemToAdd
                 .Pipe(AddItemToList)
                 .Map(WrapSaving)
-                .Map(SortEntity, new UnknownError())
+                .OptionTryEitherMap(SortEntity, new UnknownError())
                 .Map(RunSaving)
                 .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
         }
@@ -148,9 +148,9 @@ namespace ShoppingList.Data.List
                 .Map(r =>
                     FSharpChoiceToEither(r.result)
                         .Map(i => (r.entityFromDb, i)))
-                .Map(WrapSaving)
-                .Map(SortTryEither)
-                .Map(RunSaving)
+                .OptionEitherMap(WrapSaving)
+                .OptionEitherMap(SortTryEither)
+                .OptionEitherMap(RunSaving)
                 .Pipe(HandleSavingResultTypedGeneric)
                 .Map(i => (ShoppingListReadDto) i);
 

@@ -19,19 +19,19 @@ namespace ShoppingList.Utils
                 _ => throw new MatchFailureException()
             };
 
-        public static Option<Either<TL, TR2>> Map<TL, TR, TR2>(this Option<Either<TL, TR>> @this,
+        public static Option<Either<TL, TR2>> OptionEitherMap<TL, TR, TR2>(this Option<Either<TL, TR>> @this,
             Func<TR, TR2> f) =>
             @this.Map(i => i.Map(f));
 
-        private static Try<Either<TL, TR>> Map<TL, TR>(this
+        private static Try<Either<TL, TR>> TryEitherMap<TL, TR>(this
             Try<Either<TL, TR>> @this, Func<TR, Option<TR>> f, TL noneFallback)
             => @this.Map(j =>
                 j.Bind(k => f(k)
                     .Map(m => (Either<TL, TR>) Right(m))
                     .GetOrElse(() => Left(noneFallback))));
 
-        public static Option<Try<Either<TL, TR>>> Map<TL, TR>(this
+        public static Option<Try<Either<TL, TR>>> OptionTryEitherMap<TL, TR>(this
             Option<Try<Either<TL, TR>>> @this, Func<TR, Option<TR>> f, TL noneFallback)
-            => @this.Map(i => i.Map(f, noneFallback));
+            => @this.Map(i => i.TryEitherMap(f, noneFallback));
     }
 }
