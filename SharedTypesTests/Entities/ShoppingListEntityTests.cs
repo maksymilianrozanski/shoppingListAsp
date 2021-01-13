@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SharedTypes.Entities;
 using ShoppingData;
 
-namespace ShoppingListTests.Entities
+namespace SharedTypesTests.Entities
 {
     public class ShoppingListEntityTests
     {
