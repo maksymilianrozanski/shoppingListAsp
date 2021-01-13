@@ -11,8 +11,6 @@ namespace SharedTypes.Dtos
 
         [Required] public string Name { get; set; } = "";
 
-        [Required] public string Password { get; set; } = "";
-
         [Required] public IEnumerable<ItemDataReadDto> Items { get; set; } = new List<ItemDataReadDto>();
 
         public static implicit operator ShoppingListReadDto(ShoppingListEntity entity) =>
@@ -20,7 +18,6 @@ namespace SharedTypes.Dtos
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                Password = entity.Password,
                 Items = entity.ItemDataEntities.Map(i => (ItemDataReadDto) i)
             };
     }
