@@ -20,6 +20,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingListSortingTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypes", "SharedTypes\SharedTypes.csproj", "{95791B36-91B3-42A7-9CCB-EEC4A15248A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypesTests", "SharedTypesTests\SharedTypesTests.csproj", "{62D2FDF1-DE6C-4320-B752-988C91735D26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{95791B36-91B3-42A7-9CCB-EEC4A15248A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95791B36-91B3-42A7-9CCB-EEC4A15248A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95791B36-91B3-42A7-9CCB-EEC4A15248A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D2FDF1-DE6C-4320-B752-988C91735D26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D2FDF1-DE6C-4320-B752-988C91735D26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D2FDF1-DE6C-4320-B752-988C91735D26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D2FDF1-DE6C-4320-B752-988C91735D26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

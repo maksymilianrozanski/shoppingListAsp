@@ -54,10 +54,6 @@ namespace ShoppingList.Data
             }
         );
 
-        public static Option<ShopWaypointsReadDto> Deserialize(string shopWaypointsJson)
-            => JsonSerializer.Deserialize<ShopWaypointsReadDto>(shopWaypointsJson) ??
-               new Option<ShopWaypointsReadDto>();
-
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
             shopName == "big-market" ? Some(_hardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
     }

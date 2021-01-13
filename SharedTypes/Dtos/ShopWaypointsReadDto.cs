@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using LaYumba.Functional;
+using SharedTypes.Entities;
 using static Waypoints.WaypointsModule;
 
 namespace SharedTypes.Dtos
@@ -18,5 +21,12 @@ namespace SharedTypes.Dtos
             Checkout = checkout;
             Waypoints = waypoints;
         }
+
+        public static Option<ShopWaypointsReadDto> Deserialize(string shopWaypointsJson)
+            => JsonSerializer.Deserialize<ShopWaypointsReadDto>(shopWaypointsJson)
+               ?? new Option<ShopWaypointsReadDto>();
+
+        public static Option<ShopWaypointsReadDto> ToOption(ShopWaypointsEntity entity) =>
+            Deserialize(entity.ShopWaypointsReadDtoJson);
     }
 }

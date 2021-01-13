@@ -1,14 +1,14 @@
-using System;
 using System.Collections.Generic;
 using LaYumba.Functional;
+using LaYumba.Functional.Option;
+using static LaYumba.Functional.F;
 using NUnit.Framework;
 using SharedTypes.Dtos;
-using ShoppingList.Data;
 using Waypoints;
 
-namespace ShoppingListTests.Data
+namespace SharedTypesTests
 {
-    public class WaypointsRepoHardCodedTests
+    public class ShopWaypointsReadDtoTests
     {
         [Test]
         public void ShouldDeserializeJson()
@@ -49,12 +49,12 @@ namespace ShoppingListTests.Data
                 }
             );
 
-            var result = WaypointsRepoHardcoded.Deserialize(input);
+            var result = ShopWaypointsReadDto.Deserialize(input);
 
-            result.Match(() => Assert.Fail("should have matched to some"),
+            result.Match(
+                () => Assert.Fail("should have matched to some"),
                 dto =>
                 {
-                    Assert.AreEqual(expected.Name, dto.Name);
                     Assert.AreEqual(expected.Start, dto.Start);
                     Assert.AreEqual(expected.Checkout, dto.Checkout);
                     Assert.AreEqual(expected.Waypoints, dto.Waypoints);
