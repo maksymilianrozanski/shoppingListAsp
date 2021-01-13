@@ -15,7 +15,7 @@ using ShoppingListSorting;
 using static LaYumba.Functional.F;
 using static ShoppingData.ShoppingListModule;
 using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
-        GroceryClassification.GroceryItemPrediction>;
+    GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
 
 namespace ShoppingList.Data.List
@@ -94,8 +94,8 @@ namespace ShoppingList.Data.List
 
         public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password) =>
-            GetShoppingListReadDtoById(shoppingListId)
-                .Map<ShoppingListReadDto, Either<ShoppingListErrors.ShoppingListErrors, int>>(i =>
+            GetShoppingListById(shoppingListId)
+                .Map<ShoppingListEntity, Either<ShoppingListErrors.ShoppingListErrors, int>>(i =>
                 {
                     if (i.Password == password) return Right(i.Id);
                     else return Left(ShoppingListErrors.ShoppingListErrors.IncorrectPassword);
@@ -216,7 +216,7 @@ namespace ShoppingList.Data.List
             Either<TL1, Either<TL2, T>> either, Func<TL1, TL2> errorConversion) => either.Match(
             l => Left(errorConversion(l)),
             r => r);
-        
+
         public bool SaveChanges() => _context.SaveChanges() >= 0;
 
         private Option<ShoppingListEntity> GetShoppingListWithChildrenById(int id) =>
