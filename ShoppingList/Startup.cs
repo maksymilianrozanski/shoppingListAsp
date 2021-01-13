@@ -56,7 +56,9 @@ namespace ShoppingList
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            services.AddTransient<IWaypointsRepo, WaypointsRepoHardcoded>();
+            //replace SqlWaypointsRepo with WaypointsRepoHardcoded to use hardcoded test data
+            // services.AddTransient<IWaypointsRepo, WaypointsRepoHardcoded>();
+            services.AddTransient<IWaypointsRepo, SqlWaypointsRepo>();
             services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
         }
 

@@ -48,7 +48,7 @@ namespace ShoppingList.Data.Waypoints
                 new("ARTICLE_OF_HOUSEHOLD", 666, 470),
                 new("PACKAGES", 708, 463),
                 new("EGGS", 378, 169),
-                new("MILK", 339, 300)
+                new("MILK", 339, 300),
             }
         );
 
