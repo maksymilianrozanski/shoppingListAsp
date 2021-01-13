@@ -1,7 +1,7 @@
 using LaYumba.Functional;
 using SharedTypes.Dtos;
 
-namespace ShoppingList.Data
+namespace ShoppingList.Data.Waypoints
 {
     public interface IWaypointsRepo
     {

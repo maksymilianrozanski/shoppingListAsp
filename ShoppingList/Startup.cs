@@ -10,6 +10,7 @@ using Newtonsoft.Json.Serialization;
 using ShoppingList.Auth;
 using ShoppingList.Data;
 using ShoppingList.Data.List;
+using ShoppingList.Data.Waypoints;
 
 namespace ShoppingList
 {

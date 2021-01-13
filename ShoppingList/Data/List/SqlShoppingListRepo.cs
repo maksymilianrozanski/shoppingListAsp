@@ -9,6 +9,7 @@ using SharedTypes.Dtos.Protected;
 using SharedTypes.Entities;
 using ShoppingData;
 using ShoppingList.Data.List.Errors;
+using ShoppingList.Data.Waypoints;
 using ShoppingList.Utils;
 using ShoppingListSorting;
 using static LaYumba.Functional.F;

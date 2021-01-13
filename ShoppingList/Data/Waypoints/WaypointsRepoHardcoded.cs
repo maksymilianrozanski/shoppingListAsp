@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using LaYumba.Functional;
-using LaYumba.Functional.Option;
 using SharedTypes.Dtos;
 using static LaYumba.Functional.F;
 using static Waypoints.WaypointsModule;
 
-namespace ShoppingList.Data
+namespace ShoppingList.Data.Waypoints
 {
     public class WaypointsRepoHardcoded : IWaypointsRepo
     {
