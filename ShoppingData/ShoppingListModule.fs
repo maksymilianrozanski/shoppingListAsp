@@ -50,15 +50,3 @@ module ShoppingListModule =
                 |> Choice1Of2
             | Choice2Of2 (failure) -> Choice2Of2(failure)
         | None -> Choice2Of2(ListItemNotFound)
-
-    let modifyItemIfPassword f id = executeIfPassword (modifyItem f id)
-
-    let listItemToAssigned = assignItem >> modifyItemIfPassword
-
-    let listItemToNotFound = notFoundItem >> modifyItemIfPassword
-
-    let listItemToBought = toBought >> modifyItemIfPassword
-
-    let listItemToCancelled = toCancelled >> modifyItemIfPassword
-
-    let addItemIfPassword = executeIfPassword << addItemIfNotExist

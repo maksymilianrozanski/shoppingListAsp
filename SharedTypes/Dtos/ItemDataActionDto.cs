@@ -1,15 +1,9 @@
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.FSharp.Core;
 using ShoppingData;
 
 namespace SharedTypes.Dtos
 {
-    using ModifyItemDataAction = FSharpFunc<string, FSharpFunc<int, FSharpFunc<
-        ShoppingListModule.ShoppingList, FSharpFunc<string,
-            FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>>>>>;
-
     public class ItemDataActionDto
     {
         public enum ItemDataActions
@@ -19,15 +13,6 @@ namespace SharedTypes.Dtos
             ItemToBought = 2,
             ItemToCancelled = 3
         }
-
-        public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
-            new Dictionary<ItemDataActions, ModifyItemDataAction>
-            {
-                {0, ShoppingListModule.listItemToAssigned},
-                {(ItemDataActions) 1, ShoppingListModule.listItemToNotFound},
-                {(ItemDataActions) 2, ShoppingListModule.listItemToBought},
-                {(ItemDataActions) 3, ShoppingListModule.listItemToCancelled}
-            }.ToImmutableDictionary();
 
         public ItemDataActionDto(string user, int itemId, int shoppingListId, string password, int actionNumber)
         {
