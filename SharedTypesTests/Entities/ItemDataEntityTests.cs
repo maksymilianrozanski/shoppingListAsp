@@ -8,7 +8,7 @@ using ShoppingData;
 using static ShoppingData.ShoppingItemModule.ItemType;
 
 
-namespace ShoppingListTests.Entities
+namespace SharedTypesTests.Entities
 {
     public class ItemDataEntityTests
     {
@@ -22,20 +22,20 @@ namespace ShoppingListTests.Entities
         {
             var itemsToConvert = new List<ShoppingItemModule.ItemData>
             {
-                new ShoppingItemModule.ItemData(10, "sugar", 1, Bought),
-                new ShoppingItemModule.ItemData(11, "coffee", 20, NewAssigned("Garfield")),
-                new ShoppingItemModule.ItemData(12, "milk", 21, ToBuy),
-                new ShoppingItemModule.ItemData(13, "apples", 22, Cancelled),
-                new ShoppingItemModule.ItemData(14, "pineapple", 23, NotFound),
+                new(10, "sugar", 1, Bought),
+                new(11, "coffee", 20, NewAssigned("Garfield")),
+                new(12, "milk", 21, ToBuy),
+                new(13, "apples", 22, Cancelled),
+                new(14, "pineapple", 23, NotFound),
             };
 
             var expectedItems = new List<ItemDataEntity>
             {
-                new ItemDataEntity {Id = 10, Name = "sugar", Quantity = 1, ItemType = "Bought"},
-                new ItemDataEntity {Id = 11, Name = "coffee", Quantity = 20, ItemType = "Assigned Garfield"},
-                new ItemDataEntity {Id = 12, Name = "milk", Quantity = 21, ItemType = "ToBuy"},
-                new ItemDataEntity {Id = 13, Name = "apples", Quantity = 22, ItemType = "Cancelled"},
-                new ItemDataEntity {Id = 14, Name = "pineapple", Quantity = 23, ItemType = "NotFound"}
+                new() {Id = 10, Name = "sugar", Quantity = 1, ItemType = "Bought"},
+                new() {Id = 11, Name = "coffee", Quantity = 20, ItemType = "Assigned Garfield"},
+                new() {Id = 12, Name = "milk", Quantity = 21, ItemType = "ToBuy"},
+                new() {Id = 13, Name = "apples", Quantity = 22, ItemType = "Cancelled"},
+                new() {Id = 14, Name = "pineapple", Quantity = 23, ItemType = "NotFound"}
             };
 
             Assert.True(AreAllEqual(expectedItems, itemsToConvert));
@@ -85,8 +85,8 @@ namespace ShoppingListTests.Entities
         {
             var invalidItems = new List<string> {"Cat", "AssignedCat", "", "Assigned", "Assigned "};
             invalidItems.ForEach(i =>
-                    Assert.Throws<MatchFailureException>(
-                        () => ItemDataEntity.ItemTypeFromString(i)));
+                Assert.Throws<MatchFailureException>(
+                    () => ItemDataEntity.ItemTypeFromString(i)));
         }
 
         [Test]
