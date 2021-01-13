@@ -15,10 +15,10 @@ namespace SharedTypes.Dtos.Protected
         public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
             new Dictionary<ItemDataActions, ModifyItemDataAction>
             {
-                {0, ShoppingListNoPassModule.listItemToAssigned},
-                {(ItemDataActions) 1, ShoppingListNoPassModule.listItemToNotFound},
-                {(ItemDataActions) 2, ShoppingListNoPassModule.listItemToBought},
-                {(ItemDataActions) 3, ShoppingListNoPassModule.listItemToCancelled}
+                {0, ShoppingListModifyModule.listItemToAssigned},
+                {(ItemDataActions) 1, ShoppingListModifyModule.listItemToNotFound},
+                {(ItemDataActions) 2, ShoppingListModifyModule.listItemToBought},
+                {(ItemDataActions) 3, ShoppingListModifyModule.listItemToCancelled}
             }.ToImmutableDictionary();
 
         public ItemDataActionDtoNoPassword(string user, int itemId, int shoppingListId, int actionNumber)

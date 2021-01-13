@@ -3,7 +3,7 @@ namespace ShoppingData
 open ShoppingData.ShoppingListModule
 open ShoppingData.ShoppingItemModule
 
-module ShoppingListNoPassModule =
+module ShoppingListModifyModule =
 
     let listItemToAssigned = modifyItem << assignItem
 
