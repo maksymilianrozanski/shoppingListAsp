@@ -26,7 +26,7 @@ namespace SharedTypes.Dtos
             => JsonSerializer.Deserialize<ShopWaypointsReadDto>(shopWaypointsJson)
                ?? new Option<ShopWaypointsReadDto>();
 
-        public static Option<ShopWaypointsReadDto> ToOption(ShopWaypointsEntity entity) =>
+        public static Option<ShopWaypointsReadDto> ToOptionReadDto(ShopWaypointsEntity entity) =>
             Deserialize(entity.ShopWaypointsReadDtoJson);
     }
 }
