@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using SharedTypes.Dtos;
@@ -53,7 +54,11 @@ namespace ShoppingList.Data
             }
         );
 
+        public static Option<ShopWaypointsReadDto> Deserialize(string shopWaypointsJson)
+            => JsonSerializer.Deserialize<ShopWaypointsReadDto>(shopWaypointsJson) ??
+               new Option<ShopWaypointsReadDto>();
+
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
-            shopName == "big-market" ? Some(_hardcodedWaypoints) : null!;
+            shopName == "big-market" ? Some(_hardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
     }
 }
