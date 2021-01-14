@@ -120,13 +120,17 @@ const currentUsername =  "@Model.CurrentUsername";
 
         const itemWithActions = (itemDataActionDtoNoPassword) => {
             const liElement = document.createElement("li");
+            liElement.style.cssText = "border: solid #e0e0e0;\nborder-width: 1px;\nborder-radius: 4px;\npadding: 2px;\nmargin: 2px;\nbox-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);";
 
-            const displayedText = document.createElement("a")
-            displayedText.innerText = "id: " + itemDataActionDtoNoPassword.id.toString() + ", " + itemDataActionDtoNoPassword.name.toString() +
+            const displayedText = document.createElement("div")
+            displayedText.innerText = itemDataActionDtoNoPassword.name.toString() +
                 " - " + itemDataActionDtoNoPassword.quantity.toString() + ", " + itemTypeDisplayedText(itemDataActionDtoNoPassword);
             liElement.appendChild(displayedText);
 
-            itemButtons(itemDataActionDtoNoPassword).forEach(i => liElement.appendChild(i));
+            const buttonsContainer = document.createElement("div");
+            liElement.appendChild(buttonsContainer);
+            
+            itemButtons(itemDataActionDtoNoPassword).forEach(i => buttonsContainer.appendChild(i));
             return liElement;
         }
 
