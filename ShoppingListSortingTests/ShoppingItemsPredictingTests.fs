@@ -23,7 +23,6 @@ let ``should add predicted values to shopping list`` () =
 
     let shoppingListInput: ShoppingList =
         { Id = 0
-          Name = "My-shopping-list"
           Password = "pass"
           ShopName = "shopName"
           Items =
@@ -38,7 +37,6 @@ let ``should add predicted values to shopping list`` () =
 
     let expected =
         { Id = 0
-          Name = "My-shopping-list"
           Password = "pass"
           ShopName = "shopName"
           Items =
@@ -58,6 +56,5 @@ let ``should add predicted values to shopping list`` () =
         predictAllItems predictSingleItemMock shoppingListInput
 
     Assert.AreEqual(expected.Id, result.Id)
-    Assert.AreEqual(expected.Name, result.Name)
     Assert.AreEqual(expected.ShopName, result.ShopName)
     Assert.AreEqual(expected.Items, result.Items)

@@ -15,7 +15,6 @@ module ShoppingItemsPredicting =
 
     type ShoppingListWithDepartment =
         { Id: int
-          Name: string
           Password: string
           ShopName: string
           Items: List<ItemDataWithPredictedType> }
@@ -31,7 +30,6 @@ module ShoppingItemsPredicting =
 
     let predictAllItems (predictingFun: ItemData -> string) (shoppingList: ShoppingList) =
         { Id = shoppingList.Id
-          Name = shoppingList.Name
           Password = shoppingList.Password
           ShopName = shoppingList.ShopName
           Items =

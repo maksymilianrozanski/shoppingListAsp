@@ -24,7 +24,6 @@ namespace ShoppingList.Controllers
         public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
         {
             Console.WriteLine("create list endpoint");
-            Console.WriteLine(listCreateDto.Name);
             return _repository.CreateShoppingList(listCreateDto)
                 .Match<ActionResult>(NotFound,
                     Some: i =>

@@ -12,8 +12,6 @@ namespace SharedTypes.Entities
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Name { get; set; } = "";
-
         [Required] public string Password { get; set; } = "";
 
         [Required] public string ShopName { get; set; } = "";
@@ -24,14 +22,13 @@ namespace SharedTypes.Entities
             new()
             {
                 Id = 0,
-                Name = createDto.Name,
                 Password = createDto.Password,
                 ShopName = createDto.ShopName,
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 
         public static implicit operator ShoppingListModule.ShoppingList(ShoppingListEntity entity) =>
-            new(entity.Id, entity.Name, entity.Password, entity.ShopName,
+            new(entity.Id, entity.Password, entity.ShopName,
                 ListModule.OfSeq(
                     entity.ItemDataEntities.Map(i =>
                         (ShoppingItemModule.ItemData) i))
@@ -41,7 +38,6 @@ namespace SharedTypes.Entities
             new()
             {
                 Id = list.Id,
-                Name = list.Name,
                 Password = list.Password,
                 ItemDataEntities = list.Items.Map(i => (ItemDataEntity) i).ToList()
             };

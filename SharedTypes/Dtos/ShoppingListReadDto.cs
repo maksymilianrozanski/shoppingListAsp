@@ -9,15 +9,12 @@ namespace SharedTypes.Dtos
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Name { get; set; } = "";
-
         [Required] public IEnumerable<ItemDataReadDto> Items { get; set; } = new List<ItemDataReadDto>();
 
         public static implicit operator ShoppingListReadDto(ShoppingListEntity entity) =>
             new()
             {
                 Id = entity.Id,
-                Name = entity.Name,
                 Items = entity.ItemDataEntities.Map(i => (ItemDataReadDto) i)
             };
     }

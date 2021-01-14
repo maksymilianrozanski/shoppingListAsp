@@ -8,14 +8,12 @@ module ShoppingListModule =
 
     type ShoppingList =
         { Id: int
-          Name: string
           Password: string
           ShopName: string
           Items: List<ItemData> }
 
-    let emptyShoppingList name id password =
-        { Name = name
-          Password = password
+    let emptyShoppingList id password =
+        { Password = password
           Items = List.empty
           Id = id
           ShopName = "" }

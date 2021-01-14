@@ -52,7 +52,7 @@ module WaypointsOrder =
                 | (itemData, _, _) -> itemData)
 
 
-        { Name = shoppingList.Name
+        { 
           Password = shoppingList.Password
           Items = sortedItems
           ShopName = shoppingList.ShopName

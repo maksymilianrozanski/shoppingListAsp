@@ -60,7 +60,6 @@ let ``should pick waypoints for all items`` () =
 
     let shoppingList: ShoppingListWithDepartment =
         { Id = 0
-          Name = "My-shopping-list"
           Password = "pass"
           ShopName = "todo"
           Items =
@@ -83,7 +82,6 @@ let ``should pick waypoints for all items`` () =
 
     let expected: ShoppingListWithWaypoints =
         { Id = 0
-          Name = "My-shopping-list"
           Password = "pass"
           ShopName = "todo"
           Items =

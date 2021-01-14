@@ -13,11 +13,6 @@ namespace ShoppingList.Pages
     public class CreateList : PageModel
     {
         [BindProperty]
-        [Required(ErrorMessage = "Shopping list name is required"),
-         MaxLength(100)]
-        public string ShoppingListName { get; set; } = "";
-
-        [BindProperty]
         [Required(ErrorMessage = "Username is required"),
          MaxLength(100)]
         public string Username { get; set; } = "";
@@ -43,7 +38,7 @@ namespace ShoppingList.Pages
         public void OnPost()
         {
             if (ModelState.IsValid)
-                new ShoppingListCreateDto(ShoppingListName, Password, ShopName).Pipe(createDto =>
+                new ShoppingListCreateDto(Password, ShopName).Pipe(createDto =>
                     _repository.CreateShoppingList(createDto)
                         .Map(readDto =>
                             _authenticationHandler

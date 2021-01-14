@@ -14,7 +14,6 @@ namespace SharedTypesTests.Entities
             var shoppingListEntity = new ShoppingListEntity
             {
                 Id = 10,
-                Name = "Some list",
                 Password = "pass",
                 ShopName = "shopName",
                 ItemDataEntities = new List<ItemDataEntity>()
@@ -64,7 +63,7 @@ namespace SharedTypesTests.Entities
                     ShoppingListEntity = shoppingListEntity
                 }
             };
-            var expected = new ShoppingListModule.ShoppingList(10, "Some list", "pass", "shopName",
+            var expected = new ShoppingListModule.ShoppingList(10, "pass", "shopName",
                 ListModule.OfSeq(convertedItemData));
 
             Assert.AreEqual(expected, (ShoppingListModule.ShoppingList) shoppingListEntity);
@@ -78,7 +77,6 @@ namespace SharedTypesTests.Entities
             var shoppingListEntity = new ShoppingListEntity
             {
                 Id = 10,
-                Name = "Some list",
                 Password = "pass",
                 ShopName = "shopName",
                 ItemDataEntities = new List<ItemDataEntity>()
@@ -129,7 +127,7 @@ namespace SharedTypesTests.Entities
                 }
             };
 
-            var withOtherItem = new ShoppingListModule.ShoppingList(10, "Some list", "pass", "shopName",
+            var withOtherItem = new ShoppingListModule.ShoppingList(10, "pass", "shopName",
                 ListModule.OfSeq(otherItems));
 
             Assert.AreNotEqual(withOtherItem, (ShoppingListModule.ShoppingList) shoppingListEntity);

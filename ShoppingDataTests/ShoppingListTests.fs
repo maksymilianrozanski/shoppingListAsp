@@ -8,18 +8,18 @@ open ShoppingData.ShoppingListErrors
 [<SetUp>]
 let Setup () = ()
 
-let private shoppingList = emptyShoppingList "MyList" 11 "pass"
+let private shoppingList = emptyShoppingList 11 "pass"
 
-let private modName (list: ShoppingList) =
-    Choice1Of2({ list with Name = "modifiedName" })
+let private modifyId (list: ShoppingList) =
+    Choice1Of2({ list with Id = 120 })
 
 [<Test>]
 let ``should execute function if password is correct`` () =
     let expected =
-        emptyShoppingList "modifiedName" 11 "pass"
+        emptyShoppingList 120 "pass"
 
     let result =
-        executeIfPassword modName shoppingList "pass"
+        executeIfPassword modifyId shoppingList "pass"
 
     match result with
     | Choice1Of2 (r) -> Assert.AreEqual(expected, r)
@@ -29,7 +29,7 @@ let ``should execute function if password is correct`` () =
 [<Test>]
 let ``should return Choice1Of2(IncorrectPassword) error if password is not correct`` () =
     let result =
-        executeIfPassword modName shoppingList "badPass"
+        executeIfPassword modifyId shoppingList "badPass"
 
     match result with
     | Choice2Of2 (f) -> Assert.AreEqual(IncorrectPassword, f)
@@ -57,7 +57,7 @@ let chocolate =
 [<Test>]
 let ``should return list with item added`` () =
     let initial =
-        { Name = "myList"
+        { 
           Password = "pass"
           Items = [ milk ]
           Id = 11
@@ -72,7 +72,7 @@ let ``should return list with item added`` () =
     Assert.AreEqual(expected, result)
 
 let threeItemList =
-    { Name = "myList"
+    { 
       Password = "pass"
       Items = [ milk; coffee; chocolate ]
       Id = 11
