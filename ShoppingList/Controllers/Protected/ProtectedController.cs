@@ -10,6 +10,7 @@ using ShoppingList.Data.List;
 using ShoppingList.Data.List.Errors;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 using static LaYumba.Functional.F;
+using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
 
 namespace ShoppingList.Controllers.Protected
 {
@@ -27,7 +28,7 @@ namespace ShoppingList.Controllers.Protected
 
         [HttpPost]
         [Route("modifyItem")]
-        public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDtoNoPassword itemData) =>
+        public ActionResult<ShoppingListReadDto> ModifyShoppingListItem(ItemDataActionDto itemData) =>
             _repository.ModifyShoppingList(itemData)
                 .Pipe(ShoppingListModificationResultTyped);
 

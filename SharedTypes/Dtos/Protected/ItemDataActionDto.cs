@@ -10,7 +10,7 @@ using ModifyItemDataAction =
 
 namespace SharedTypes.Dtos.Protected
 {
-    public class ItemDataActionDtoNoPassword
+    public class ItemDataActionDto
     {
         public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
             new Dictionary<ItemDataActions, ModifyItemDataAction>
@@ -21,7 +21,7 @@ namespace SharedTypes.Dtos.Protected
                 {(ItemDataActions) 3, ShoppingListModifyModule.listItemToCancelled}
             }.ToImmutableDictionary();
 
-        public ItemDataActionDtoNoPassword(string user, int itemId, int shoppingListId, int actionNumber)
+        public ItemDataActionDto(string user, int itemId, int shoppingListId, int actionNumber)
         {
             User = user;
             ItemId = itemId;

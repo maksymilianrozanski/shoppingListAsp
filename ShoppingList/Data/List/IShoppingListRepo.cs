@@ -2,6 +2,7 @@ using LaYumba.Functional;
 using SharedTypes.Dtos;
 using SharedTypes.Dtos.Protected;
 using ShoppingData;
+using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
 
 namespace ShoppingList.Data.List
 {
@@ -20,7 +21,7 @@ namespace ShoppingList.Data.List
             Option<ItemDataCreateDto> itemToAdd);
 
         Either<Error, ShoppingListReadDto> ModifyShoppingList(
-            Option<ItemDataActionDtoNoPassword> itemDataAction);
+            Option<ItemDataActionDto> itemDataAction);
 
         bool SaveChanges();
     }

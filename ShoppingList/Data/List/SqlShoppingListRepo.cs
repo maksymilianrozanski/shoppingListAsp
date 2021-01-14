@@ -17,6 +17,7 @@ using static ShoppingData.ShoppingListModule;
 using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
     GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
+using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
 
 namespace ShoppingList.Data.List
 {
@@ -143,7 +144,7 @@ namespace ShoppingList.Data.List
                     .GetOrElse(() => Left((Error) new UnknownError()))));
 
         public Either<Error, ShoppingListReadDto> ModifyShoppingList(
-            Option<ItemDataActionDtoNoPassword> itemDataAction) =>
+            Option<ItemDataActionDto> itemDataAction) =>
             itemDataAction
                 .Pipe(ApplyItemDataAction)
                 .Map(r =>
@@ -157,14 +158,14 @@ namespace ShoppingList.Data.List
 
         private Option<(ShoppingListEntity entityFromDb,
                 FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>
-            ApplyItemDataAction(Option<ItemDataActionDtoNoPassword> itemDataAction)
+            ApplyItemDataAction(Option<ItemDataActionDto> itemDataAction)
             => itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
                     .Map(j => (i, j).ToTuple()))
                 .Bind(bothNonEmpty =>
                 {
                     var (updateDto, entityFromDb) = bothNonEmpty;
-                    return ItemDataActionDtoNoPassword.Actions.TryGetValue(
-                        (ItemDataActionDto.ItemDataActions)
+                    return ItemDataActionDto.Actions.TryGetValue(
+                        (SharedTypes.Dtos.ItemDataActionDto.ItemDataActions)
                         updateDto.ActionNumber, out var modifyingFunction)
                         ? Some((updateDto, entityFromDb, modifyingFunction).ToTuple())
                         : new None();
