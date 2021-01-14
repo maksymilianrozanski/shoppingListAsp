@@ -14,21 +14,36 @@
 <body>
 <div>
     <form method="post">
-        <label asp-for="ShoppingListName">Shopping list name</label>
-        <input id="name" type="text" asp-for="ShoppingListName">
-        <span asp-validation-for="ShoppingListName" class="text-danger"></span>
+        <div>
+            <label asp-for="ShoppingListName">Shopping list name</label>
+        </div>
+        <div>
+            <input id="name" type="text" asp-for="ShoppingListName" placeholder="Shopping list name">
+            <span asp-validation-for="ShoppingListName" class="text-danger"></span>
+        </div>
 
-        <label asp-for="Username">Username</label>
-        <input id="username" type="text" asp-for="Username">
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <div>
+            <label asp-for="Username">Username</label>
+        </div>
+        <div>
+            <input id="username" type="text" asp-for="Username" placeholder="username">
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Password">Password</label>
+        </div>
+        <div>
+            <input id="password" type="password" asp-for="Password" placeholder="password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
 
-        <label asp-for="Password">Password</label>
-        <input id="password" type="password" asp-for="Password">
-        <span asp-validation-for="Password" class="text-danger"></span>
-
-        <label asp-for="ShopName">Shop name</label>
-        <input id="shopName" type="text" asp-for="ShopName">
-        <span asp-validation-for="ShopName" class="text-danger"></span>
+        <div>
+            <label asp-for="ShopName">Shop name</label>
+        </div>
+        <div>
+            <input id="shopName" type="text" asp-for="ShopName" placeholder="shop name">
+            <span asp-validation-for="ShopName" class="text-danger"></span>
+        </div>
 
         <div>
             <button id="submit">Submit</button>
