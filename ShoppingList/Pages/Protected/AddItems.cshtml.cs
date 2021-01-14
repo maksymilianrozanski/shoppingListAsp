@@ -33,7 +33,7 @@ namespace ShoppingList.Pages.Protected
         public void OnPost()
         {
             var newItem = ToOptionUser(HttpContext)
-                .Map(i => new ItemDataCreateDtoNoPassword(i.ShoppingListId, ItemName, Quantity))
+                .Map(i => new ItemDataCreateDto(i.ShoppingListId, ItemName, Quantity))
                 .Map(i => _shoppingListRepo.AddItemToShoppingListDto(i));
 
             newItem.ForEach(i =>

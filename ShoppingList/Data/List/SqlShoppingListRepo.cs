@@ -103,7 +103,7 @@ namespace ShoppingList.Data.List
                 .GetOrElse(Left(ShoppingListErrors.ShoppingListErrors.ListItemNotFound));
 
         public Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
-            Option<ItemDataCreateDtoNoPassword> itemToAdd)
+            Option<ItemDataCreateDto> itemToAdd)
         {
             Console.WriteLine("received AddItemToShoppingListDto (without password)request");
             return itemToAdd
@@ -112,7 +112,7 @@ namespace ShoppingList.Data.List
         }
 
         private Either<Error, ShoppingListEntity> AddItemToShoppingList(
-            Option<ItemDataCreateDtoNoPassword> itemToAdd)
+            Option<ItemDataCreateDto> itemToAdd)
         {
             Console.WriteLine("received AddItemToShoppingListDto (without password)request");
             return itemToAdd
@@ -124,7 +124,7 @@ namespace ShoppingList.Data.List
         }
 
         private Option<(ShoppingListEntity shoppingListEntity, ShoppingListModule.ShoppingList result)>
-            AddItemToList(Option<ItemDataCreateDtoNoPassword> itemToAdd) =>
+            AddItemToList(Option<ItemDataCreateDto> itemToAdd) =>
             itemToAdd
                 .Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
                     .Map(dbList => (i, dbList)))

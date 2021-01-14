@@ -52,7 +52,7 @@ namespace SharedTypes.Entities
                 _ => throw new MatchFailureException()
             };
 
-        public static implicit operator ItemDataEntity(ItemDataCreateDtoNoPassword itemData) =>
+        public static implicit operator ItemDataEntity(ItemDataCreateDto itemData) =>
             new()
             {
                 Id = 0,

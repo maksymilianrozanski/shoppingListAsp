@@ -17,7 +17,7 @@ namespace ShoppingList.Data.List
             string password);
 
         Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
-            Option<ItemDataCreateDtoNoPassword> itemToAdd);
+            Option<ItemDataCreateDto> itemToAdd);
 
         Either<Error, ShoppingListReadDto> ModifyShoppingList(
             Option<ItemDataActionDtoNoPassword> itemDataAction);

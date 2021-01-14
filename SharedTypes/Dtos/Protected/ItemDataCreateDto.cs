@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SharedTypes.Dtos.Protected
 {
-    public class ItemDataCreateDtoNoPassword
+    public class ItemDataCreateDto
     {
-        public ItemDataCreateDtoNoPassword(int shoppingListId, string name, int quantity)
+        public ItemDataCreateDto(int shoppingListId, string name, int quantity)
         {
             ShoppingListId = shoppingListId;
             Name = name;
