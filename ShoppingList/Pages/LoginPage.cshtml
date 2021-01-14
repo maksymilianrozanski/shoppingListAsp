@@ -16,16 +16,22 @@
     <form method="post">
         <div>
             <label asp-for="Username">Username:</label>
+        </div>
+        <div>
             <input type="text" id="username" asp-for="Username">
             <span asp-validation-for="Username" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Password">Password:</label>
+        </div>
+        <div>
             <input type="password" id="password" asp-for="Password">
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="ShoppingListId">Shopping list id:</label>
+        </div>
+        <div>
             <input type="number" id="shoppingListId" asp-for="ShoppingListId">
             <span asp-validation-for="ShoppingListId" class="text-danger"></span>
         </div>
