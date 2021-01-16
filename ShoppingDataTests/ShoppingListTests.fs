@@ -86,30 +86,3 @@ let ``should return Choice2Of2(ForbiddenOperation)`` () =
 
     let result = modifyItem f 1 threeItemList
     Assert.AreEqual(expected, result)
-
-let bread id =
-    { Name = "Bread"
-      Quantity = 1
-      ItemType = ToBuy
-      Id = id }
-
-[<Test>]
-let ``should not add item to the list when Items contains item with Id`` () =
-    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(ItemWithIdAlreadyExists)
-
-    let result =
-        addItemIfNotExist (bread 1) threeItemList
-
-    Assert.AreEqual(expected, result)
-
-[<Test>]
-let ``should add item to the list when Items does not contain item with Id`` () =
-    let itemToAdd = (bread 3)
-
-    let expected: Choice<ShoppingList, ShoppingListErrors> =
-        Choice1Of2(addItem threeItemList itemToAdd)
-
-    let result =
-        addItemIfNotExist itemToAdd threeItemList
-
-    Assert.AreEqual(expected, result)
