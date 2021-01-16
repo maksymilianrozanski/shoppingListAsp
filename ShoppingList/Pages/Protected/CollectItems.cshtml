@@ -18,7 +18,7 @@ const currentUsername =  "@Model.CurrentUsername";
 
 (function () {
         const itemActionsIds = {
-            AssignItem: 0,
+            ItemLookingFor: 0,
             ItemToNotFound: 1,
             ItemToBought: 2,
             ItemToCancelled: 3
@@ -40,7 +40,7 @@ const currentUsername =  "@Model.CurrentUsername";
 
         const itemActionText = (actionId) => {
             switch (actionId) {
-                case itemActionsIds.AssignItem:
+                case itemActionsIds.ItemLookingFor:
                     return "Search for";
                 case itemActionsIds.ItemToNotFound:
                     return "Not found";
