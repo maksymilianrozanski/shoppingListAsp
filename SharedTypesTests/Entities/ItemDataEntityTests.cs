@@ -23,7 +23,7 @@ namespace SharedTypesTests.Entities
             var itemsToConvert = new List<ShoppingItemModule.ItemData>
             {
                 new(10, "sugar", 1, Bought),
-                new(11, "coffee", 20, NewAssigned("Garfield")),
+                new(11, "coffee", 20, LookingFor),
                 new(12, "milk", 21, ToBuy),
                 new(13, "apples", 22, Cancelled),
                 new(14, "pineapple", 23, NotFound),
@@ -32,12 +32,12 @@ namespace SharedTypesTests.Entities
             var expectedItems = new List<ItemDataEntity>
             {
                 new() {Id = 10, Name = "sugar", Quantity = 1, ItemType = "Bought"},
-                new() {Id = 11, Name = "coffee", Quantity = 20, ItemType = "Assigned Garfield"},
+                new() {Id = 11, Name = "coffee", Quantity = 20, ItemType = "LookingFor"},
                 new() {Id = 12, Name = "milk", Quantity = 21, ItemType = "ToBuy"},
                 new() {Id = 13, Name = "apples", Quantity = 22, ItemType = "Cancelled"},
                 new() {Id = 14, Name = "pineapple", Quantity = 23, ItemType = "NotFound"}
             };
-
+//todo: fails
             Assert.True(AreAllEqual(expectedItems, itemsToConvert));
         }
 
@@ -45,7 +45,7 @@ namespace SharedTypesTests.Entities
         public void ConvertedItemShouldNotBeEqual()
         {
             var item = new ShoppingItemModule.ItemData(11, "coffee", 20,
-                NewAssigned("Garfield"));
+                LookingFor);
 
             var notEqual = new ShoppingItemModule.ItemData(11, "coffee", 20, ToBuy);
             Assert.AreNotEqual(item, notEqual);
@@ -70,12 +70,12 @@ namespace SharedTypesTests.Entities
         public void ShouldConvertStringToItemType()
         {
             var items = new List<string>
-                {"ToBuy", "Bought", "Cancelled", "NotFound", "Assigned Garfield", "Assigned Some Cat"};
+                {"ToBuy", "Bought", "Cancelled", "NotFound", "LookingFor"};
             var expected = new List<ShoppingItemModule.ItemType>
-                {ToBuy, Bought, Cancelled, NotFound, NewAssigned("Garfield"), NewAssigned("Some Cat")};
+                {ToBuy, Bought, Cancelled, NotFound, LookingFor};
 
             var results = items.Map(ItemDataEntity.ItemTypeFromString).ToList();
-
+            //todo: fails
             expected.Zip(results).ForEach(i => Assert.AreEqual(i.First, i.Second));
             Assert.AreEqual(expected.Count, results.Count);
         }
@@ -83,6 +83,7 @@ namespace SharedTypesTests.Entities
         [Test]
         public void ShouldThrowMatchFailureException()
         {
+            //todo: fails
             var invalidItems = new List<string> {"Cat", "AssignedCat", "", "Assigned", "Assigned "};
             invalidItems.ForEach(i =>
                 Assert.Throws<MatchFailureException>(
@@ -97,11 +98,12 @@ namespace SharedTypesTests.Entities
                 Id = 21,
                 Name = "Milk",
                 Quantity = 3,
-                ItemType = "Assigned somebody",
+                ItemType = "LookingFor",
                 ShoppingListEntityRefId = 10
             };
 
-            var expected = new ShoppingItemModule.ItemData(21, "Milk", 3, NewAssigned("somebody"));
+            var expected = new ShoppingItemModule.ItemData(21, "Milk", 3, LookingFor);
+            //todo: fails
             Assert.True(expected.Equals(item));
         }
     }

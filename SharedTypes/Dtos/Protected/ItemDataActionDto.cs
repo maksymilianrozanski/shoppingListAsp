@@ -15,7 +15,7 @@ namespace SharedTypes.Dtos.Protected
         public static readonly ImmutableDictionary<ItemDataActions, ModifyItemDataAction> Actions =
             new Dictionary<ItemDataActions, ModifyItemDataAction>
             {
-                {0, ShoppingListModifyModule.listItemToAssigned},
+                {0, ShoppingListModifyModule.listItemToLookingFor},
                 {(ItemDataActions) 1, ShoppingListModifyModule.listItemToNotFound},
                 {(ItemDataActions) 2, ShoppingListModifyModule.listItemToBought},
                 {(ItemDataActions) 3, ShoppingListModifyModule.listItemToCancelled}

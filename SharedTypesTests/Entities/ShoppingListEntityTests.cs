@@ -41,7 +41,7 @@ namespace SharedTypesTests.Entities
 
             shoppingListEntity.ItemDataEntities.Add(item1);
             shoppingListEntity.ItemDataEntities.Add(item2);
-
+            //todo: fails
             ICollection<ShoppingItemModule.ItemData> convertedItemData = new List<ShoppingItemModule.ItemData>
             {
                 new ItemDataEntity
@@ -104,7 +104,7 @@ namespace SharedTypesTests.Entities
 
             shoppingListEntity.ItemDataEntities.Add(item1);
             shoppingListEntity.ItemDataEntities.Add(item2);
-
+            //todo: fails
             ICollection<ShoppingItemModule.ItemData> otherItems = new List<ShoppingItemModule.ItemData>
             {
                 new ItemDataEntity

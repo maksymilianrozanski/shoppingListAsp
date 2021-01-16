@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.FSharp.Core;
 using SharedTypes.Dtos.Protected;
@@ -31,7 +32,7 @@ namespace SharedTypes.Entities
         {
             return itemType switch
             {
-                ShoppingItemModule.ItemType.Assigned assigned => "Assigned " + assigned.Item,
+                var x when x.IsLookingFor => "Assigned ",
                 var x when x.IsToBuy => "ToBuy",
                 var x when x.IsBought => "Bought",
                 var x when x.IsCancelled => "Cancelled",
@@ -43,13 +44,15 @@ namespace SharedTypes.Entities
         public static ShoppingItemModule.ItemType ItemTypeFromString(string itemType) =>
             itemType switch
             {
-                "ToBuy" => ShoppingItemModule.ItemType.ToBuy,
-                "Bought" => ShoppingItemModule.ItemType.Bought,
-                "Cancelled" => ShoppingItemModule.ItemType.Cancelled,
-                "NotFound" => ShoppingItemModule.ItemType.NotFound,
-                var x when x.StartsWith("Assigned ") && x.Length > 9 =>
-                    ShoppingItemModule.ItemType.NewAssigned(x.Substring(9)),
-                _ => throw new MatchFailureException()
+                _ => throw new NotImplementedException(),
+                //todo: update implementation
+                // "ToBuy" => ShoppingItemModule.ItemType.ToBuy,
+                // "Bought" => ShoppingItemModule.ItemType.Bought,
+                // "Cancelled" => ShoppingItemModule.ItemType.Cancelled,
+                // "NotFound" => ShoppingItemModule.ItemType.NotFound,
+                // "Assigned " =>
+                //     ShoppingItemModule.ItemType.LookingFor,
+                // _ => throw new MatchFailureException()
             };
 
         public static implicit operator ItemDataEntity(ItemDataCreateDto itemData) =>
