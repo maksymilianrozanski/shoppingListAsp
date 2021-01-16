@@ -32,7 +32,7 @@ namespace SharedTypes.Entities
         {
             return itemType switch
             {
-                var x when x.IsLookingFor => "Assigned ",
+                var x when x.IsLookingFor => "LookingFor",
                 var x when x.IsToBuy => "ToBuy",
                 var x when x.IsBought => "Bought",
                 var x when x.IsCancelled => "Cancelled",
@@ -44,15 +44,13 @@ namespace SharedTypes.Entities
         public static ShoppingItemModule.ItemType ItemTypeFromString(string itemType) =>
             itemType switch
             {
-                _ => throw new NotImplementedException(),
-                //todo: update implementation
-                // "ToBuy" => ShoppingItemModule.ItemType.ToBuy,
-                // "Bought" => ShoppingItemModule.ItemType.Bought,
-                // "Cancelled" => ShoppingItemModule.ItemType.Cancelled,
-                // "NotFound" => ShoppingItemModule.ItemType.NotFound,
-                // "Assigned " =>
-                //     ShoppingItemModule.ItemType.LookingFor,
-                // _ => throw new MatchFailureException()
+                "ToBuy" => ShoppingItemModule.ItemType.ToBuy,
+                "Bought" => ShoppingItemModule.ItemType.Bought,
+                "Cancelled" => ShoppingItemModule.ItemType.Cancelled,
+                "NotFound" => ShoppingItemModule.ItemType.NotFound,
+                "LookingFor" =>
+                    ShoppingItemModule.ItemType.LookingFor,
+                _ => throw new MatchFailureException()
             };
 
         public static implicit operator ItemDataEntity(ItemDataCreateDto itemData) =>
