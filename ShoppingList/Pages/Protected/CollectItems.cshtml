@@ -13,7 +13,7 @@
 </head>
 <body>
 <script>
-const currentShoppingListId =  @Model.CurrentShoppingListId;
+const currentShoppingListId = @Model.CurrentShoppingListId;
 const currentUsername =  "@Model.CurrentUsername";
 
 (function () {
@@ -24,23 +24,24 @@ const currentUsername =  "@Model.CurrentUsername";
             ItemToCancelled: 3
         }
 
+        //todo: refactor
         const getAllowedActions = (itemType) => {
             if (itemType.startsWith("ToBuy"))
-                return [itemActionsIds.AssignItem, itemActionsIds.ItemToCancelled];
-            else if (itemType.startsWith("Assigned"))
-                return [itemActionsIds.ItemToBought, itemActionsIds.ItemToNotFound, itemActionsIds.ItemToCancelled];
+                return [0, 1, 2, 3];
+            else if (itemType.startsWith("LookingFor"))
+                return [1, 2, 3];
             else if (itemType.startsWith("Bought"))
-                return [];
+                return [0, 1, 3];
             else if (itemType.startsWith("NotFound"))
-                return [itemActionsIds.AssignItem, itemActionsIds.ItemToCancelled];
+                return [0, 2, 3];
             else if (itemType.startsWith("Cancelled"))
-                return [];
+                return [0, 1, 2];
         }
 
         const itemActionText = (actionId) => {
             switch (actionId) {
                 case itemActionsIds.AssignItem:
-                    return "Assign item";
+                    return "Search for";
                 case itemActionsIds.ItemToNotFound:
                     return "Not found";
                 case itemActionsIds.ItemToBought:
@@ -55,8 +56,8 @@ const currentUsername =  "@Model.CurrentUsername";
 
             if (itemType === "ToBuy")
                 return "To buy";
-            else if (itemType.startsWith("Assigned"))
-                return "Assigned to " + itemType.substring(9);
+            else if (itemType === "LookingFor")
+                return "Searching for";
             else if (itemType === "Bought")
                 return "Bought";
             else if (itemType === "NotFound")
