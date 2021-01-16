@@ -13,28 +13,6 @@ let private shoppingList = emptyShoppingList 11 "pass"
 let private modifyId (list: ShoppingList) =
     Choice1Of2({ list with Id = 120 })
 
-[<Test>]
-let ``should execute function if password is correct`` () =
-    let expected =
-        emptyShoppingList 120 "pass"
-
-    let result =
-        executeIfPassword modifyId shoppingList "pass"
-
-    match result with
-    | Choice1Of2 (r) -> Assert.AreEqual(expected, r)
-    | _ -> failwith ("should match to Choice1Of2")
-
-
-[<Test>]
-let ``should return Choice1Of2(IncorrectPassword) error if password is not correct`` () =
-    let result =
-        executeIfPassword modifyId shoppingList "badPass"
-
-    match result with
-    | Choice2Of2 (f) -> Assert.AreEqual(IncorrectPassword, f)
-    | _ -> failwith ("should match to Choice1Of2")
-
 let milk =
     { Name = "Milk"
       Quantity = 2

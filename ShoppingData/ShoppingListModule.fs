@@ -18,9 +18,6 @@ module ShoppingListModule =
           Id = id
           ShopName = "" }
 
-    let executeIfPassword f (list: ShoppingList) password =
-        if (list.Password = password) then Choice.flatten (Choice1Of2(f (list))) else Choice2Of2(IncorrectPassword)
-
     let addItem (list: ShoppingList) item =
         { list with
               Items = list.Items @ [ item ] }
