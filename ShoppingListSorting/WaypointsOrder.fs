@@ -2,6 +2,7 @@ namespace ShoppingListSorting
 
 open System
 open FSharpPlus
+open ShoppingData.ShoppingItemModule
 open ShoppingData.ShoppingListModule
 open ShoppingListSorting.ShoppingItemsAddWaypoints
 
@@ -52,13 +53,28 @@ module WaypointsOrder =
                 | (itemData, _, _) -> itemData)
 
 
-        { 
-          Password = shoppingList.Password
+
+        { Password = shoppingList.Password
           Items = sortedItems
           ShopName = shoppingList.ShopName
           Id = shoppingList.Id }: ShoppingList
 
+    /// puts items which ItemType which should not be included in sorting is 2nd tuple value
+    let private partitionList (shoppingList: ShoppingList) =
+        let allItems = shoppingList.Items
+
+        let (toSort, toSkip) =
+            List.partition (fun i ->
+                (i.ItemType = ItemType.ToBuy
+                 || i.ItemType = ItemType.LookingFor)) allItems
+
+        let result = { shoppingList with Items = toSort }
+        (result, toSkip)
+
     let sortShoppingList predictingFun waypoints shoppingList =
-        predictAllItems predictingFun shoppingList
+        let (list, toSkip) = partitionList shoppingList
+
+        predictAllItems predictingFun list
         |> addWaypointsToShoppingList waypoints
         |> sortShoppingListItems
+        |> fun x -> { x with Items = x.Items @ toSkip }
