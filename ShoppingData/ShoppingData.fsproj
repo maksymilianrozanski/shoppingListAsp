@@ -9,6 +9,7 @@
         <Compile Include="ShoppingItemModule.fs" />
         <Compile Include="SimpleShoppingItemModule.fs" />
         <Compile Include="ShoppingListModule.fs" />
+        <Compile Include="SimpleShoppingListModule.fs" />
         <Compile Include="ShoppingListModifyModule.fs" />
     </ItemGroup>
 
