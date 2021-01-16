@@ -14,4 +14,4 @@ module SimpleShoppingItemModule =
           Quantity: int
           ItemType: ItemType }
 
-    let modifyStatus item itemType = { item with ItemType = itemType }
+    let modifyStatus itemType (_:string) item = Choice1Of2 { item with ItemType = itemType }
