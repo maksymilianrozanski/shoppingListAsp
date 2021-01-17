@@ -24,12 +24,27 @@ const currentUsername =  "@Model.CurrentUsername";
             ItemToCancelled: 3
         }
         
+        const toBuyColor = "#f5f5f5";
+        const lookingForColor = "#c8fff5";
+        const boughtColor = "#edfced";
+        const notFoundColor = "#faeed5";
+        const cancelledColor = "#c8c8c8";
+        
         const actionButtons = [
             itemActionsIds.ItemLookingFor,
             itemActionsIds.ItemToBought,
             itemActionsIds.ItemToNotFound,
             itemActionsIds.ItemToCancelled];
 
+        const actionButtonColor = (actionId) => {
+            switch (actionId) {
+                case itemActionsIds.ItemLookingFor: return lookingForColor
+                case itemActionsIds.ItemToNotFound: return notFoundColor
+                case itemActionsIds.ItemToBought: return boughtColor
+                case itemActionsIds.ItemToCancelled: return cancelledColor
+            }
+        }
+            
         const itemActionText = (actionId) => {
             switch (actionId) {
                 case itemActionsIds.ItemLookingFor:
@@ -62,15 +77,15 @@ const currentUsername =  "@Model.CurrentUsername";
         const itemTypeBackgroundColor = (itemDataReadDto) => {
             switch (itemDataReadDto.itemType){
                 case "ToBuy" :
-                    return "#f5f5f5";
+                    return toBuyColor;
                 case "LookingFor": 
-                    return "#c8fff5";
+                    return lookingForColor;
                 case "Bought": 
-                    return "#edfced";
+                    return boughtColor;
                 case "NotFound":
-                    return "#faeed5";
+                    return notFoundColor;
                 case "Cancelled":
-                     return "#c8c8c8";
+                     return cancelledColor;
             }
         }
         
@@ -114,6 +129,8 @@ const currentUsername =  "@Model.CurrentUsername";
             if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)) {
                 actionButton.disabled = true;    
             }
+
+            actionButton.style.backgroundColor = actionButtonColor(actionNumber);
             
             const actionDto = () =>
                 ({
