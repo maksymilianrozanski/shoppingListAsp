@@ -23,10 +23,12 @@ const currentUsername =  "@Model.CurrentUsername";
             ItemToBought: 2,
             ItemToCancelled: 3
         }
-
-        const getAllowedActions = (itemType) => {
-                return [0, 2, 1, 3];
-        }
+        
+        const actionButtons = [
+            itemActionsIds.ItemLookingFor,
+            itemActionsIds.ItemToBought,
+            itemActionsIds.ItemToNotFound,
+            itemActionsIds.ItemToCancelled];
 
         const itemActionText = (actionId) => {
             switch (actionId) {
@@ -83,7 +85,7 @@ const currentUsername =  "@Model.CurrentUsername";
             );
         }
 
-        function shouldBeDisabled(itemType, actionNumber){
+        function shouldBeDisabled(itemType, actionNumber) {
             return (actionNumber === itemActionsIds.ItemLookingFor && itemType.startsWith("LookingFor") ||
             actionNumber === itemActionsIds.ItemToNotFound && itemType.startsWith("NotFound") ||
             actionNumber === itemActionsIds.ItemToBought && itemType.startsWith("Bought") ||
@@ -94,7 +96,7 @@ const currentUsername =  "@Model.CurrentUsername";
             const actionButton = document.createElement("button");
             actionButton.innerText = itemActionText(actionNumber);
 
-            if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)){
+            if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)) {
                 actionButton.disabled = true;    
             }
             
@@ -115,8 +117,7 @@ const currentUsername =  "@Model.CurrentUsername";
         }
 
         const itemButtons = (itemDataReadDto) => {
-            const itemType = itemDataReadDto.itemType;
-            const actions = Array.from(getAllowedActions(itemType));
+            const actions = Array.from(actionButtons);
             return actions.map(i => createItemActionButton(itemDataReadDto)(i));
         }
 
