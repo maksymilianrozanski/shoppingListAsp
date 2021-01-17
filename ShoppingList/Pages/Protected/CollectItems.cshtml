@@ -26,16 +26,7 @@ const currentUsername =  "@Model.CurrentUsername";
 
         //todo: refactor
         const getAllowedActions = (itemType) => {
-            if (itemType.startsWith("ToBuy"))
                 return [0, 1, 2, 3];
-            else if (itemType.startsWith("LookingFor"))
-                return [1, 2, 3];
-            else if (itemType.startsWith("Bought"))
-                return [0, 1, 3];
-            else if (itemType.startsWith("NotFound"))
-                return [0, 2, 3];
-            else if (itemType.startsWith("Cancelled"))
-                return [0, 1, 2];
         }
 
         const itemActionText = (actionId) => {
@@ -93,14 +84,25 @@ const currentUsername =  "@Model.CurrentUsername";
             );
         }
 
-        const createItemActionButton = (itemDataActionDtoNoPassword) => (actionNumber) => {
-            const actionButton = document.createElement("button")
+        function shouldBeDisabled(itemType, actionNumber){
+            return (actionNumber === itemActionsIds.ItemLookingFor && itemType.startsWith("LookingFor") ||
+            actionNumber === itemActionsIds.ItemToNotFound && itemType.startsWith("NotFound") ||
+            actionNumber === itemActionsIds.ItemToBought && itemType.startsWith("Bought") ||
+            actionNumber ===itemActionsIds.ItemToCancelled && itemType.startsWith("Cancelled"));
+        }
+        
+        const createItemActionButton = (itemDataReadDto) => (actionNumber) => {
+            const actionButton = document.createElement("button");
             actionButton.innerText = itemActionText(actionNumber);
 
+            if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)){
+                actionButton.disabled = true;    
+            }
+            
             const actionDto = () =>
                 ({
                     user: currentUsername,
-                    itemId: itemDataActionDtoNoPassword.id,
+                    itemId: itemDataReadDto.id,
                     shoppingListId: currentShoppingListId,
                     actionNumber: actionNumber
                 });
@@ -113,25 +115,25 @@ const currentUsername =  "@Model.CurrentUsername";
             return actionButton;
         }
 
-        const itemButtons = (itemDataActionDtoNoPassword) => {
-            const itemType = itemDataActionDtoNoPassword.itemType;
+        const itemButtons = (itemDataReadDto) => {
+            const itemType = itemDataReadDto.itemType;
             const actions = Array.from(getAllowedActions(itemType));
-            return actions.map(i => createItemActionButton(itemDataActionDtoNoPassword)(i));
+            return actions.map(i => createItemActionButton(itemDataReadDto)(i));
         }
 
-        const itemWithActions = (itemDataActionDtoNoPassword) => {
+        const itemWithActions = (itemDataReadDto) => {
             const liElement = document.createElement("li");
             liElement.style.cssText = "border: solid #e0e0e0;\nborder-width: 1px;\nborder-radius: 4px;\npadding: 2px;\nmargin: 2px;\nbox-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);";
 
             const displayedText = document.createElement("div")
-            displayedText.innerText = itemDataActionDtoNoPassword.name.toString() +
-                " - " + itemDataActionDtoNoPassword.quantity.toString() + ", " + itemTypeDisplayedText(itemDataActionDtoNoPassword);
+            displayedText.innerText = itemDataReadDto.name.toString() +
+                " - " + itemDataReadDto.quantity.toString() + ", " + itemTypeDisplayedText(itemDataReadDto);
             liElement.appendChild(displayedText);
 
             const buttonsContainer = document.createElement("div");
             liElement.appendChild(buttonsContainer);
             
-            itemButtons(itemDataActionDtoNoPassword).forEach(i => buttonsContainer.appendChild(i));
+            itemButtons(itemDataReadDto).forEach(i => buttonsContainer.appendChild(i));
             return liElement;
         }
 
