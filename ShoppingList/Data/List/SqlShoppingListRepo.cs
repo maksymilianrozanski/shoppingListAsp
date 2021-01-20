@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<Groce
     GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
 using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
+
+[assembly: InternalsVisibleTo("ShoppingListTests")]
 
 namespace ShoppingList.Data.List
 {
@@ -70,12 +73,12 @@ namespace ShoppingList.Data.List
                     }, right => right)
                 );
 
-        private static Option<ShoppingListEntity>
+        internal static Option<ShoppingListEntity>
             ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
             shoppingListEntity.Bind(i =>
                 i.ShopName.Length > 0 ? Some(i) : new None());
 
-        private static Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>
+        internal static Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>
             MatchWaypointsToShoppingList(
                 ShoppingListEntity shoppingListEntity,
                 Func<string, Option<ShopWaypointsReadDto>> getShopWaypoints)
@@ -124,17 +127,24 @@ namespace ShoppingList.Data.List
                 .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
         }
 
-        private Option<(ShoppingListEntity shoppingListEntity, ShoppingListModule.ShoppingList result)>
-            AddItemToList(Option<ItemDataCreateDto> itemToAdd) =>
-            itemToAdd
-                .Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
-                    .Map(dbList => (i, dbList)))
-                .Map(pair =>
-                {
-                    var (itemDataCreateDto, shoppingListEntity) = pair;
-                    var result = addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
-                    return (shoppingListEntity, result);
-                });
+        private Func<Option<ItemDataCreateDto>,
+            Option<(ShoppingListEntity shoppingListEntity, ShoppingListModule.ShoppingList result)>> AddItemToList =>
+            AddItemToList2.Apply(GetShoppingListWithChildrenById);
+
+        internal static readonly Func<Func<int, Option<ShoppingListEntity>>, Option<ItemDataCreateDto>, Option<(
+            ShoppingListEntity
+            shoppingListEntity, ShoppingListModule.ShoppingList result)>> AddItemToList2 =
+            (shoppingListWithChildrenById, itemToAdd) =>
+                itemToAdd
+                    .Bind(i =>
+                        shoppingListWithChildrenById(i.ShoppingListId)
+                            .Map(dbList => (i, dbList)))
+                    .Map(pair =>
+                    {
+                        var (itemDataCreateDto, shoppingListEntity) = pair;
+                        var result = addItem(shoppingListEntity, (ItemDataEntity) itemDataCreateDto);
+                        return (shoppingListEntity, result);
+                    });
 
         private Try<Either<Error, ShoppingListEntity>> SortTryEither(
             Try<Either<Error, ShoppingListEntity>> entityToSort)
@@ -156,29 +166,36 @@ namespace ShoppingList.Data.List
                 .Pipe(HandleSavingResultTypedGeneric)
                 .Map(i => (ShoppingListReadDto) i);
 
-        private Option<(ShoppingListEntity entityFromDb,
-                FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>
-            ApplyItemDataAction(Option<ItemDataActionDto> itemDataAction)
-            => itemDataAction.Bind(i => GetShoppingListWithChildrenById(i.ShoppingListId)
-                    .Map(j => (i, j).ToTuple()))
-                .Bind(bothNonEmpty =>
-                {
-                    var (updateDto, entityFromDb) = bothNonEmpty;
-                    return ItemDataActionDto.Actions.TryGetValue(
-                        (SharedTypes.Dtos.ItemDataActionDto.ItemDataActions)
-                        updateDto.ActionNumber, out var modifyingFunction)
-                        ? Some((updateDto, entityFromDb, modifyingFunction).ToTuple())
-                        : new None();
-                })
-                .Map(r =>
-                {
-                    var (updateDto, entityFromDb, modifyingFunction) = r;
-                    var result = modifyingFunction
-                        .Invoke(updateDto.User)
-                        .Invoke(updateDto.ItemId)
-                        .Invoke(entityFromDb);
-                    return (entityFromDb, result);
-                });
+        private Func<Option<ItemDataActionDto>, Option<(ShoppingListEntity entityFromDb,
+                FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>>
+            ApplyItemDataAction => ApplyItemDataAction2.Apply(GetShoppingListWithChildrenById);
+
+        internal static readonly Func<Func<int, Option<ShoppingListEntity>>, Option<ItemDataActionDto>, Option<(
+                ShoppingListEntity
+                entityFromDb,
+                FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>>
+            ApplyItemDataAction2 =
+                (getShoppingListWithChildrenById, itemDataAction) =>
+                    itemDataAction.Bind(i => getShoppingListWithChildrenById(i.ShoppingListId)
+                            .Map(j => (i, j).ToTuple()))
+                        .Bind(bothNonEmpty =>
+                        {
+                            var (updateDto, entityFromDb) = bothNonEmpty;
+                            return ItemDataActionDto.Actions.TryGetValue(
+                                (ItemDataActionDto.ItemDataActions)
+                                updateDto.ActionNumber, out var modifyingFunction)
+                                ? Some((updateDto, entityFromDb, modifyingFunction).ToTuple())
+                                : new None();
+                        })
+                        .Map(r =>
+                        {
+                            var (updateDto, entityFromDb, modifyingFunction) = r;
+                            var result = modifyingFunction
+                                .Invoke(updateDto.User)
+                                .Invoke(updateDto.ItemId)
+                                .Invoke(entityFromDb);
+                            return (entityFromDb, result);
+                        });
 
         private Try<Either<Error, ShoppingListEntity>> WrapSaving(
             (ShoppingListEntity, ShoppingListModule.ShoppingList) values)
@@ -213,7 +230,7 @@ namespace ShoppingList.Data.List
             OptionExt.Map(option, i =>
                 FlattenErrors(i, l1 => new OtherError(l1)));
 
-        private static Either<TL2, T> FlattenErrors<TL1, TL2, T>(
+        internal static Either<TL2, T> FlattenErrors<TL1, TL2, T>(
             Either<TL1, Either<TL2, T>> either, Func<TL1, TL2> errorConversion) => either.Match(
             l => Left(errorConversion(l)),
             r => r);

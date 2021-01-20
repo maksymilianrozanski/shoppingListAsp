@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FSharp.Core;
 using SharedTypes.Dtos;
-using SharedTypes.Dtos.Protected;
 using ShoppingData;
 using ShoppingList.Data.List;
 using ShoppingList.Data.List.Errors;
