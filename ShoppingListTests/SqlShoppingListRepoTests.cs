@@ -10,6 +10,7 @@ using SharedTypes.Entities;
 using ShoppingData;
 using ShoppingList.Data.List;
 using ShoppingList.Data.List.Errors;
+using ShoppingList.Utils;
 using static Waypoints.WaypointsModule;
 
 namespace ShoppingListTests
@@ -90,31 +91,6 @@ namespace ShoppingListTests
 
             result.Match(Assert.IsInstanceOf<ShopWaypointsNotFound>,
                 _ => Assert.Fail("result should match to the left"));
-        }
-
-        [Test]
-        public void ShouldApplyConversionFunctionAndReturnLeft()
-        {
-            var leftValue1 = "1234";
-            var targetLeftValue = 1234;
-
-            Either<int, double> expected = targetLeftValue;
-
-            var result = SqlShoppingListRepo.FlattenErrors<string, int, double>
-                (leftValue1, int.Parse);
-
-            Assert.AreEqual(expected, result);
-        }
-
-        [Test]
-        public void ShouldReturnRight()
-        {
-            Either<int, double> expected = 1234.5;
-            Either<string, Either<int, double>> input = (Either<int, double>) 1234.5;
-
-            var result = SqlShoppingListRepo.FlattenErrors(input, int.Parse);
-
-            Assert.AreEqual(expected, result);
         }
 
         [Test]

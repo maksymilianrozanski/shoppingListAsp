@@ -1,5 +1,7 @@
 namespace ShoppingData
 
+open LaYumba.Functional
+
 module ShoppingListErrors =
     type ShoppingListErrors =
         | IncorrectPassword
@@ -7,3 +9,4 @@ module ShoppingListErrors =
         | ForbiddenOperation
         | ListItemNotFound
         | ItemWithIdAlreadyExists
+        | OtherError of Error

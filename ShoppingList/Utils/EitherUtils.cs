@@ -33,5 +33,9 @@ namespace ShoppingList.Utils
         public static Option<Try<Either<TL, TR>>> OptionTryEitherMap<TL, TR>(this
             Option<Try<Either<TL, TR>>> @this, Func<TR, Option<TR>> f, TL noneFallback)
             => @this.Map(i => i.TryEitherMap(f, noneFallback));
+
+        internal static Either<TL, TR> FlattenEither<TL, TR>(
+            Either<TL, Either<TL, TR>> either) =>
+            either.Bind(i => i);
     }
 }

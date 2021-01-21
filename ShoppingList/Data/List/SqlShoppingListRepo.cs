@@ -14,11 +14,13 @@ using ShoppingList.Data.Waypoints;
 using ShoppingList.Utils;
 using ShoppingListSorting;
 using static LaYumba.Functional.F;
+using static ShoppingData.ShoppingListErrors;
 using static ShoppingData.ShoppingListModule;
 using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<GroceryClassification.GroceryData,
     GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
 using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
+using ShoppingListErrors = ShoppingData.ShoppingListErrors;
 
 [assembly: InternalsVisibleTo("ShoppingListTests")]
 
@@ -106,26 +108,20 @@ namespace ShoppingList.Data.List
                 })
                 .GetOrElse(Left(ShoppingListErrors.ShoppingListErrors.ListItemNotFound));
 
-        public Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
-            Option<ItemDataCreateDto> itemToAdd)
-        {
-            Console.WriteLine("received AddItemToShoppingListDto (without password)request");
-            return itemToAdd
+        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> AddItemToShoppingListDto(
+            Option<ItemDataCreateDto> itemToAdd) =>
+            itemToAdd
                 .Pipe(AddItemToShoppingList)
                 .Map(i => (ShoppingListReadDto) i);
-        }
 
-        private Either<Error, ShoppingListEntity> AddItemToShoppingList(
-            Option<ItemDataCreateDto> itemToAdd)
-        {
-            Console.WriteLine("received AddItemToShoppingListDto (without password)request");
-            return itemToAdd
+        private Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity> AddItemToShoppingList(
+            Option<ItemDataCreateDto> itemToAdd) =>
+            itemToAdd
                 .Pipe(AddItemToList)
                 .Map(WrapSaving)
-                .OptionTryEitherMap(SortEntity, new UnknownError())
+                .OptionTryEitherMap(SortEntity, ShoppingListErrors.ShoppingListErrors.NewOtherError(new UnknownError()))
                 .Map(RunSaving)
-                .GetOrElse((Either<Error, ShoppingListEntity>) new UnknownError());
-        }
+                .GetOrElse((Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>) ShoppingListErrors.ShoppingListErrors.NewOtherError(new UnknownError()));
 
         private Func<Option<ItemDataCreateDto>,
             Option<(ShoppingListEntity shoppingListEntity, ShoppingListModule.ShoppingList result)>> AddItemToList =>
@@ -146,14 +142,17 @@ namespace ShoppingList.Data.List
                         return (shoppingListEntity, result);
                     });
 
-        private Try<Either<Error, ShoppingListEntity>> SortTryEither(
-            Try<Either<Error, ShoppingListEntity>> entityToSort)
-            => entityToSort.Map(j =>
-                j.Bind(k => SortEntity(k)
-                    .Map(m => (Either<Error, ShoppingListEntity>) Right(m))
-                    .GetOrElse(() => Left((Error) new UnknownError()))));
+        private Try<Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>> SortTryEither(
+            Try<Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>> entityToSort)
+            => entityToSort
+                .Map(j =>
+                    j.Bind
+                    (k => SortEntity(k)
+                        .Map(m => (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>) Right(m))
+                        .GetOrElse(() => Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(new UnknownError())))
+                    ));
 
-        public Either<Error, ShoppingListReadDto> ModifyShoppingList(
+        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> ModifyShoppingList(
             Option<ItemDataActionDto> itemDataAction) =>
             itemDataAction
                 .Pipe(ApplyItemDataAction)
@@ -163,8 +162,9 @@ namespace ShoppingList.Data.List
                 .OptionEitherMap(WrapSaving)
                 .OptionEitherMap(SortTryEither)
                 .OptionEitherMap(RunSaving)
-                .Pipe(HandleSavingResultTypedGeneric)
-                .Map(i => (ShoppingListReadDto) i);
+                .Map(FlattenEither)
+                .Map(i => i.Map(j => (ShoppingListReadDto) j))
+                .GetOrElse(() => Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(new UnknownError())));
 
         private Func<Option<ItemDataActionDto>, Option<(ShoppingListEntity entityFromDb,
                 FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)>>
@@ -197,7 +197,7 @@ namespace ShoppingList.Data.List
                             return (entityFromDb, result);
                         });
 
-        private Try<Either<Error, ShoppingListEntity>> WrapSaving(
+        private Try<Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>> WrapSaving(
             (ShoppingListEntity, ShoppingListModule.ShoppingList) values)
         {
             var (entityFromDb, result) = values;
@@ -207,33 +207,21 @@ namespace ShoppingList.Data.List
                 .ForEach(i => entityFromDb.ItemDataEntities.Add(i));
             return Try(SaveChanges)
                 .Map
-                    <bool, Either<Error, ShoppingListEntity>>
+                    <bool, Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>>
                     (isSuccessful => isSuccessful
                         ? Right(entityFromDb)
-                        : Left((Error) new SavingFailed()));
+                        : Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())));
         }
 
-        private Either<Error, ShoppingListEntity> RunSaving(Try<Either<Error, ShoppingListEntity>> trySave) =>
+        private Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity> RunSaving(
+            Try<Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>> trySave) =>
             trySave
                 .Run().Match(
-                    l => (Either<Error, ShoppingListEntity>) Left<Error>(new UnknownError()),
+                    l =>
+                        (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity>)
+                        Left(
+                            ShoppingListErrors.ShoppingListErrors.NewOtherError(new UnknownError())),
                     r => r);
-
-        private static Either<Error, T> HandleSavingResultTypedGeneric<T>(
-            Option<Either<ShoppingListErrors.ShoppingListErrors,
-                Either<Error, T>>> result) =>
-            result.Pipe(FlattenEitherErrors)
-                .GetOrElse(Left((Error) new UnknownError()));
-
-        private static Option<Either<Error, T>> FlattenEitherErrors<T>(
-            Option<Either<ShoppingListErrors.ShoppingListErrors, Either<Error, T>>> option) =>
-            OptionExt.Map(option, i =>
-                FlattenErrors(i, l1 => new OtherError(l1)));
-
-        internal static Either<TL2, T> FlattenErrors<TL1, TL2, T>(
-            Either<TL1, Either<TL2, T>> either, Func<TL1, TL2> errorConversion) => either.Match(
-            l => Left(errorConversion(l)),
-            r => r);
 
         public bool SaveChanges() => _context.SaveChanges() >= 0;
 

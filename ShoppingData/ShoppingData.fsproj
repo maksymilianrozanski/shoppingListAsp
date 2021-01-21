@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="FSharpPlus" Version="1.1.6" />
+      <PackageReference Include="LaYumba.Functional" Version="0.10.0" />
     </ItemGroup>
 
 </Project>

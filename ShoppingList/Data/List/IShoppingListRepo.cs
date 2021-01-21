@@ -17,10 +17,10 @@ namespace ShoppingList.Data.List
         Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password);
 
-        Either<Error, ShoppingListReadDto> AddItemToShoppingListDto(
+        Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> AddItemToShoppingListDto(
             Option<ItemDataCreateDto> itemToAdd);
 
-        Either<Error, ShoppingListReadDto> ModifyShoppingList(
+        Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> ModifyShoppingList(
             Option<ItemDataActionDto> itemDataAction);
 
         bool SaveChanges();

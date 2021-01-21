@@ -40,27 +40,27 @@ namespace ShoppingList.Controllers.Protected
                 .GetOrElse(NotFound());
 
         public ActionResult<ShoppingListReadDto> ShoppingListModificationResultTyped(
-            Either<Error, ShoppingListReadDto> repositoryOperationResult)
+            Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> repositoryOperationResult)
             => repositoryOperationResult.Match<ActionResult>(
                 l => l switch
                 {
-                    SavingFailed savingFailed => StatusCode(500),
-                    ShopWaypointsNotFound shopWaypointsNotFound => NotFound(l),
-                    UnknownError unknownError => StatusCode(500),
-                    OtherError otherError => otherError.ErrorObject switch
+                    ShoppingListErrors.ShoppingListErrors.OtherError otherError => otherError.Item switch
                     {
-                        var x when x.IsForbiddenOperation => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
-                            .ForbiddenOperation)),
-                        var x when x.IsIncorrectPassword => StatusCode(403),
-                        var x when x.IsIncorrectUser => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
-                            .IncorrectUser)),
-                        var x when x.IsListItemNotFound => NotFound(nameof(ShoppingListErrors.ShoppingListErrors
-                            .ListItemNotFound)),
-                        var x when x.IsItemWithIdAlreadyExists => Conflict(
-                            nameof(ShoppingListErrors.ShoppingListErrors)),
-                        _ => throw new MatchFailureException()
+                        SavingFailed => StatusCode(500),
+                        ShopWaypointsNotFound => NotFound(l),
+                        UnknownError => StatusCode(500),
+                        _ => StatusCode(500)
                     },
-                    _ => throw new ArgumentOutOfRangeException(nameof(l)),
+                    var x when x.IsForbiddenOperation => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
+                        .ForbiddenOperation)),
+                    var x when x.IsIncorrectPassword => StatusCode(403),
+                    var x when x.IsIncorrectUser => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
+                        .IncorrectUser)),
+                    var x when x.IsListItemNotFound => NotFound(nameof(ShoppingListErrors.ShoppingListErrors
+                        .ListItemNotFound)),
+                    var x when x.IsItemWithIdAlreadyExists => Conflict(
+                        nameof(ShoppingListErrors.ShoppingListErrors)),
+                    _ => StatusCode(500)
                 }, Ok
             );
     }
