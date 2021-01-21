@@ -52,26 +52,10 @@ const currentUsername =  "@Model.CurrentUsername";
                 case itemActionsIds.ItemToNotFound:
                     return "Not found";
                 case itemActionsIds.ItemToBought:
-                    return "Item found";
+                    return "Collected";
                 case itemActionsIds.ItemToCancelled:
                     return "Cancel item";
             }
-        }
-
-        const itemTypeDisplayedText = (itemDataActionDto) => {
-            const itemType = itemDataActionDto.itemType;
-
-            if (itemType === "ToBuy")
-                return "To buy";
-            else if (itemType === "LookingFor")
-                return "Searching for";
-            else if (itemType === "Bought")
-                return "Bought";
-            else if (itemType === "NotFound")
-                return "Not found";
-            else if (itemType === "Cancelled")
-                return "Cancelled";
-            else return "unknown";
         }
 
         const itemTypeBackgroundColor = (itemDataReadDto) => {
@@ -128,6 +112,7 @@ const currentUsername =  "@Model.CurrentUsername";
 
             if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)) {
                 actionButton.disabled = true;    
+                actionButton.style.cssText = "border: 2px solid " + itemTypeBackgroundColor(itemDataReadDto) + "; color: black;";
             }
 
             actionButton.style.backgroundColor = actionButtonColor(actionNumber);
@@ -159,8 +144,7 @@ const currentUsername =  "@Model.CurrentUsername";
             liElement.style.cssText = "border: solid #e0e0e0;\nborder-width: 1px;\nborder-radius: 4px;\npadding: 2px;\nmargin: 2px;\nbox-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);" + "background-color: " + background + ";";
 
             const displayedText = document.createElement("div")
-            displayedText.innerText = itemDataReadDto.name.toString() +
-                " - " + itemDataReadDto.quantity.toString() + ", " + itemTypeDisplayedText(itemDataReadDto);
+            displayedText.innerText = itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
             liElement.appendChild(displayedText);
 
             const buttonsContainer = document.createElement("div");
