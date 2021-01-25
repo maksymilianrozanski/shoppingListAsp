@@ -1,3 +1,4 @@
+using System;
 using LaYumba.Functional;
 using SharedTypes.Dtos;
 using SharedTypes.Dtos.Protected;
@@ -8,11 +9,14 @@ namespace ShoppingList.Data.List
 {
     public interface IShoppingListRepo
     {
-        Option<ShoppingListReadDto> CreateShoppingList(Option<ShoppingListCreateDto> shoppingList);
+        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> CreateShoppingList(
+            Option<ShoppingListCreateDto> shoppingList);
 
-        Option<ShoppingListReadDto> GetShoppingListReadDtoById(int id);
+        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>
+            GetShoppingList(int id);
 
-        public Option<ShoppingListReadDto> GetShoppingListReadDtoByIdWithSorting(int id);
+        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>
+            GetShoppingListSorted(int id);
 
         Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
             string password);

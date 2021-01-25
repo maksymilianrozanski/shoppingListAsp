@@ -73,7 +73,7 @@ let ``should update coffee item`` () =
 let ``should return Choice2Of2(ListItemNotFound)`` () =
     let f _ = failwith ("should not be called")
 
-    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(ListItemNotFound)
+    let expected: Choice<ShoppingList, ShoppingListErrors> = Choice2Of2(NotFound)
 
     let result = modifyItem f 3 threeItemList
     Assert.AreEqual(expected, result)

@@ -191,7 +191,7 @@ namespace ShoppingListTests
                 FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors> result)> expected =
                 (_shoppingListEntity,
                     FSharpChoice<ShoppingListModule.ShoppingList, ShoppingListErrors.ShoppingListErrors>.NewChoice2Of2(
-                        ShoppingListErrors.ShoppingListErrors.ListItemNotFound));
+                        ShoppingListErrors.ShoppingListErrors.NotFound));
 
             var result = SqlShoppingListRepo.ApplyItemDataAction2(GetById, itemDataAction);
             Assert.AreEqual(expected, result);

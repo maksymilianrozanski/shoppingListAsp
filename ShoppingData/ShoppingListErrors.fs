@@ -7,6 +7,6 @@ module ShoppingListErrors =
         | IncorrectPassword
         | IncorrectUser
         | ForbiddenOperation
-        | ListItemNotFound
+        | NotFound
         | ItemWithIdAlreadyExists
         | OtherError of Error

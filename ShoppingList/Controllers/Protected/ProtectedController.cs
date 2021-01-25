@@ -35,8 +35,8 @@ namespace ShoppingList.Controllers.Protected
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
             ToOptionUser(HttpContext)
                 .Bind(user => user.ShoppingListId == id ? Some(user.ShoppingListId) : new Option<int>())
-                .Bind(valid => _repository.GetShoppingListReadDtoByIdWithSorting(valid))
-                .Map<ShoppingListReadDto, ActionResult>(Ok)
+                .Map(valid => _repository.GetShoppingListSorted(valid)
+                    .Pipe(ShoppingListModificationResultTyped))
                 .GetOrElse(NotFound());
 
         public ActionResult<ShoppingListReadDto> ShoppingListModificationResultTyped(
@@ -56,8 +56,8 @@ namespace ShoppingList.Controllers.Protected
                     var x when x.IsIncorrectPassword => StatusCode(403),
                     var x when x.IsIncorrectUser => Conflict(nameof(ShoppingListErrors.ShoppingListErrors
                         .IncorrectUser)),
-                    var x when x.IsListItemNotFound => NotFound(nameof(ShoppingListErrors.ShoppingListErrors
-                        .ListItemNotFound)),
+                    var x when x.IsNotFound => NotFound(nameof(ShoppingListErrors.ShoppingListErrors
+                        .NotFound)),
                     var x when x.IsItemWithIdAlreadyExists => Conflict(
                         nameof(ShoppingListErrors.ShoppingListErrors)),
                     _ => StatusCode(500)

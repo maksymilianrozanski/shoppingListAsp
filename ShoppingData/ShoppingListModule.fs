@@ -35,4 +35,4 @@ module ShoppingListModule =
                           |> List.map (fun i -> if (i.Id = itemId) then itemModified else i) }
                 |> Choice1Of2
             | Choice2Of2 (failure) -> Choice2Of2(failure)
-        | None -> Choice2Of2(ListItemNotFound)
+        | None -> Choice2Of2(NotFound)

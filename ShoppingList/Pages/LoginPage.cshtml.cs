@@ -35,6 +35,7 @@ namespace ShoppingList.Pages
             _authenticationHandler.CreateClaims(new UserLoginData(ShoppingListId, Username, Password))
                 .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
                 .Run()
+                //todo: display message when incorrect password
                 .Match(_ => Response.Redirect("/LoginPage"),
                     _ => Response.Redirect("/"));
         }

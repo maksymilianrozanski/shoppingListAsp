@@ -26,7 +26,7 @@ namespace ShoppingList.Controllers
             Console.WriteLine("create list endpoint");
             return _repository.CreateShoppingList(listCreateDto)
                 .Match<ActionResult>(NotFound,
-                    Some: i =>
+                    i =>
                         StatusCode(201, i));
         }
     }

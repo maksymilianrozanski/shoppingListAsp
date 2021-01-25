@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 using LaYumba.Functional;
 using Microsoft.FSharp.Core;
 using SharedTypes.Entities;
@@ -33,6 +34,25 @@ namespace ShoppingList.Utils
         public static Option<Try<Either<TL, TR>>> OptionTryEitherMap<TL, TR>(this
             Option<Try<Either<TL, TR>>> @this, Func<TR, Option<TR>> f, TL noneFallback)
             => @this.Map(i => i.TryEitherMap(f, noneFallback));
+
+        public static Either<TL, Option<T2>> EitherOptionMap<TL, T1, T2>(this Either<TL, Option<T1>> @this,
+            Func<T1, T2> f) =>
+            @this.Map(i => i.Map(f));
+
+        public static Either<TL, Option<T2>> EitherOptionBind<TL, T1, T2>(this Either<TL, Option<T1>> @this,
+            Func<T1, Option<T2>> f) =>
+            @this.Map(i => i.Bind(f));
+
+        public static Either<TL2, TR2> Bimap<TL1, TL2, TR1, TR2>(this Either<TL1, TR1> @this, Func<TL1, TL2> leftFunc,
+            Func<TR1, TR2> rightFunc) =>
+            @this.Match(l => (Either<TL2, TR2>) leftFunc(l), r => rightFunc(r));
+
+        public static Either<TL, T> NoneToEitherLeft<TL, T>(this
+            Either<TL, Option<T>> option, TL errorValue) =>
+            option.Bind(i =>
+                i.Match<Either<TL, T>>(
+                    () => Left(errorValue),
+                    some => Right(some)));
 
         internal static Either<TL, TR> FlattenEither<TL, TR>(
             Either<TL, Either<TL, TR>> either) =>

@@ -38,16 +38,23 @@
         </div>
     </form>
 
-    existing items:
     <ol id="savedItemsList">
         @{
-            foreach (var s in Model.ShoppingListReadDto.Map(list => list.Items)
-                .Map(itemData =>
-                    itemData.Map(i => $"{i.Name} --- {i.Quantity} times")).GetOrElse(new List<string>()))
+            var displayedList =
+                Model.DisplayedDto
+                    .Match(error =>
+                        new List<string> {$"Something went wrong, {error}"},
+                        r =>
+                        {
+                            var items = r.Items.ToList();
+                            return items.Count < 1 ?
+                                new List<string> {"no items added yet"}
+                                : items.Map(dto => $"{dto.Name} --- {dto.Quantity} times");
+                        });
+
+            foreach (var s in displayedList)
             {
-                <li>
-                    @s
-                </li>
+                <li>@s</li>
             }
         }
     </ol>
