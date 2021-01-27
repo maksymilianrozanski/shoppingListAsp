@@ -24,6 +24,13 @@ namespace ShoppingList.Utils
             Func<TR, TR2> f) =>
             @this.Map(i => i.Map(f));
 
+        public static Try<Option<Either<TL, TR2>>> TryOptionEitherMap<TL, TR, TR2>(
+            this Try<Option<Either<TL, TR>>> @this, Func<TR, TR2> f) =>
+            @this.TryOptionMap(j => j.Map(f));
+
+        public static Try<Option<TR>> TryOptionMap<T, TR>(this Try<Option<T>> @this, Func<T, TR> f) =>
+            @this.Map(i => i.Map(f));
+
         private static Try<Either<TL, TR>> TryEitherMap<TL, TR>(this
             Try<Either<TL, TR>> @this, Func<TR, Option<TR>> f, TL noneFallback)
             => @this.Map(j =>

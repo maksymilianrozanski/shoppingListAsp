@@ -1,10 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShoppingData;
 using ShoppingList.Auth;
+using ShoppingList.Utils;
 using static ShoppingList.Auth.BasicAuthenticationHandler;
 using static LaYumba.Functional.F;
 using static ShoppingList.Auth.BasicAuthenticationHandler.User;
@@ -21,6 +25,8 @@ namespace ShoppingList.Pages
 
         [BindProperty] [Required] public int ShoppingListId { get; set; }
 
+        public string ErrorMessage { get; set; } = "";
+
         public void OnGet()
         {
         }
@@ -33,11 +39,22 @@ namespace ShoppingList.Pages
         private void SignIn()
         {
             _authenticationHandler.CreateClaims(new UserLoginData(ShoppingListId, Username, Password))
-                .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
-                .Run()
-                //todo: display message when incorrect password
-                .Match(_ => Response.Redirect("/LoginPage"),
-                    _ => Response.Redirect("/"));
+                .TryOptionEitherMap(
+                    async c =>
+                        await HttpContext.SignInAsync("CookieAuthentication", c))
+                .TryOptionMap(j =>
+                    j.Match(l =>
+                        {
+                            if (l.IsIncorrectPassword || l.IsNotFound)
+                                this.ErrorMessage = "incorrect password or not found";
+                            else
+                                Response.Redirect("/Error");
+                        },
+                        _ =>
+                            Response.Redirect("/")
+                    )
+                )
+                .Run();
         }
 
         public void OnPost()

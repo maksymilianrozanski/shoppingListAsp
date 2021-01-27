@@ -40,6 +40,11 @@
         </div>
     </form>
 </div>
+
+@if (Model.ErrorMessage.Length > 0)
+{
+    <script>alert('@Model.ErrorMessage');</script>
+}
 </body>
 </html>
 

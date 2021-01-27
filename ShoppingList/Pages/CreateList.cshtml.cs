@@ -7,6 +7,7 @@ using SharedTypes.Dtos;
 using ShoppingList.Auth;
 using ShoppingList.Data;
 using ShoppingList.Data.List;
+using ShoppingList.Utils;
 
 namespace ShoppingList.Pages
 {
@@ -45,7 +46,8 @@ namespace ShoppingList.Pages
                                 .CreateClaims(
                                     new BasicAuthenticationHandler.UserLoginData(readDto.Id, Username,
                                         createDto.Password))
-                                .Map(c => HttpContext.SignInAsync("CookieAuthentication", c))
+                                .TryOptionEitherMap(c =>
+                                    HttpContext.SignInAsync("CookieAuthentication", c))
                                 .Run()
                                 .Match(_ => Response.Redirect("/Error"),
                                     _ => Response.Redirect("/Protected/AddItems"))));

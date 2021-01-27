@@ -1,9 +1,10 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
 using LaYumba.Functional;
 using Microsoft.AspNetCore.Http;
+using ShoppingData;
 using ShoppingList.Data;
 using ShoppingList.Data.List;
+using ShoppingList.Utils;
 using static LaYumba.Functional.F;
 
 namespace ShoppingList.Auth
@@ -17,22 +18,22 @@ namespace ShoppingList.Auth
             _userService = userService;
         }
 
-        public Try<ClaimsPrincipal> CreateClaims(UserLoginData user) =>
-            Try(async () =>
-                    await _userService.Authenticate(user))
-                .Map(i => i.Result)
-                .Map(u =>
+        public Try<Option<Either<ShoppingListErrors.ShoppingListErrors, ClaimsPrincipal>>> CreateClaims(
+            UserLoginData user) =>
+            Try(() => _userService.Authenticate(user))
+                .TryOptionEitherMap(u =>
                     new[]
                     {
                         new Claim(ClaimTypes.NameIdentifier, u.ShoppingListId.ToString()),
                         new Claim(ClaimTypes.Name, u.Username)
                     })
-                .Map(i => new ClaimsIdentity(i, "User Identity"))
-                .Map(i => new ClaimsPrincipal(i));
+                .TryOptionEitherMap(j => new ClaimsIdentity(j, "User Identity"))
+                .TryOptionEitherMap(claimsIdentity => new ClaimsPrincipal(claimsIdentity));
 
-        public interface IUserService<in T, TR>
+        public interface IUserService<T, TR>
         {
-            Task<TR> Authenticate(T t);
+            Option<Either<ShoppingListErrors.ShoppingListErrors, TR>>
+                Authenticate(Option<T> user);
         }
 
         public class UserServiceImpl : IUserService<UserLoginData, User>
@@ -44,10 +45,12 @@ namespace ShoppingList.Auth
                 _shoppingListRepo = shoppingListRepo;
             }
 
-            public Task<User> Authenticate(UserLoginData t) =>
-                (Task<User>) _shoppingListRepo.PasswordMatchesShoppingList(t.ShoppingListId, t.Password)
-                    .Match(_ => Task.FromException(null),
-                        _ => Task.FromResult((User) t));
+            public Option<Either<ShoppingListErrors.ShoppingListErrors, User>>
+                Authenticate(Option<UserLoginData> user) =>
+                user.Map(i =>
+                    _shoppingListRepo.PasswordMatchesShoppingList(i.ShoppingListId, i.Password)
+                        .Map(r => (User) i)
+                );
         }
 
         public class UserLoginData
