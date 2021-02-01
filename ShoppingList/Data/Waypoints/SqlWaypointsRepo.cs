@@ -13,8 +13,10 @@ namespace ShoppingList.Data.Waypoints
         }
 
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
-            _context.ShopWaypointsEntities
-                .Find(i => i.Name == shopName)
-                .Bind(ShopWaypointsReadDto.ToOptionReadDto);
+            shopName == "big-market"
+                ? WaypointsRepoHardcoded.HardcodedWaypoints
+                : _context.ShopWaypointsEntities
+                    .Find(i => i.Name == shopName)
+                    .Bind(ShopWaypointsReadDto.ToOptionReadDto);
     }
 }

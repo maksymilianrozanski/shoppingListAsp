@@ -8,7 +8,7 @@ namespace ShoppingList.Data.Waypoints
 {
     public class WaypointsRepoHardcoded : IWaypointsRepo
     {
-        private readonly ShopWaypointsReadDto _hardcodedWaypoints = new("big-market",
+        public static readonly ShopWaypointsReadDto HardcodedWaypoints = new("big-market",
             new Waypoint("start", 699, 673),
             new Waypoint("checkout", 469, 584),
             new List<Waypoint>
@@ -53,6 +53,6 @@ namespace ShoppingList.Data.Waypoints
         );
 
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
-            shopName == "big-market" ? Some(_hardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
+            shopName == "big-market" ? Some(HardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
     }
 }
