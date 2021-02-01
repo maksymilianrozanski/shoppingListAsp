@@ -16,9 +16,6 @@ namespace ShoppingList.Controllers
             _repository = repository;
         }
 
-        [HttpGet]
-        public ActionResult<string> GetGreetings() => Ok("Welcome!");
-
         [HttpPost]
         [Route("createList")]
         public ActionResult<ShoppingListReadDto> Post(ShoppingListCreateDto listCreateDto)
