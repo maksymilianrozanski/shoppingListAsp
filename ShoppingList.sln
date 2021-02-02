@@ -4,23 +4,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList", "ShoppingLis
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingData", "ShoppingData\ShoppingData.fsproj", "{57BD13B2-BB80-4333-8164-29A4D0A5251F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingDataTests", "ShoppingDataTests\ShoppingDataTests.fsproj", "{0D1CCC32-0317-4C01-83F7-8F5C831A2CFA}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingData.Tests", "ShoppingData.Tests\ShoppingData.Tests.fsproj", "{0D1CCC32-0317-4C01-83F7-8F5C831A2CFA}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Waypoints", "Waypoints\Waypoints.fsproj", "{598E6737-E108-471A-A84E-A3C3C8916B4C}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WaypointsTests", "WaypointsTests\WaypointsTests.fsproj", "{437BB11D-A6FB-4859-9F3A-26567CF1753A}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Waypoints.Tests", "Waypoints.Tests\Waypoints.Tests.fsproj", "{437BB11D-A6FB-4859-9F3A-26567CF1753A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroceryClassification", "GroceryClassification\GroceryClassification.csproj", "{FE47AA95-C117-4DF1-A758-A2C2B27A14C1}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingListSorting", "ShoppingListSorting\ShoppingListSorting.fsproj", "{98E6F55A-EFB1-4174-B6A4-71ADB8C36D3E}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingListSortingTests", "ShoppingListSortingTests\ShoppingListSortingTests.fsproj", "{4283FA5B-F8C2-4739-82EB-A853ED7AA8B2}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ShoppingListSorting.Tests", "ShoppingListSorting.Tests\ShoppingListSorting.Tests.fsproj", "{4283FA5B-F8C2-4739-82EB-A853ED7AA8B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypes", "SharedTypes\SharedTypes.csproj", "{95791B36-91B3-42A7-9CCB-EEC4A15248A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypesTests", "SharedTypesTests\SharedTypesTests.csproj", "{62D2FDF1-DE6C-4320-B752-988C91735D26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypes.Tests", "SharedTypes.Tests\SharedTypes.Tests.csproj", "{62D2FDF1-DE6C-4320-B752-988C91735D26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListTests", "ShoppingListTests\ShoppingListTests.csproj", "{330B0BF9-593C-41C6-9890-5E9259111232}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList.Tests", "ShoppingList.Tests\ShoppingList.Tests.csproj", "{330B0BF9-593C-41C6-9890-5E9259111232}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

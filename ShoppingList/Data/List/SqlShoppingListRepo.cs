@@ -19,7 +19,7 @@ using GroceryPredictionPool = Microsoft.Extensions.ML.PredictionEnginePool<Groce
     GroceryClassification.GroceryItemPrediction>;
 using static ShoppingList.Utils.EitherUtils;
 
-[assembly: InternalsVisibleTo("ShoppingListTests")]
+[assembly: InternalsVisibleTo("ShoppingList.Tests")]
 
 namespace ShoppingList.Data.List
 {

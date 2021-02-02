@@ -4,22 +4,19 @@
         <TargetFramework>net5.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
-        <GenerateProgramFile>false</GenerateProgramFile>
+
+        <RootNamespace>SharedTypesTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="LaYumba.Functional" Version="0.10.0" />
         <PackageReference Include="NUnit" Version="3.13.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="WaypointSortingTests.fs" />
-        <Compile Include="Program.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Waypoints\Waypoints.fsproj" />
+      <ProjectReference Include="..\SharedTypes\SharedTypes.csproj" />
     </ItemGroup>
 
 </Project>
