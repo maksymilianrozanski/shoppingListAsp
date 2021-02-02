@@ -31,14 +31,14 @@ GroceryClassification/obj/
 SharedTypes/bin/
 SharedTypes/obj/
 
-SharedTypesTests/bin/
-SharedTypesTests/obj/
+SharedTypes.Tests/bin/
+SharedTypes.Tests/obj/
 
 ShoppingData/bin/
 ShoppingData/obj/
 
-ShoppingDataTests/bin/
-ShoppingDataTests/obj/
+ShoppingData.Tests/bin/
+ShoppingData.Tests/obj/
 
 ShoppingList/bin/
 ShoppingList/obj/
@@ -46,17 +46,17 @@ ShoppingList/obj/
 ShoppingListSorting/bin/
 ShoppingListSorting/obj/
 
-ShoppingListSortingTests/bin/
-ShoppingListSortingTests/obj/
+ShoppingListSorting.Tests/bin/
+ShoppingListSorting.Tests/obj/
 
-ShoppingListTests/bin/
-ShoppingListTests/obj/
+ShoppingList.Tests/bin/
+ShoppingList.Tests/obj/
 
 Waypoints/bin/
 Waypoints/obj/
 
-WaypointsTests/bin/
-WaypointsTests/obj/
+Waypoints.Tests/bin/
+Waypoints.Tests/obj/
 
 
 # Visual Studio 2015 cache/options directory
