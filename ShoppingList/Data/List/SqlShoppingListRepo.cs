@@ -29,26 +29,71 @@ namespace ShoppingList.Data.List
         private readonly IWaypointsRepo _waypointsRepo;
         private readonly GroceryPredictionPool _predictionEnginePool;
 
-        public SqlShoppingListRepo(ShoppingListDbContext context, IWaypointsRepo waypointsRepo,
+        public SqlShoppingListRepo(ShoppingListDbContext context,
             GroceryPredictionPool predictionEnginePool)
         {
             _context = context;
-            _waypointsRepo = waypointsRepo;
+            _waypointsRepo = new SqlWaypointsRepo(_context);
             _predictionEnginePool = predictionEnginePool;
         }
 
         public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> CreateShoppingList(
             Option<ShoppingListCreateDto> shoppingList) =>
             Try(() =>
-                    shoppingList.Map(i => _context.ShoppingListEntities.Add(i).Entity)
-                        .Bind(i => SaveChanges() ? Some(i) : new None()))
-                .Map(i => (Either<ShoppingListErrors.ShoppingListErrors, Option<ShoppingListEntity>>) i)
-                .Map(i => i.NoneToEitherLeft(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())))
+                    shoppingList
+                        .Map
+                        (i =>
+                        {
+                            return ValidateShopName2(
+                                    _waypointsRepo.GetShopWaypointsId, i)
+                                .Map(i =>
+                                {
+                                    _context.Database.CloseConnection();
+                                    return _context.ShoppingListEntities.Add(i.Item1).Entity;
+                                });
+                        }))
+                .TryOptionEitherMap(i => SaveChanges() ? Some(i) : new None())
+                .TryOptionMap(i =>
+                    i.NoneToEitherLeft(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())))
+                .TryOptionEitherMap(i => (ShoppingListReadDto) i)
                 .Run()
                 .Match(l =>
                         Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())),
-                    r => r)
-                .Map(i => (ShoppingListReadDto) i);
+                    r => r.Map(i =>
+                            i.Match(l =>
+                                    (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
+                                    Left(l),
+                                r =>
+                                    (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
+                                    Right(r)
+                            ))
+                        .GetOrElse(
+                            (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
+                            ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed()))
+                );
+
+        private Func<ShoppingListCreateDto,
+            Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>> ValidateShopName =>
+            ValidateShopName2
+                .Apply(_waypointsRepo.GetShopWaypointsId);
+
+        internal static readonly
+            Func<Func<string, Option<int>>,
+                ShoppingListCreateDto,
+                Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>>
+            ValidateShopName2 = (getWaypointsId, createDto) =>
+                createDto.ShopName.Length == 0
+                    // empty ShopName is allowed
+                    ? (Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>)
+                    Right((createDto, new Option<int>()))
+                    : getWaypointsId(createDto.ShopName)
+                        .Map(i => (createDto, Some(i))).Match(
+                            () =>
+                                (Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>
+                                    waypointsId)>)
+                                Left(ShoppingListErrors.ShoppingListErrors.ShopNotFound),
+                            some => Right(some)
+                        );
 
         private Option<ShoppingListEntity> GetShoppingListEntityById(int id) =>
             _context.ShoppingListEntities

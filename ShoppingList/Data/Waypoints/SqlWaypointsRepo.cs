@@ -1,5 +1,6 @@
 using LaYumba.Functional;
 using SharedTypes.Dtos;
+using SharedTypes.Entities;
 
 namespace ShoppingList.Data.Waypoints
 {
@@ -15,8 +16,13 @@ namespace ShoppingList.Data.Waypoints
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
             shopName == "big-market"
                 ? WaypointsRepoHardcoded.HardcodedWaypoints
-                : _context.ShopWaypointsEntities
-                    .Find(i => i.Name == shopName)
+                : GetShopWaypointsEntity(shopName)
                     .Bind(ShopWaypointsReadDto.ToOptionReadDto);
+        
+        private Option<ShopWaypointsEntity> GetShopWaypointsEntity(string shopName) => _context.ShopWaypointsEntities
+            .Find(i => i.Name == shopName);
+
+        public Option<int> GetShopWaypointsId(string shopName) =>
+            GetShopWaypointsEntity(shopName).Map(i => i.Id);
     }
 }

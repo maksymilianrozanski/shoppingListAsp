@@ -2,6 +2,7 @@ using GroceryClassification;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +28,11 @@ namespace ShoppingList
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ShoppingListDbContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection")));
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection"));
+                // opt.ConfigureWarnings(w =>
+                    // w.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
+            });
 
             services.AddPredictionEnginePool<GroceryData, GroceryItemPrediction>()
                 .FromFile(modelName: "GroceryModel", filePath: "MLModels/model.zip",
@@ -58,7 +63,6 @@ namespace ShoppingList
 
             //replace SqlWaypointsRepo with WaypointsRepoHardcoded to use hardcoded test data
             // services.AddTransient<IWaypointsRepo, WaypointsRepoHardcoded>();
-            services.AddTransient<IWaypointsRepo, SqlWaypointsRepo>();
             services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
         }
 

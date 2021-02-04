@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LaYumba.Functional;
@@ -194,6 +195,53 @@ namespace ShoppingListTests
                         ShoppingListErrors.ShoppingListErrors.NotFound));
 
             var result = SqlShoppingListRepo.ApplyItemDataAction2(GetById, itemDataAction);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ShouldReturnRightShoppingListCreateDtoWithWaypointsId()
+        {
+            static Option<int> GetWaypointsId(string name) => 22;
+
+            var createDto = new ShoppingListCreateDto("password123", "valid-shop");
+
+            Either<ShoppingListErrors.ShoppingListErrors,
+                (ShoppingListCreateDto, Option<int>)> expected = (createDto, 22);
+
+            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ShouldReturnRightShoppingListCreateDtoWithoutWaypointsId_WhenEmptyShopName()
+        {
+            static Option<int> GetWaypointsId(string name)
+            {
+                Assert.Fail("should not have called this function, when empty ShopName");
+                throw new Exception();
+            }
+
+            var createDto = new ShoppingListCreateDto("password123", "");
+
+            Either<ShoppingListErrors.ShoppingListErrors,
+                (ShoppingListCreateDto, Option<int>)> expected = (createDto, new None());
+
+            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ShouldReturnLeft_WhenShopNotFound()
+        {
+            static Option<int> GetWaypointsId(string name) => new None();
+
+            var createDto = new ShoppingListCreateDto("password123", "valid-shop");
+
+            Either<ShoppingListErrors.ShoppingListErrors,
+                (ShoppingListCreateDto, Option<int>)> expected = ShoppingListErrors.ShoppingListErrors.ShopNotFound;
+
+            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
             Assert.AreEqual(expected, result);
         }
     }

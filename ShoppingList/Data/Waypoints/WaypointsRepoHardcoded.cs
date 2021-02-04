@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LaYumba.Functional;
+using LaYumba.Functional.Option;
 using SharedTypes.Dtos;
 using static LaYumba.Functional.F;
 using static Waypoints.WaypointsModule;
@@ -54,5 +55,8 @@ namespace ShoppingList.Data.Waypoints
 
         public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
             shopName == "big-market" ? Some(HardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
+
+        public Option<int> GetShopWaypointsId(string shopName) =>
+            shopName == "big-market" ? Some(1) : new None();
     }
 }

@@ -9,4 +9,5 @@ module ShoppingListErrors =
         | ForbiddenOperation
         | NotFound
         | ItemWithIdAlreadyExists
+        | ShopNotFound
         | OtherError of Error

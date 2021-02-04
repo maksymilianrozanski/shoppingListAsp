@@ -60,6 +60,7 @@ namespace ShoppingList.Controllers.Protected
                         .NotFound)),
                     var x when x.IsItemWithIdAlreadyExists => Conflict(
                         nameof(ShoppingListErrors.ShoppingListErrors)),
+                    //todo: add ShoppingListErrors.ShopNotFound handling
                     _ => StatusCode(500)
                 }, Ok
             );
