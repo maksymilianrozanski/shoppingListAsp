@@ -14,7 +14,11 @@ namespace SharedTypes.Entities
 
         [Required] public string Password { get; set; } = "";
 
-        [Required] public string ShopName { get; set; } = "";
+        [MaxLength(100)]
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+
+        public string ShopName { get; set; } = "";
 
         [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; } = new List<ItemDataEntity>();
 

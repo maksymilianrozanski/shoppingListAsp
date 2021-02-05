@@ -11,6 +11,10 @@ namespace SharedTypes.Dtos
         }
 
         [Required] [MaxLength(20)] public string Password { get; set; }
-        [MaxLength(100)] public string ShopName { get; set; }
+
+        [MaxLength(100)]
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string ShopName { get; set; }
     }
 }

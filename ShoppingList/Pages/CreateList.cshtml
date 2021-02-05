@@ -33,7 +33,7 @@
             <label asp-for="ShopName">Shop name</label>
         </div>
         <div>
-            <input id="shopName" type="text" asp-for="ShopName" placeholder="shop name">
+            <input asp-for="ShopName" id="shopName" placeholder="shop name" type="text">
             <span asp-validation-for="ShopName" class="text-danger"></span>
         </div>
 
@@ -41,6 +41,9 @@
             <button id="submit">Submit</button>
         </div>
     </form>
+    <span class="text-danger">
+        @Model.ErrorText
+    </span>
 </div>
 </body>
 </html>
