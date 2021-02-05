@@ -16,7 +16,6 @@ module ShoppingItemsPredicting =
     type ShoppingListWithDepartment =
         { Id: int
           Password: string
-          ShopName: string
           Items: List<ItemDataWithPredictedType> }
 
     let predictUsingEngine (predictionEngine: PredictionEnginePool<GroceryData, GroceryItemPrediction>) itemName =
@@ -31,7 +30,6 @@ module ShoppingItemsPredicting =
     let predictAllItems (predictingFun: ItemData -> string) (shoppingList: ShoppingList) =
         { Id = shoppingList.Id
           Password = shoppingList.Password
-          ShopName = shoppingList.ShopName
           Items =
               predictShopDepartments predictingFun shoppingList.Items
               |> ResizeArray }

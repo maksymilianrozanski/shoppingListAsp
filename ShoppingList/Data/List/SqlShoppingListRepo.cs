@@ -41,17 +41,9 @@ namespace ShoppingList.Data.List
             Option<ShoppingListCreateDto> shoppingList) =>
             Try(() =>
                     shoppingList
-                        .Map
-                        (i =>
-                        {
-                            return ValidateShopName2(
-                                    _waypointsRepo.GetShopWaypointsId, i)
-                                .Map(i =>
-                                {
-                                    _context.Database.CloseConnection();
-                                    return _context.ShoppingListEntities.Add(i.Item1).Entity;
-                                });
-                        }))
+                        .Map(i => MatchWaypoints(i)
+                            .Pipe(_ => _context.Database.CloseConnection())
+                            .Map(AttachWaypointsEntity)))
                 .TryOptionEitherMap(i => SaveChanges() ? Some(i) : new None())
                 .TryOptionMap(i =>
                     i.NoneToEitherLeft(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())))
@@ -72,28 +64,30 @@ namespace ShoppingList.Data.List
                             ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed()))
                 );
 
-        private Func<ShoppingListCreateDto,
-            Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>> ValidateShopName =>
-            ValidateShopName2
-                .Apply(_waypointsRepo.GetShopWaypointsId);
+        private Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<ShopWaypointsEntity>)>
+            MatchWaypoints(ShoppingListCreateDto createDto) =>
+            GetWaypointsByName(_waypointsRepo.GetShopWaypointsEntity, createDto);
 
-        internal static readonly
-            Func<Func<string, Option<int>>,
-                ShoppingListCreateDto,
-                Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>>
-            ValidateShopName2 = (getWaypointsId, createDto) =>
-                createDto.ShopName.Length == 0
-                    // empty ShopName is allowed
-                    ? (Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>)>)
-                    Right((createDto, new Option<int>()))
-                    : getWaypointsId(createDto.ShopName)
-                        .Map(i => (createDto, Some(i))).Match(
-                            () =>
-                                (Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<int>
-                                    waypointsId)>)
-                                Left(ShoppingListErrors.ShoppingListErrors.ShopNotFound),
-                            some => Right(some)
-                        );
+        private ShoppingListEntity AttachWaypointsEntity((ShoppingListCreateDto, Option<ShopWaypointsEntity>) i)
+        {
+            var (createDto, optionWaypoints) = i;
+            ShoppingListEntity entityToAdd = createDto.ToShoppingListEntity(optionWaypoints);
+            return _context.ShoppingListEntities.Add(entityToAdd).Entity;
+        }
+
+        internal static
+            Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<T>)> GetWaypointsByName<T>(
+                Func<string, Option<T>> getWaypointsId, ShoppingListCreateDto createDto) =>
+            createDto.ShopName.Length == 0
+                // empty ShopName is allowed
+                ? Right((createDto, new Option<T>()))
+                : getWaypointsId(createDto.ShopName)
+                    .Map(i => (createDto, Some(i))).Match(
+                        () =>
+                            (Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<T>)>)
+                            Left(ShoppingListErrors.ShoppingListErrors.ShopNotFound),
+                        some => Right(some)
+                    );
 
         private Option<ShoppingListEntity> GetShoppingListEntityById(int id) =>
             _context.ShoppingListEntities
@@ -129,34 +123,35 @@ namespace ShoppingList.Data.List
         private Option<ShoppingListEntity> SortEntity(ShoppingListEntity entity) =>
             ShouldTryFindWaypoints(entity)
                 .Map(k =>
-                    MatchWaypointsToShoppingList(k, _waypointsRepo.GetShopWaypoints)
+                    MatchWaypointsToShoppingList(k)
                         .Map(SortToOptimalOrder)
                         .Map(i => (ShoppingListEntity) i)
                 )
                 .Match(() => entity, r =>
-                    r.Match(_ =>
-                    {
-                        Console.WriteLine($"Waypoints of requested shop: {entity.ShopName} was not found");
-                        return entity;
-                    }, right => right)
+                    r.Match(_ => entity, right => right)
                 );
 
         internal static Option<ShoppingListEntity>
             ShouldTryFindWaypoints(Option<ShoppingListEntity> shoppingListEntity) =>
             shoppingListEntity.Bind(i =>
-                i.ShopName.Length > 0 ? Some(i) : new None());
+                i.ShopWaypointsEntityId != null ? Some(i) : new None());
 
-        internal static Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>
+        internal Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>
             MatchWaypointsToShoppingList(
-                ShoppingListEntity shoppingListEntity,
-                Func<string, Option<ShopWaypointsReadDto>> getShopWaypoints)
-            =>
-                getShopWaypoints(shoppingListEntity.ShopName)
-                    .Map(waypointsDto =>
-                        (Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>)
-                        (waypointsDto, (ShoppingListModule.ShoppingList) shoppingListEntity)
-                    )
-                    .GetOrElse(new ShopWaypointsNotFound());
+                ShoppingListEntity shoppingListEntity) =>
+            (_context.ShoppingListEntities
+                 .IgnoreAutoIncludes()
+                 .Where(i => i.ShopWaypointsEntity != null &&
+                             shoppingListEntity.ShopWaypointsEntityId == i.ShopWaypointsEntityId)
+                 .Select(i => i.ShopWaypointsEntity)
+                 .FirstOrDefault()
+             ?? new Option<ShopWaypointsEntity>())
+            .Bind(ShopWaypointsReadDto.ToOptionReadDto)
+            .Map(i =>
+                (Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)>)
+                (i, shoppingListEntity))
+            .GetOrElse(() =>
+                new ShopWaypointsNotFound());
 
         private ShoppingListModule.ShoppingList SortToOptimalOrder(
             (ShopWaypointsReadDto, ShoppingListModule.ShoppingList) listWithWaypoints) =>

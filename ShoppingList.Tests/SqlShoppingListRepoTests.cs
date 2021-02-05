@@ -24,7 +24,6 @@ namespace ShoppingListTests
         {
             Id = 42,
             Password = "password",
-            ShopName = ShopName,
             ItemDataEntities = new List<ItemDataEntity>
             {
                 new()
@@ -34,11 +33,12 @@ namespace ShoppingListTests
                     Quantity = 1,
                     ItemType = "ToBuy"
                 }
-            }
+            },
+            ShopWaypointsEntityId = 8,
         };
 
         [Test]
-        public void ShouldReturnShoppingListEntityWhenContainsNonEmptyShopName()
+        public void ShouldReturnShoppingListEntity_WhenContainsNonNullShopWaypointsEntityId()
         {
             Option<ShoppingListEntity> expected = _shoppingListEntity;
             var result = SqlShoppingListRepo.ShouldTryFindWaypoints(_shoppingListEntity);
@@ -46,52 +46,17 @@ namespace ShoppingListTests
         }
 
         [Test]
-        public void ShouldReturnNoneWhenEntityContainsEmptyShopName()
+        public void ShouldReturnNone_WhenShopWaypointsEntityIdIsNull()
         {
             var result = SqlShoppingListRepo.ShouldTryFindWaypoints(new ShoppingListEntity()
             {
                 Id = 43,
                 Password = "Password",
-                ShopName = "",
-                ItemDataEntities = new List<ItemDataEntity>()
+                ItemDataEntities = new List<ItemDataEntity>(),
+                ShopWaypointsEntityId =  null
             });
 
             Assert.AreEqual(new None(), result);
-        }
-
-        [Test]
-        public void ShouldJoinWaypointsWithShoppingList()
-        {
-            var waypoints = new ShopWaypointsReadDto(ShopName,
-                new Waypoint("start", 699, 673),
-                new Waypoint("checkout", 469, 584),
-                new List<Waypoint>
-                {
-                    new("DRINK_JUICE", 283, 295),
-                    new("VEGETABLES", 607, 332),
-                }
-            );
-
-            Either<ShopWaypointsNotFound, (ShopWaypointsReadDto, ShoppingListModule.ShoppingList)> expected =
-                (waypoints, _shoppingListEntity);
-
-            Option<ShopWaypointsReadDto> WaypointsFunc(string name) =>
-                name == ShopName ? waypoints : new None();
-
-            var result = SqlShoppingListRepo.MatchWaypointsToShoppingList(_shoppingListEntity, WaypointsFunc);
-
-            Assert.AreEqual(expected, result);
-        }
-
-        [Test]
-        public void ShouldReturnWaypointsNotFound()
-        {
-            static Option<ShopWaypointsReadDto> WaypointsFunc(string name) => new();
-
-            var result = SqlShoppingListRepo.MatchWaypointsToShoppingList(_shoppingListEntity, WaypointsFunc);
-
-            result.Match(Assert.IsInstanceOf<ShopWaypointsNotFound>,
-                _ => Assert.Fail("result should match to the left"));
         }
 
         [Test]
@@ -208,7 +173,7 @@ namespace ShoppingListTests
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = (createDto, 22);
 
-            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
+            var result = SqlShoppingListRepo.GetWaypointsByName(GetWaypointsId, createDto);
 
             Assert.AreEqual(expected, result);
         }
@@ -227,7 +192,7 @@ namespace ShoppingListTests
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = (createDto, new None());
 
-            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
+            var result = SqlShoppingListRepo.GetWaypointsByName(GetWaypointsId, createDto);
             Assert.AreEqual(expected, result);
         }
 
@@ -241,7 +206,7 @@ namespace ShoppingListTests
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = ShoppingListErrors.ShoppingListErrors.ShopNotFound;
 
-            var result = SqlShoppingListRepo.ValidateShopName2(GetWaypointsId, createDto);
+            var result = SqlShoppingListRepo.GetWaypointsByName(GetWaypointsId, createDto);
             Assert.AreEqual(expected, result);
         }
     }

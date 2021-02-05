@@ -53,10 +53,8 @@ module WaypointsOrder =
                 | (itemData, _, _) -> itemData)
 
 
-
         { Password = shoppingList.Password
           Items = sortedItems
-          ShopName = shoppingList.ShopName
           Id = shoppingList.Id }: ShoppingList
 
     /// puts items which ItemType which should not be included in sorting is 2nd tuple value

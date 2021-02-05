@@ -61,7 +61,6 @@ let ``should pick waypoints for all items`` () =
     let shoppingList: ShoppingListWithDepartment =
         { Id = 0
           Password = "pass"
-          ShopName = "todo"
           Items =
               ResizeArray<ItemDataWithPredictedType>
                   [ ({ Id = 0
@@ -83,7 +82,6 @@ let ``should pick waypoints for all items`` () =
     let expected: ShoppingListWithWaypoints =
         { Id = 0
           Password = "pass"
-          ShopName = "todo"
           Items =
               [ ({ Id = 0
                    Name = "Orange juice"

@@ -15,7 +15,6 @@ namespace SharedTypesTests.Entities
             {
                 Id = 10,
                 Password = "pass",
-                ShopName = "shopName",
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 
@@ -62,7 +61,7 @@ namespace SharedTypesTests.Entities
                     ShoppingListEntity = shoppingListEntity
                 }
             };
-            var expected = new ShoppingListModule.ShoppingList(10, "pass", "shopName",
+            var expected = new ShoppingListModule.ShoppingList(10, "pass", 
                 ListModule.OfSeq(convertedItemData));
 
             Assert.AreEqual(expected, (ShoppingListModule.ShoppingList) shoppingListEntity);

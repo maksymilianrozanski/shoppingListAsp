@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using SharedTypes.Dtos;
+using SharedTypes.Entities;
 using static LaYumba.Functional.F;
 using static Waypoints.WaypointsModule;
 
 namespace ShoppingList.Data.Waypoints
 {
-    public class WaypointsRepoHardcoded : IWaypointsRepo
+    public static class WaypointsRepoHardcoded
     {
         public static readonly ShopWaypointsReadDto HardcodedWaypoints = new("big-market",
             new Waypoint("start", 699, 673),
@@ -52,11 +54,5 @@ namespace ShoppingList.Data.Waypoints
                 new("MILK", 339, 300),
             }
         );
-
-        public Option<ShopWaypointsReadDto> GetShopWaypoints(string shopName) =>
-            shopName == "big-market" ? Some(HardcodedWaypoints) : new Option<ShopWaypointsReadDto>();
-
-        public Option<int> GetShopWaypointsId(string shopName) =>
-            shopName == "big-market" ? Some(1) : new None();
     }
 }

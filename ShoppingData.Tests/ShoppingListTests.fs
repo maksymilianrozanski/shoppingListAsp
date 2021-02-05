@@ -10,8 +10,7 @@ let Setup () = ()
 
 let private shoppingList = emptyShoppingList 11 "pass"
 
-let private modifyId (list: ShoppingList) =
-    Choice1Of2({ list with Id = 120 })
+let private modifyId (list: ShoppingList) = Choice1Of2({ list with Id = 120 })
 
 let milk =
     { Name = "Milk"
@@ -35,11 +34,9 @@ let chocolate =
 [<Test>]
 let ``should return list with item added`` () =
     let initial =
-        { 
-          Password = "pass"
+        { Password = "pass"
           Items = [ milk ]
-          Id = 11
-          ShopName = "shopName" }
+          Id = 11 }
 
     let expected =
         { initial with
@@ -50,11 +47,9 @@ let ``should return list with item added`` () =
     Assert.AreEqual(expected, result)
 
 let threeItemList =
-    { 
-      Password = "pass"
+    { Password = "pass"
       Items = [ milk; coffee; chocolate ]
-      Id = 11
-      ShopName = "shopName" }
+      Id = 11 }
 
 [<Test>]
 let ``should update coffee item`` () =

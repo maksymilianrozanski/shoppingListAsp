@@ -14,10 +14,19 @@ namespace ShoppingList.Data
 
         public DbSet<ShopWaypointsEntity> ShopWaypointsEntities { get; set; } = null!;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<ItemDataEntity>()
                 .HasOne(i => i.ShoppingListEntity)
                 .WithMany(j => j.ItemDataEntities)
                 .HasForeignKey(i => i.ShoppingListEntityRefId);
+
+            modelBuilder.Entity<ShoppingListEntity>()
+                .HasOne(i => i.ShopWaypointsEntity)
+                .WithMany(i => i.ShoppingListEntities)
+                .HasForeignKey(i => i.ShopWaypointsEntityId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+        }
     }
 }

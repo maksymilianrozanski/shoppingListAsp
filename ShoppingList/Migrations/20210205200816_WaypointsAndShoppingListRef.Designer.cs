@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoppingList.Data;
 
 namespace ShoppingList.Migrations
 {
     [DbContext(typeof(ShoppingListDbContext))]
-    partial class ShoppingListDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210205200816_WaypointsAndShoppingListRef")]
+    partial class WaypointsAndShoppingListRef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,6 +81,11 @@ namespace ShoppingList.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int?>("ShopWaypointsEntityId")
                         .HasColumnType("int");
 
@@ -104,8 +111,7 @@ namespace ShoppingList.Migrations
                 {
                     b.HasOne("SharedTypes.Entities.ShopWaypointsEntity", "ShopWaypointsEntity")
                         .WithMany("ShoppingListEntities")
-                        .HasForeignKey("ShopWaypointsEntityId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ShopWaypointsEntityId");
 
                     b.Navigation("ShopWaypointsEntity");
                 });

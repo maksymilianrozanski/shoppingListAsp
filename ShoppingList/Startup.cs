@@ -31,7 +31,7 @@ namespace ShoppingList
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection"));
                 // opt.ConfigureWarnings(w =>
-                    // w.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
+                // w.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
             });
 
             services.AddPredictionEnginePool<GroceryData, GroceryItemPrediction>()
@@ -61,9 +61,12 @@ namespace ShoppingList
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            //replace SqlWaypointsRepo with WaypointsRepoHardcoded to use hardcoded test data
-            // services.AddTransient<IWaypointsRepo, WaypointsRepoHardcoded>();
-            services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
+            /*
+             * use SqlShoppingListRepo for default usage
+             * use SqlShoppingListRepoExampleData for inserting example data if ShopWaypointsEntities table is empty
+             */
+            // services.AddTransient<IShoppingListRepo, SqlShoppingListRepo>();
+            services.AddTransient<IShoppingListRepo, SqlShoppingListRepoExampleData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

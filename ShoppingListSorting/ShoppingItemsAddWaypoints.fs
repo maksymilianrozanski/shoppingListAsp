@@ -25,7 +25,6 @@ module ShoppingItemsAddWaypoints =
     type ShoppingListWithWaypoints =
         { Id: int
           Password: string
-          ShopName: string
           StartAndCheckout: (Waypoint * Waypoint)
           Items: ItemDataWithPredictedTypeWithWaypoint list }
 
@@ -35,6 +34,5 @@ module ShoppingItemsAddWaypoints =
     let addWaypointsToShoppingList (waypoints: ShopWaypointsReadDto) (shoppingList: ShoppingListWithDepartment) =
         { Id = shoppingList.Id
           Password = shoppingList.Password
-          ShopName = shoppingList.ShopName
           StartAndCheckout = (waypoints.Start, waypoints.Checkout)
           Items = pickWaypoints shoppingList waypoints }

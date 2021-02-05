@@ -10,29 +10,16 @@ namespace SharedTypes.Entities
 {
     public class ShoppingListEntity
     {
+        public int? ShopWaypointsEntityId { get; set; }
         [Key] public int Id { get; set; }
 
         [Required] public string Password { get; set; } = "";
 
-        [MaxLength(100)]
-        [Required(AllowEmptyStrings = true)]
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-
-        public string ShopName { get; set; } = "";
-
         [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; } = new List<ItemDataEntity>();
-
-        public static implicit operator ShoppingListEntity(ShoppingListCreateDto createDto) =>
-            new()
-            {
-                Id = 0,
-                Password = createDto.Password,
-                ShopName = createDto.ShopName,
-                ItemDataEntities = new List<ItemDataEntity>()
-            };
+        public ShopWaypointsEntity? ShopWaypointsEntity { get; set; }
 
         public static implicit operator ShoppingListModule.ShoppingList(ShoppingListEntity entity) =>
-            new(entity.Id, entity.Password, entity.ShopName,
+            new(entity.Id, entity.Password,
                 ListModule.OfSeq(
                     entity.ItemDataEntities.Map(i =>
                         (ShoppingItemModule.ItemData) i))

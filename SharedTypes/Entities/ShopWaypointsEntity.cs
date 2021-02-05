@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SharedTypes.Entities
@@ -9,5 +10,6 @@ namespace SharedTypes.Entities
         [Required, MaxLength(200)] public string Name { get; set; }
 
         [Required] public string ShopWaypointsReadDtoJson { get; set; }
+        public ICollection<ShoppingListEntity> ShoppingListEntities { get; set; } = new List<ShoppingListEntity>();
     }
 }

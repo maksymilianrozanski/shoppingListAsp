@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using LaYumba.Functional;
+using SharedTypes.Entities;
 
 namespace SharedTypes.Dtos
 {
@@ -16,5 +19,18 @@ namespace SharedTypes.Dtos
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string ShopName { get; set; }
+
+        public ShoppingListEntity ToShoppingListEntity(Option<ShopWaypointsEntity> waypoints)
+        {
+            var entity = new ShoppingListEntity
+            {
+                Id = 0,
+                Password = this.Password,
+                ItemDataEntities = new List<ItemDataEntity>()
+            };
+
+            waypoints.ForEach(i => entity.ShopWaypointsEntity = i);
+            return entity;
+        }
     }
 }
