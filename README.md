@@ -18,7 +18,8 @@ https://www.kaggle.com/agatii/total-sale-2018-yearly-data-of-grocery-shop
 **Instrukcja uruchomienia**
 
 Wymagania:
-- zainstalowany docker
+
+- zainstalowany docker engine
 - dostępny port 5000
 
 (branch repozytorium wseiDemo)
@@ -38,3 +39,10 @@ Username: dowolny Password: `password` Shopping list id: `1` dane wstawiane z pl
 Dodatkowo aplikacja zwraca typ prognozowanego działu sklepowego (zapytania POST), przykładowe zapytanie w
 pliku `/curl/predictItem.cmd`
 
+W przypadku uruchamiania bez docker-a należy:
+- dostosować w pliku `ShoppingList/appsettings.json` , tak aby odpowiadał dostępnej bazie danych (SQL Server).
+- przed pierwszym uruchomieniem projektu ASP.NET uruchomić projekt GroceryClassification,
+- przenieść wygenerowany plik model.zip do projektu ShoppingList
+  `cp ./GroceryClassification/Models/model.zip ./ShoppingList/MLModels/model.zip`
+- zaktualizować bazę danych ( `dotnet ef database update --project ShoppingList` ) - wymagana instalacja dotnet ef tools
+- uruchomić projekt ShoppingList ( `dotnet run --project ShoppingList --urls http://*:5000` )
