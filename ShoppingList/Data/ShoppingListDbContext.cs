@@ -13,6 +13,7 @@ namespace ShoppingList.Data
         public DbSet<ShoppingListEntity> ShoppingListEntities { get; set; } = null!;
 
         public DbSet<ShopWaypointsEntity> ShopWaypointsEntities { get; set; } = null!;
+        public DbSet<UserEntity> UserEntities { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,19 @@ namespace ShoppingList.Data
                 .HasForeignKey(i => i.ShopWaypointsEntityId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+
+            modelBuilder.Entity<ShoppingListEntity>()
+                .HasOne(i => i.UserEntity)
+                .WithMany(i => i.ShoppingListEntities)
+                .HasForeignKey(i => i.UserEntityId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            modelBuilder.Entity<UserEntity>()
+                .HasIndex(entity => entity.Login).IsUnique();
+
+            modelBuilder.Entity<UserEntity>()
+                .HasMany(i => i.ShoppingListEntities);
         }
     }
 }

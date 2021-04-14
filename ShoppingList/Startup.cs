@@ -40,9 +40,9 @@ namespace ShoppingList
 
             services
                 .AddTransient<
-                    BasicAuthenticationHandler.IUserService<BasicAuthenticationHandler.UserLoginData,
-                        BasicAuthenticationHandler.User>, BasicAuthenticationHandler.UserServiceImpl>();
-            services.AddTransient<BasicAuthenticationHandler>();
+                    IUserService<UserLoginData2,
+                        IdBasedAuthenticationHandler.User>, IdBasedAuthenticationHandler.UserServiceImpl>();
+            services.AddTransient<IdBasedAuthenticationHandler>();
 
             services.AddAuthentication("CookieAuthentication")
                 .AddCookie("CookieAuthentication", config =>

@@ -1,6 +1,6 @@
 @page
 @using LaYumba.Functional
-@using static Auth.BasicAuthenticationHandler.User
+@using ShoppingList.Auth
 @model ShoppingList.Pages.Protected.AddItems
 
 
@@ -16,14 +16,14 @@
 </head>
 <body>
 <div>
-
+    @* todo display correct shopping list id *@
     <div>
-        @ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}, current shopping list id: {i.ShoppingListId}").GetOrElse("")
+        @IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}").GetOrElse("")
     </div>
 
     <br>
 
-    <form method="post">
+    <form method="post" asp-page-handler="AddItem">
         <div>
             <label for="name">Name</label>
             <input type="text" id="name" name="itemName">
@@ -34,7 +34,13 @@
         </div>
 
         <div>
-            <button id="submit">Save new item</button>
+            <button id="submit" type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Save new item</button>
+        </div>
+    </form>
+
+    <form method="post" asp-page-handler="OpenCollecting">
+        <div>
+            <button type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Start collecting items</button>
         </div>
     </form>
 

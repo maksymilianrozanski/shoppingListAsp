@@ -13,6 +13,12 @@ namespace SharedTypes.Dtos
             ShopName = shopName;
         }
 
+        public ShoppingListCreateDto()
+        {
+            Password = "";
+            ShopName = "";
+        }
+
         [Required] [MaxLength(20)] public string Password { get; set; }
 
         [MaxLength(100)]
@@ -25,7 +31,6 @@ namespace SharedTypes.Dtos
             var entity = new ShoppingListEntity
             {
                 Id = 0,
-                Password = this.Password,
                 ItemDataEntities = new List<ItemDataEntity>()
             };
 

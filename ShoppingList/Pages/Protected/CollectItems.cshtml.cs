@@ -1,8 +1,10 @@
+using System;
 using LaYumba.Functional;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShoppingList.Auth;
 using ShoppingList.Data;
 using ShoppingList.Data.List;
-using static ShoppingList.Auth.BasicAuthenticationHandler.User;
 
 namespace ShoppingList.Pages.Protected
 {
@@ -10,19 +12,15 @@ namespace ShoppingList.Pages.Protected
     {
         public CollectItems(IShoppingListRepo shoppingListRepo)
         {
-            RefreshUserData();
         }
 
         public string CurrentUsername { get; private set; } = "";
         public int CurrentShoppingListId { get; private set; }
 
-        public void OnGet() => RefreshUserData();
-
-        private void RefreshUserData() =>
-            ToOptionUser(HttpContext).ForEach(i =>
-            {
-                CurrentUsername = i.Username;
-                CurrentShoppingListId = i.ShoppingListId;
-            });
+        public void OnGetCollect(int shoppingListId)
+        {
+            this.CurrentShoppingListId = shoppingListId;
+            IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).ForEach(i => { CurrentUsername = i.Username; });
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace ShoppingList.Pages
 {
     public class SignInSignOut : PageModel
     {
-        public bool IsSignedIn => BasicAuthenticationHandler.IsSignedIn(HttpContext);
+        public bool IsSignedIn => IdBasedAuthenticationHandler.IsSignedIn(HttpContext);
 
         public void OnGet()
         {

@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FSharp.Core;
 using SharedTypes.Dtos;
 using ShoppingData;
+using ShoppingList.Auth;
 using ShoppingList.Data.List;
 using ShoppingList.Data.List.Errors;
-using static ShoppingList.Auth.BasicAuthenticationHandler.User;
+using ShoppingList.Utils;
 using static LaYumba.Functional.F;
 using ItemDataActionDto = SharedTypes.Dtos.Protected.ItemDataActionDto;
 
@@ -33,10 +34,10 @@ namespace ShoppingList.Controllers.Protected
 
         [HttpGet("{id}")]
         public ActionResult<ShoppingListReadDto> GetShoppingListById(int id) =>
-            ToOptionUser(HttpContext)
-                .Bind(user => user.ShoppingListId == id ? Some(user.ShoppingListId) : new Option<int>())
-                .Map(valid => _repository.GetShoppingListSorted(valid)
-                    .Pipe(ShoppingListModificationResultTyped))
+            IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext)
+                .Map(i => _repository.ValidateAccess((i, id)))
+                .OptionEitherMapBind(j => _repository.GetShoppingListSorted(j.Item2))
+                .Map(ShoppingListModificationResultTyped)
                 .GetOrElse(NotFound());
 
         public ActionResult<ShoppingListReadDto> ShoppingListModificationResultTyped(

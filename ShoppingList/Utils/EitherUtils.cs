@@ -24,6 +24,10 @@ namespace ShoppingList.Utils
             Func<TR, TR2> f) =>
             @this.Map(i => i.Map(f));
 
+        public static Option<Either<TL, TR2>> OptionEitherMapBind<TL, TR, TR2>(this Option<Either<TL, TR>> @this,
+            Func<TR, Either<TL, TR2>> f) =>
+            @this.Map(i => i.Bind(f));
+
         public static Try<Option<Either<TL, TR2>>> TryOptionEitherMap<TL, TR, TR2>(
             this Try<Option<Either<TL, TR>>> @this, Func<TR, TR2> f) =>
             @this.TryOptionMap(j => j.Map(f));

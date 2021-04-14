@@ -1,5 +1,5 @@
 @page
-@model ShoppingList.Pages.CreateList
+@model ShoppingList.Pages.CreateUser
 
 @{
     Layout = Layout;
@@ -27,14 +27,6 @@
         <div>
             <input id="password" type="password" asp-for="Password" placeholder="password">
             <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-
-        <div>
-            <label asp-for="ShopName">Shop name</label>
-        </div>
-        <div>
-            <input asp-for="ShopName" id="shopName" placeholder="shop name" type="text">
-            <span asp-validation-for="ShopName" class="text-danger"></span>
         </div>
 
         <div>

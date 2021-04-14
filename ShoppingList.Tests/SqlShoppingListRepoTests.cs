@@ -23,7 +23,6 @@ namespace ShoppingListTests
         private readonly ShoppingListEntity _shoppingListEntity = new()
         {
             Id = 42,
-            Password = "password",
             ItemDataEntities = new List<ItemDataEntity>
             {
                 new()
@@ -51,7 +50,6 @@ namespace ShoppingListTests
             var result = SqlShoppingListRepo.ShouldTryFindWaypoints(new ShoppingListEntity()
             {
                 Id = 43,
-                Password = "Password",
                 ItemDataEntities = new List<ItemDataEntity>(),
                 ShopWaypointsEntityId =  null
             });

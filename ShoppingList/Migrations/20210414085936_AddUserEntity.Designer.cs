@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoppingList.Data;
 
 namespace ShoppingList.Migrations
 {
     [DbContext(typeof(ShoppingListDbContext))]
-    partial class ShoppingListDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210414085936_AddUserEntity")]
+    partial class AddUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,17 +77,16 @@ namespace ShoppingList.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ShopWaypointsEntityId")
-                        .HasColumnType("int");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserEntityId")
+                    b.Property<int?>("ShopWaypointsEntityId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ShopWaypointsEntityId");
-
-                    b.HasIndex("UserEntityId");
 
                     b.ToTable("ShoppingListEntities");
                 });
@@ -99,18 +100,13 @@ namespace ShoppingList.Migrations
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Login")
-                        .IsUnique();
 
                     b.ToTable("UserEntities");
                 });
@@ -133,15 +129,7 @@ namespace ShoppingList.Migrations
                         .HasForeignKey("ShopWaypointsEntityId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("SharedTypes.Entities.UserEntity", "UserEntity")
-                        .WithMany("ShoppingListEntities")
-                        .HasForeignKey("UserEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ShopWaypointsEntity");
-
-                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("SharedTypes.Entities.ShopWaypointsEntity", b =>
@@ -152,11 +140,6 @@ namespace ShoppingList.Migrations
             modelBuilder.Entity("SharedTypes.Entities.ShoppingListEntity", b =>
                 {
                     b.Navigation("ItemDataEntities");
-                });
-
-            modelBuilder.Entity("SharedTypes.Entities.UserEntity", b =>
-                {
-                    b.Navigation("ShoppingListEntities");
                 });
 #pragma warning restore 612, 618
         }

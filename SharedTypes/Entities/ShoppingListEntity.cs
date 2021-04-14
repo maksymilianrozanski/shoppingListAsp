@@ -13,7 +13,11 @@ namespace SharedTypes.Entities
         public int? ShopWaypointsEntityId { get; set; }
         [Key] public int Id { get; set; }
 
-        [Required] public string Password { get; set; } = "";
+        public string Password { get;  } = "";
+
+        [Required] public int UserEntityId { get; set; }
+
+        public UserEntity UserEntity { get; set; }
 
         [Required] public ICollection<ItemDataEntity> ItemDataEntities { get; set; } = new List<ItemDataEntity>();
         public ShopWaypointsEntity? ShopWaypointsEntity { get; set; }
@@ -29,7 +33,6 @@ namespace SharedTypes.Entities
             new()
             {
                 Id = list.Id,
-                Password = list.Password,
                 ItemDataEntities = list.Items.Map(i => (ItemDataEntity) i).ToList()
             };
     }

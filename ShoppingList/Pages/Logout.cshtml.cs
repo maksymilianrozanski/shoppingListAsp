@@ -1,13 +1,13 @@
 using static LaYumba.Functional.F;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static ShoppingList.Auth.BasicAuthenticationHandler.User;
+using ShoppingList.Auth;
 
 namespace ShoppingList.Pages
 {
     public class Logout : PageModel
     {
-        public bool IsSignedIn => ToOptionUser(HttpContext).Match(() => false, user => true);
+        public bool IsSignedIn => IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Match(() => false, user => true);
 
         public Logout()
         {

@@ -1,8 +1,7 @@
 @page
 @model ShoppingList.Pages.Logout
 @using LaYumba.Functional
-@using static ShoppingList.Auth.BasicAuthenticationHandler.User;
-@using static ShoppingList.Auth.BasicAuthenticationHandler;
+@using ShoppingList.Auth
 @using static LaYumba.Functional.F
 
 @{
@@ -20,9 +19,9 @@
     @{
         @if (Model.IsSignedIn)
         {
-            foreach (var u in ToOptionUser(HttpContext).Bind(i => new List<User> {i}))
+            foreach (var u in IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Bind(i => new List<IdBasedAuthenticationHandler.User> {i}))
             {
-                <p>@($"Signed in, as {u.Username}, shopping list id: {u.ShoppingListId}")</p>
+                <p>@($"Signed in, as {u.Username}")</p>
 
                 <form method="post">
                     <input type="submit" value="Logout" id="logoutButton">
