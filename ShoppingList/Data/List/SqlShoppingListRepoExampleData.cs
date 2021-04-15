@@ -20,6 +20,15 @@ namespace ShoppingList.Data.List
         {
             if (context.ShopWaypointsEntities.ToList().Count == 0)
             {
+                var userEntity = new UserEntity
+                {
+                    Id = 0, Login = "user", Password = "password"
+                };
+
+                context.UserEntities.Add(userEntity);
+
+                SaveChanges();
+
                 context.ShopWaypointsEntities.Add(new ShopWaypointsEntity
                 {
                     Id = 0,
@@ -45,7 +54,7 @@ namespace ShoppingList.Data.List
                     return valueTuples.Map(tuple => new ItemDataCreateDto(i, tuple.Item1, tuple.Item2)).ToList();
                 }
 
-                base.CreateShoppingList(new ShoppingListCreateDto("password", "big-market"))
+                base.CreateShoppingList(new ShoppingListCreateDto(userEntity.Id, "big-market"))
                     .Map(i => ItemsToInsert(i.Id))
                     .ForEach(i => i.ForEach(itemToAdd =>
                     {

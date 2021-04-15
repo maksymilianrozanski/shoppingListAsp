@@ -78,7 +78,7 @@ Przy uruchomieniu z dockerem aplikacja działa bez https. W branchu wseiDemo pod
 jest przykładowa mapa sklepu z nazwą _big-market_, oraz lista zakupowa z kilkoma dodanymi produktami.
 
 Dane logowania:
-Username: dowolny Password: `password` Shopping list id: `1` dane wstawiane z pliku SqlShoppingListRepoExampleData.cs.
+Username: `user` Password: `password` dane wstawiane z pliku SqlShoppingListRepoExampleData.cs.
 Dodatkowo aplikacja zwraca typ prognozowanego działu sklepowego (zapytania POST), przykładowe zapytanie w
 pliku `/curl/predictItem.cmd`
 

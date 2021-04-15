@@ -47,9 +47,9 @@ namespace ShoppingList.Pages.Protected
         {
             if (ModelState.IsValid)
                 IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Map(user =>
-                    new ShoppingListWithUserCreateDto(user.UserId, ShopName ?? "")
+                    new ShoppingListCreateDto(user.UserId, ShopName ?? "")
                         .Pipe(createDto =>
-                            _shoppingListRepo.CreateShoppingList2(createDto)
+                            _shoppingListRepo.CreateShoppingList(createDto)
                                 .Match(l =>
                                         this.ErrorText = l.ToString(),
                                     _ => Response.Redirect("/Protected/ShoppingLists"))));

@@ -166,7 +166,7 @@ namespace ShoppingListTests
         {
             static Option<int> GetWaypointsId(string name) => 22;
 
-            var createDto = new ShoppingListCreateDto("password123", "valid-shop");
+            var createDto = new ShoppingListCreateDto("valid-shop");
 
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = (createDto, 22);
@@ -185,7 +185,7 @@ namespace ShoppingListTests
                 throw new Exception();
             }
 
-            var createDto = new ShoppingListCreateDto("password123", "");
+            var createDto = new ShoppingListCreateDto("");
 
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = (createDto, new None());
@@ -199,7 +199,7 @@ namespace ShoppingListTests
         {
             static Option<int> GetWaypointsId(string name) => new None();
 
-            var createDto = new ShoppingListCreateDto("password123", "valid-shop");
+            var createDto = new ShoppingListCreateDto("valid-shop");
 
             Either<ShoppingListErrors.ShoppingListErrors,
                 (ShoppingListCreateDto, Option<int>)> expected = ShoppingListErrors.ShoppingListErrors.ShopNotFound;

@@ -24,9 +24,6 @@ namespace ShoppingList.Data.List
         public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> CreateShoppingList(
             Option<ShoppingListCreateDto> shoppingList);
 
-        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> CreateShoppingList2(
-            Option<ShoppingListWithUserCreateDto> shoppingList);
-
         public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>
             GetShoppingList(int id);
 
@@ -36,11 +33,8 @@ namespace ShoppingList.Data.List
         public Either<ShoppingData.ShoppingListErrors.ShoppingListErrors, IEnumerable<ShoppingListReadDto>>
             GetUserShoppingLists(string userLogin);
 
-        Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
-            string password);
-
-        Either<ShoppingData.ShoppingListErrors.ShoppingListErrors, UserReadDto> AuthenticateUser2(
-            UserLoginData2 userLoginData);
+        Either<ShoppingData.ShoppingListErrors.ShoppingListErrors, UserReadDto> AuthenticateUser(
+            UserLoginData userLoginData);
 
         Either<ShoppingData.ShoppingListErrors.ShoppingListErrors, (User, int)> ValidateAccess(
             (User, int) userWithListId);

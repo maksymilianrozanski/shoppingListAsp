@@ -45,7 +45,7 @@ namespace ShoppingList.Pages
                         _repository.CreateUser(dto))
                     .Bimap(l => this.ErrorText = l.ToString(),
                         r =>
-                            _authenticationHandler.CreateClaims(new UserLoginData2(r.Login, r.Password))
+                            _authenticationHandler.CreateClaims(new UserLoginData(r.Login, r.Password))
                                 .TryOptionEitherMap(c => HttpContext.SignInAsync("CookieAuthentication", c))
                                 .Run()
                                 .Match(_ => Response.Redirect("/Error"),

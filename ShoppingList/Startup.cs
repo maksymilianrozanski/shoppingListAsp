@@ -40,7 +40,7 @@ namespace ShoppingList
 
             services
                 .AddTransient<
-                    IUserService<UserLoginData2,
+                    IUserService<UserLoginData,
                         IdBasedAuthenticationHandler.User>, IdBasedAuthenticationHandler.UserServiceImpl>();
             services.AddTransient<IdBasedAuthenticationHandler>();
 

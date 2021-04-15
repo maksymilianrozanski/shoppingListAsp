@@ -7,31 +7,31 @@ namespace SharedTypes.Dtos
 {
     public class ShoppingListCreateDto
     {
-        public ShoppingListCreateDto(string password, string shopName)
+        public ShoppingListCreateDto(string shopName)
         {
-            Password = password;
             ShopName = shopName;
         }
 
-        public ShoppingListCreateDto()
+        public ShoppingListCreateDto(int userId, string shopName)
         {
-            Password = "";
-            ShopName = "";
+            ShopName = shopName;
+            UserId = userId;
         }
-
-        [Required] [MaxLength(20)] public string Password { get; set; }
 
         [MaxLength(100)]
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string ShopName { get; set; }
 
+        [Required] public int UserId { get; set; }
+
         public ShoppingListEntity ToShoppingListEntity(Option<ShopWaypointsEntity> waypoints)
         {
             var entity = new ShoppingListEntity
             {
                 Id = 0,
-                ItemDataEntities = new List<ItemDataEntity>()
+                ItemDataEntities = new List<ItemDataEntity>(),
+                UserEntityId = this.UserId
             };
 
             waypoints.ForEach(i => entity.ShopWaypointsEntity = i);

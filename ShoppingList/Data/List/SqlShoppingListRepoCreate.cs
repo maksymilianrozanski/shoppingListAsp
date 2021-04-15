@@ -78,33 +78,6 @@ namespace ShoppingList.Data.List
                     shoppingList
                         .Map(i => MatchWaypoints(i)
                             .Pipe(_ => _context.Database.CloseConnection())
-                            .Map(AttachWaypointsEntity)))
-                .TryOptionEitherMap(i => SaveChanges() ? Some(i) : new None())
-                .TryOptionMap(i =>
-                    i.NoneToEitherLeft(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())))
-                .TryOptionEitherMap(i => (ShoppingListReadDto) i)
-                .Run()
-                .Match(l =>
-                        Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed())),
-                    r => r.Map(i =>
-                            i.Match(l =>
-                                    (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
-                                    Left(l),
-                                readDto =>
-                                    (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
-                                    Right(readDto)
-                            ))
-                        .GetOrElse(
-                            (Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto>)
-                            ShoppingListErrors.ShoppingListErrors.NewOtherError(new SavingFailed()))
-                );
-
-        public Either<ShoppingListErrors.ShoppingListErrors, ShoppingListReadDto> CreateShoppingList2(
-            Option<ShoppingListWithUserCreateDto> shoppingList) =>
-            Try(() =>
-                    shoppingList
-                        .Map(i => MatchWaypoints(i)
-                            .Pipe(_ => _context.Database.CloseConnection())
                             .Map(AttachWaypointsEntity)
                             .Map(listEntity =>
                             {

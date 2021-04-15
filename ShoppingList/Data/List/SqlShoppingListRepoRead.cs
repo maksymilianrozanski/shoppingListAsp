@@ -123,17 +123,8 @@ namespace ShoppingList.Data.List
             (FuncConvert.FromFunc(PredictionAdapter.PredictionFunc.Apply(_predictionEnginePool)),
                 listWithWaypoints.Item1, listWithWaypoints.Item2);
 
-        public Either<ShoppingListErrors.ShoppingListErrors, int> PasswordMatchesShoppingList(int shoppingListId,
-            string password) =>
-            EitherGetShoppingListEntity(shoppingListId)
-                .Bind<ShoppingListErrors.ShoppingListErrors, ShoppingListEntity, int>(i =>
-                {
-                    if (i.Password == password) return F.Right(i.Id);
-                    else return F.Left(ShoppingListErrors.ShoppingListErrors.IncorrectPassword);
-                });
-
         public Either<ShoppingListErrors.ShoppingListErrors, UserReadDto>
-            AuthenticateUser2(UserLoginData2 userLoginData) =>
+            AuthenticateUser(UserLoginData userLoginData) =>
             F.Try(() =>
                     _context.UserEntities.FirstOrDefault(i =>
                         i.Login == userLoginData.Username && i.Password == userLoginData.Password)

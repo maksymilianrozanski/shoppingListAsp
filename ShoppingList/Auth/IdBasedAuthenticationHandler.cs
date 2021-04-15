@@ -10,12 +10,12 @@ using static LaYumba.Functional.F;
 
 namespace ShoppingList.Auth
 {
-    public class UserLoginData2
+    public class UserLoginData
     {
         public string Username { get; }
         public string Password { get; }
 
-        public UserLoginData2(string username, string password)
+        public UserLoginData(string username, string password)
         {
             Username = username;
             Password = password;
@@ -24,10 +24,10 @@ namespace ShoppingList.Auth
 
     public class IdBasedAuthenticationHandler
     {
-        private readonly IUserService<UserLoginData2, User> _userService;
+        private readonly IUserService<UserLoginData, User> _userService;
 
         public Try<Option<Either<ShoppingListErrors.ShoppingListErrors, ClaimsPrincipal>>> CreateClaims(
-            UserLoginData2 user) =>
+            UserLoginData user) =>
             Try(() => _userService.Authenticate(user))
                 .TryOptionEitherMap(u =>
                     new[]
@@ -38,7 +38,7 @@ namespace ShoppingList.Auth
                 .TryOptionEitherMap(j => new ClaimsIdentity(j, "User Identity"))
                 .TryOptionEitherMap(claimsIdentity => new ClaimsPrincipal(claimsIdentity));
 
-        public class UserServiceImpl : IUserService<UserLoginData2, User>
+        public class UserServiceImpl : IUserService<UserLoginData, User>
         {
             private readonly IShoppingListRepo _shoppingListRepo;
 
@@ -48,8 +48,8 @@ namespace ShoppingList.Auth
             }
 
             public Option<Either<ShoppingListErrors.ShoppingListErrors, User>>
-                Authenticate(Option<UserLoginData2> user) =>
-                user.Map(i => _shoppingListRepo.AuthenticateUser2(i).Map(dto => (User) dto));
+                Authenticate(Option<UserLoginData> user) =>
+                user.Map(i => _shoppingListRepo.AuthenticateUser(i).Map(dto => (User) dto));
         }
 
         public class User
@@ -82,7 +82,7 @@ namespace ShoppingList.Auth
                 new(userReadDto.Id, userReadDto.Login);
         }
 
-        public IdBasedAuthenticationHandler(IUserService<UserLoginData2, User> userService)
+        public IdBasedAuthenticationHandler(IUserService<UserLoginData, User> userService)
         {
             _userService = userService;
         }

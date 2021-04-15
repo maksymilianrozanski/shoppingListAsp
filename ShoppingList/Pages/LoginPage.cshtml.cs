@@ -34,7 +34,7 @@ namespace ShoppingList.Pages
 
         private void SignIn()
         {
-            _authenticationHandler.CreateClaims(new UserLoginData2(Username, Password))
+            _authenticationHandler.CreateClaims(new UserLoginData(Username, Password))
                 .TryOptionEitherMap(
                     async c =>
                         await HttpContext.SignInAsync("CookieAuthentication", c))
