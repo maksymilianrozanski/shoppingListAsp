@@ -9,6 +9,7 @@
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
     <title></title>
 </head>
 <body>
@@ -112,10 +113,7 @@ const currentUsername =  "@Model.CurrentUsername";
 
             if (shouldBeDisabled(itemDataReadDto.itemType, actionNumber)) {
                 actionButton.disabled = true;    
-                actionButton.style.cssText = "border: 2px solid " + itemTypeBackgroundColor(itemDataReadDto) + "; color: black;";
             }
-
-            actionButton.style.backgroundColor = actionButtonColor(actionNumber);
             
             const actionDto = () =>
                 ({
@@ -140,8 +138,6 @@ const currentUsername =  "@Model.CurrentUsername";
 
         const itemWithActions = (itemDataReadDto) => {
             const liElement = document.createElement("li");
-            const background = itemTypeBackgroundColor(itemDataReadDto);
-            liElement.style.cssText = "border: solid #e0e0e0;\nborder-width: 1px;\nborder-radius: 4px;\npadding: 2px;\nmargin: 2px;\nbox-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);" + "background-color: " + background + ";";
 
             const displayedText = document.createElement("div")
             displayedText.innerText = itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
@@ -213,10 +209,11 @@ const currentUsername =  "@Model.CurrentUsername";
 ();
 </script>
 
-<div>
-    <ol id="shoppingListItems">
+<div class="paper">
+    <ol class="paper-content" id="shoppingListItems">
 
     </ol>
+
 </div>
 </body>
 </html>
