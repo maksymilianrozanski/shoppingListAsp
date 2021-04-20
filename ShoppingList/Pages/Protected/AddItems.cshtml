@@ -12,58 +12,64 @@
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
     <title></title>
 </head>
 <body>
-<div>
-    @* todo display correct shopping list id *@
-    <div>
-        @IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}").GetOrElse("")
-    </div>
+<div class="paper">
 
-    <br>
+    <div class="paper-content">
 
-    <form method="post" asp-page-handler="AddItem">
-        <div>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="itemName">
-        </div>
-        <div>
-            <label for="quantity">Quantity</label>
-            <input type="number" id="quantity" name="quantity">
-        </div>
 
-        <div>
-            <button id="submit" type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Save new item</button>
-        </div>
-    </form>
+        @* todo display correct shopping list id *@
+        <span>
+            @IdBasedAuthenticationHandler.User.ToOptionUser(HttpContext).Map(i => $"Logged in as {i.Username}").GetOrElse("")
+        </span>
 
-    <form method="post" asp-page-handler="OpenCollecting">
-        <div>
-            <button type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Start collecting items</button>
-        </div>
-    </form>
+        <br>
 
-    <ol id="savedItemsList">
-        @{
-            var displayedList =
-                Model.DisplayedDto
-                    .Match(error =>
-                        new List<string> {$"Something went wrong, {error}"},
-                        r =>
-                        {
-                            var items = r.Items.ToList();
-                            return items.Count < 1 ?
-                                new List<string> {"no items added yet"}
-                                : items.Map(dto => $"{dto.Name} --- {dto.Quantity} times");
-                        });
+        <form method="post" asp-page-handler="AddItem">
+            <div>
+                <input type="text" id="name" name="itemName">
+                <label for="name">name</label>
+            </div>
+            <div>
+                <input type="number" id="quantity" name="quantity">
+                <label for="quantity">quantity</label>
+            </div>
 
-            foreach (var s in displayedList)
-            {
-                <li>@s</li>
+            <div>
+                <button id="submit" type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Save new item</button>
+            </div>
+        </form>
+
+        <form method="post" asp-page-handler="OpenCollecting">
+            <div>
+                <button type="submit" name="shoppingListId" value="@Model.CurrentShoppingListId">Start collecting items</button>
+            </div>
+        </form>
+
+        <ol id="savedItemsList">
+            @{
+                var displayedList =
+                    Model.DisplayedDto
+                        .Match(error =>
+                            new List<string> {$"Something went wrong, {error}"},
+                            r =>
+                            {
+                                var items = r.Items.ToList();
+                                return items.Count < 1 ?
+                                    new List<string> {"no items added yet"}
+                                    : items.Map(dto => $"{dto.Name} --- {dto.Quantity} times");
+                            });
+
+                foreach (var s in displayedList)
+                {
+                    <li>@s</li>
+                }
             }
-        }
-    </ol>
+        </ol>
+    </div>
 </div>
 </body>
 </html>
