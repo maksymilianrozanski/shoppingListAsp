@@ -11,48 +11,55 @@
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
     <title></title>
 </head>
 <body>
-<div>
+<div class="paper">
+    <div class="paper-content">
 
-    <div>
-        username: @Model.CurrentUser.Map(user => user.Username).GetOrElse("error")
-    </div>
+        <div>
+            username: @Model.CurrentUser.Map(user => user.Username).GetOrElse("error")
+        </div>
 
-    <div>
-        userId: @Model.CurrentUser.Map(user => user.UserId).GetOrElse(0)
-    </div>
+        <div>
+            userId: @Model.CurrentUser.Map(user => user.UserId).GetOrElse(0)
+        </div>
 
 
-    <form method="post" asp-page-handler="open">
-        <ol>
-            @{
-                var existingListsIds = Model.ShoppingListReadDtos.Map(i => i.Id);
+        <span>Saved shopping lists</span>
+        <form method="post" asp-page-handler="open">
+            <ol>
+                @{
+                    var existingListsIds = Model.ShoppingListReadDtos.Map(i => i.Id);
 
-                foreach (var id in existingListsIds)
-                {
-                    <li>@id</li>
-                    <button type="submit" name="shoppingListId" value="@id">Open list: @id</button>
+                    foreach (var id in existingListsIds)
+                    {
+                        <li>
+                            @id
+                            <button type="submit" name="shoppingListId" value="@id">Open list: @id</button>
+                        </li>
+                    }
                 }
-            }
-        </ol>
-    </form>
+            </ol>
+        </form>
 
-    <form asp-page-handler="Create" method="post">
+        <form asp-page-handler="Create" method="post">
 
-        <div>
-            <input asp-for="ShopName" id="shopName" placeholder="shop name" type="text">
-            <span asp-validation-for="ShopName" class="text-danger"></span>
-        </div>
-        <div>
-            <button id="submit">Create New</button>
-        </div>
-    </form>
+            <div>
+                <input asp-for="ShopName" id="shopName" placeholder="shop name" type="text">
+                <label for="shopName">shop name (optional)</label>
+                <span asp-validation-for="ShopName" class="text-danger"></span>
+            </div>
+            <div>
+                <button id="submit">Create New</button>
+            </div>
+        </form>
 
-    <span class="text-danger">
-        @Model.ErrorText
-    </span>
+        <span class="text-danger">
+            @Model.ErrorText
+        </span>
+    </div>
 </div>
 </body>
 </html>
