@@ -9,35 +9,34 @@
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
     <title></title>
 </head>
 <body>
-<div>
-    <form method="post">
-        <div>
-            <label asp-for="Username">Username:</label>
-        </div>
-        <div>
-            <input type="text" id="username" asp-for="Username">
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
-        <div>
-            <label asp-for="Password">Password:</label>
-        </div>
-        <div>
-            <input type="password" id="password" asp-for="Password">
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-        <div>
-            <button id="submit">Sign in</button>
-        </div>
-    </form>
-</div>
+<div class="paper">
+    <div class="paper-content">
+        <form method="post">
+            <div>
+                <input type="text" id="username" asp-for="Username">
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <label asp-for="Username">Username</label>
+            </div>
+            <div>
+                <input type="password" id="password" asp-for="Password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <label asp-for="Password">Password</label>
+            </div>
+            <div>
+                <button id="submit">Sign in</button>
+            </div>
+        </form>
+    </div>
 
-@if (Model.ErrorMessage.Length > 0)
-{
-    <script>alert('@Model.ErrorMessage');</script>
-}
+    @if (Model.ErrorMessage.Length > 0)
+    {
+        <script>alert('@Model.ErrorMessage');</script>
+    }
+</div>
 </body>
 </html>
 
