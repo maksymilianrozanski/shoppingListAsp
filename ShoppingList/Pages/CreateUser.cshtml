@@ -9,33 +9,33 @@
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
     <title></title>
 </head>
 <body>
-<div>
-    <form method="post">
-        <div>
-            <label asp-for="Username">Username</label>
-        </div>
-        <div>
-            <input id="username" type="text" asp-for="Username" placeholder="username">
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
-        <div>
-            <label asp-for="Password">Password</label>
-        </div>
-        <div>
-            <input id="password" type="password" asp-for="Password" placeholder="password">
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+<div class="paper">
+    <div class="paper-content">
 
-        <div>
-            <button id="submit">Submit</button>
-        </div>
-    </form>
-    <span class="text-danger">
-        @Model.ErrorText
-    </span>
+        <form method="post">
+            <div>
+                <input id="username" type="text" asp-for="Username" placeholder="username">
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <label asp-for="Username">Username</label>
+            </div>
+            <div>
+                <input id="password" type="password" asp-for="Password" placeholder="password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <label asp-for="Password">Password</label>
+            </div>
+
+            <div>
+                <button id="submit">Submit</button>
+            </div>
+        </form>
+        <span class="text-danger">
+            @Model.ErrorText
+        </span>
+    </div>
 </div>
 </body>
 </html>
