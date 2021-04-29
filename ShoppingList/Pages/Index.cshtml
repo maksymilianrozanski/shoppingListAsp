@@ -4,19 +4,20 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>This is the home page of Shopping List app.</p>
-
-    <ul>
-        <li>
-            <a asp-page="/Protected/CollectItems">start collecting shopping list items</a>
-        </li>
-        <li>
-            <a asp-page="/CreateUser">Create a new user shopping list</a>
-        </li>
-        <li>
-            <a asp-page="/Protected/ShoppingLists">Display your shopping lists</a>
-        </li>
-    </ul>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/paper.css"/>
+    <title></title>
+</head>
+<div class="paper">
+    <div class="paper-content">
+        <ul>
+            <li>
+                <a asp-page="/CreateUser">Create a new user</a>
+            </li>
+            <li>
+                <a asp-page="/Protected/ShoppingLists">Display your shopping lists</a>
+            </li>
+        </ul>
+    </div>
 </div>
