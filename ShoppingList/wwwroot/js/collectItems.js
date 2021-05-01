@@ -6,30 +6,11 @@ function collectItemsPage(currentShoppingListId, currentUsername) {
         ItemToCancelled: 3
     }
 
-    const toBuyColor = "#f5f5f5";
-    const lookingForColor = "#c8fff5";
-    const boughtColor = "#edfced";
-    const notFoundColor = "#faeed5";
-    const cancelledColor = "#c8c8c8";
-
     const actionButtons = [
         itemActionsIds.ItemLookingFor,
         itemActionsIds.ItemToBought,
         itemActionsIds.ItemToNotFound,
         itemActionsIds.ItemToCancelled];
-
-    const actionButtonColor = (actionId) => {
-        switch (actionId) {
-            case itemActionsIds.ItemLookingFor:
-                return lookingForColor
-            case itemActionsIds.ItemToNotFound:
-                return notFoundColor
-            case itemActionsIds.ItemToBought:
-                return boughtColor
-            case itemActionsIds.ItemToCancelled:
-                return cancelledColor
-        }
-    }
 
     const itemActionText = (actionId) => {
         switch (actionId) {
@@ -41,21 +22,6 @@ function collectItemsPage(currentShoppingListId, currentUsername) {
                 return "Collected";
             case itemActionsIds.ItemToCancelled:
                 return "Cancel item";
-        }
-    }
-
-    const itemTypeBackgroundColor = (itemDataReadDto) => {
-        switch (itemDataReadDto.itemType) {
-            case "ToBuy" :
-                return toBuyColor;
-            case "LookingFor":
-                return lookingForColor;
-            case "Bought":
-                return boughtColor;
-            case "NotFound":
-                return notFoundColor;
-            case "Cancelled":
-                return cancelledColor;
         }
     }
 
@@ -121,11 +87,49 @@ function collectItemsPage(currentShoppingListId, currentUsername) {
         return actions.map(i => createItemActionButton(itemDataReadDto)(i));
     }
 
+    const addLineThrough = (color) => (element) => {
+        element.style.textDecoration = 'line-through';
+        element.style.textDecorationColor = color;
+        element.style.textDecorationThickness = '6px'
+        return element;
+    }
+
+    const boughtStyle = addLineThrough("rgba(156,255,156,0.75)")
+    const cancelledStyle = addLineThrough("rgba(255,255,255,0.8)")
+    const notFoundStyle = (element) => {
+        element.style.textDecoration = 'underline dotted';
+        element.style.textDecorationColor = "rgba(231,18,18,0.7)";
+        element.style.textDecorationThickness = '4px';
+        return element;
+    }
+    const lookingForStyle = (element) => {
+        element.innerHTML = "<mark style='background-color: rgba(255,255,0,0.7); border-radius: 20%; padding: 4px'>" + element.innerText + "</mark>";
+        return element;
+    }
+
+    const displayedTextItem = (itemDataReadDto) => {
+
+        const displayedTextElement = document.createElement("div")
+        displayedTextElement.innerText = itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
+
+        switch (itemDataReadDto.itemType) {
+            case "LookingFor":
+                return lookingForStyle(displayedTextElement);
+            case "Bought":
+                return boughtStyle(displayedTextElement)
+            case "NotFound":
+                return notFoundStyle(displayedTextElement);
+            case "Cancelled":
+                return cancelledStyle(displayedTextElement);
+            default :
+                return displayedTextElement;
+        }
+    }
+
     const itemWithActions = (itemDataReadDto) => {
         const liElement = document.createElement("li");
 
-        const displayedText = document.createElement("div")
-        displayedText.innerText = itemDataReadDto.name.toString() + " - " + itemDataReadDto.quantity.toString();
+        const displayedText = displayedTextItem(itemDataReadDto);
         liElement.appendChild(displayedText);
 
         const buttonsContainer = document.createElement("div");
