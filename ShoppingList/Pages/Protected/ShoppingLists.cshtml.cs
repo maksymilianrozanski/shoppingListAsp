@@ -51,7 +51,10 @@ namespace ShoppingList.Pages.Protected
                         .Pipe(createDto =>
                             _shoppingListRepo.CreateShoppingList(createDto)
                                 .Match(l =>
-                                        this.ErrorText = l.ToString(),
+                                    {
+                                        this.ErrorText = l.ToString();
+                                        OnGet();
+                                    },
                                     _ => Response.Redirect("/Protected/ShoppingLists"))));
         }
     }
