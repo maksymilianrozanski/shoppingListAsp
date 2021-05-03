@@ -18,15 +18,6 @@
 <div class="paper">
     <div class="paper-content">
 
-        <div>
-            username: @Model.CurrentUser.Map(user => user.Username).GetOrElse("error")
-        </div>
-
-        <div>
-            userId: @Model.CurrentUser.Map(user => user.UserId).GetOrElse(0)
-        </div>
-
-
         <span>Saved shopping lists</span>
         <form method="post" asp-page-handler="open">
             <ol>
