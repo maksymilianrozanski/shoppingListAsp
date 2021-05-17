@@ -12,7 +12,7 @@
 
     <ItemGroup>
       <PackageReference Include="FSharpPlus" Version="1.1.7" />
-      <PackageReference Include="Google.OrTools" Version="8.1.8487" />
+      <PackageReference Include="Google.OrTools" Version="9.0.9048" />
     </ItemGroup>
 
 </Project>
