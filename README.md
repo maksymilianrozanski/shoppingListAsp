@@ -16,10 +16,12 @@ in different languages, different dataset should be used.
 
 **Running the app**
 
-requirements: docker engine, unused port 5000 To run the app in local environment, in directory containing
-docker-compose.yml, enter in terminal: `docker-compose build`, and then `docker-compose up`. After displaying _Now
-listening on: http://[::]:5000_ app should be available in the browser at `localhost:5000`. App is running without use
-of https by default.
+requirements: docker engine, available port 443 and 80. To run the app in local environment, in directory containing
+docker-compose.yaml, enter in terminal: `docker-compose build`, and then `docker-compose up`. After displaying
+`info: Microsoft.Hosting.Lifetime[0]
+Now listening on: https://[::]:443
+info: Microsoft.Hosting.Lifetime[0]
+Now listening on: http://[::]:80` app should be available in the browser at `localhost`.
 
 The format of JSON string inserted into ShopWaypointsReadDtoJSON column of ShopWaypointsEntities should match string
 obtained by using `JsonSerializer.Serialize(ShoppingList.Data.Waypoints.WaypointsRepoHardcoded.HardcodedWaypoints)`.
@@ -43,7 +45,6 @@ password: _password_
 **TODOs**
 
 - Replace plain text passwords
-- Enable https in docker
 - Remove dataset labels with too few entries
 
 **Opis aplikacji**
@@ -57,36 +58,3 @@ prawdopodobnie znajduje się produkt.
 Prognoza odbywa się na podstawie modelu wygenerowanego z użyciem bazy nazw produktu powiązanych z nazwą produktu (model
 wygenerowany z użyciem biblioteki Microsoft.ML). Baza danych produktów użyta do wygenerowania modelu:
 https://www.kaggle.com/agatii/total-sale-2018-yearly-data-of-grocery-shop
-
-**Instrukcja uruchomienia**
-
-Wymagania:
-
-- zainstalowany docker engine
-- dostępny port 5000
-
-(branch repozytorium wseiDemo)
-W terminalu, w folderze gdzie znajduje się plik docker-compose.yml należy wprowadzić
-`docker-compose build`
-
-następnie `docker-compose up`
-
-Po wyświetleniu _Now listening on: http://[::]:5000_ aplikacja powinna być dostępna w przeglądarce pod
-adresem `localhost:5000`
-
-Przy uruchomieniu z dockerem aplikacja działa bez https. W branchu wseiDemo podczas pierwszego uruchomienia dodawana
-jest przykładowa mapa sklepu z nazwą _big-market_, oraz lista zakupowa z kilkoma dodanymi produktami.
-
-Dane logowania:
-Username: `user` Password: `password` dane wstawiane z pliku SqlShoppingListRepoExampleData.cs.
-Dodatkowo aplikacja zwraca typ prognozowanego działu sklepowego (zapytania POST), przykładowe zapytanie w
-pliku `/curl/predictItem.cmd`
-
-W przypadku uruchamiania bez docker-a należy:
-
-- dostosować w pliku `ShoppingList/appsettings.json` , tak aby odpowiadał dostępnej bazie danych (SQL Server).
-- przed pierwszym uruchomieniem projektu ASP.NET uruchomić projekt GroceryClassification,
-- przenieść wygenerowany plik model.zip do projektu ShoppingList
-  `cp ./GroceryClassification/Models/model.zip ./ShoppingList/MLModels/model.zip`
-- zaktualizować bazę danych ( `dotnet ef database update --project ShoppingList` ) - wymagana instalacja dotnet ef tools
-- uruchomić projekt ShoppingList ( `dotnet run --project ShoppingList --urls http://*:5000` )
