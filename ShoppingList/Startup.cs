@@ -77,7 +77,7 @@ namespace ShoppingList
                 app.UseDeveloperExceptionPage();
             }
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             // app.UseStatusCodePages(async context =>

@@ -13,7 +13,7 @@ done
 cp ./GroceryClassification/Models/model.zip ./ShoppingList/MLModels/model.zip
 >&2 echo "after copying model.zip"
 
-run_cmd="dotnet run --project ShoppingList --urls http://*:5000"
+run_cmd="dotnet run --project ShoppingList"
 
 until dotnet ef database update --project ShoppingList; do
 >&2 echo "SQL Server is starting up"

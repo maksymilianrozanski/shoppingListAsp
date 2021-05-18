@@ -16,7 +16,8 @@ namespace ShoppingList
                 {
                     webBuilder
                         .UseKestrel()
-                        .UseUrls("http://*:5000")
+                        .UseSetting("https_port", "443")
+                        .UseUrls("https://*:443", "http://*:80")
                         .UseStartup<Startup>();
                 });
     }
