@@ -19,8 +19,7 @@ in different languages, different dataset should be used.
 requirements: docker engine, available port 443 and 80. To run the app in local environment, in directory containing
 docker-compose.yaml, enter in terminal: `docker-compose build`, and then `docker-compose up`. After displaying
 `info: Microsoft.Hosting.Lifetime[0]
-Now listening on: https://[::]:443
-info: Microsoft.Hosting.Lifetime[0]
+Now listening on: https://[::]:443 info: Microsoft.Hosting.Lifetime[0]
 Now listening on: http://[::]:80` app should be available in the browser at `localhost`.
 
 The format of JSON string inserted into ShopWaypointsReadDtoJSON column of ShopWaypointsEntities should match string
@@ -28,6 +27,16 @@ obtained by using `JsonSerializer.Serialize(ShoppingList.Data.Waypoints.Waypoint
 
 To use different dataset for generating ML model, put training and test dataset into `./GroceryClassification/Data`
 directory and adjust file names in the Main method of `./GroceryClassification/Program.cs`.
+
+Setting up certificate in Powershell ./shoppingList>
+
+`dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\ShoppingList.pfx -p password_here`
+
+Should return _The HTTPS developer certificate was generated successfully._
+
+`dotnet user-secrets set "Kestrel:Certificates:Development:Password" "password_here"`
+
+Should return _Successfully saved Kestrel:Certificates:Development:Password = password_here to the secret store._
 
 **Example data**
 
