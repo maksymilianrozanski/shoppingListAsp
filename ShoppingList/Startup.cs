@@ -1,8 +1,9 @@
+using System;
 using GroceryClassification;
+using LaYumba.Functional;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,12 +12,13 @@ using Newtonsoft.Json.Serialization;
 using ShoppingList.Auth;
 using ShoppingList.Data;
 using ShoppingList.Data.List;
-using ShoppingList.Data.Waypoints;
 
 namespace ShoppingList
 {
     public class Startup
     {
+        private string _passwordSalt = "";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,9 +26,22 @@ namespace ShoppingList
 
         public IConfiguration Configuration { get; }
 
+        private Either<StartupErrors, string> GetConfigValue(string key)
+        {
+            var value = Configuration[key];
+            if (value is null or "") return new StartupErrors(StartupErrors.StartupError.ReadingConfigurationFailed);
+            else return value;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            GetConfigValue("salt").Match(l =>
+            {
+                Console.WriteLine("Reading config value failed. Exiting the app.");
+                Environment.Exit(1);
+            }, r => _passwordSalt = r);
+
             services.AddDbContext<ShoppingListDbContext>(opt =>
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection"));
@@ -99,6 +114,21 @@ namespace ShoppingList
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
+        }
+
+        public sealed class StartupErrors
+        {
+            private readonly StartupError _error;
+
+            public StartupErrors(StartupError error)
+            {
+                this._error = error;
+            }
+
+            public enum StartupError
+            {
+                ReadingConfigurationFailed
+            }
         }
     }
 }
