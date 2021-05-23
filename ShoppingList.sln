@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTypes.Tests", "Shared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList.Tests", "ShoppingList.Tests\ShoppingList.Tests.csproj", "{330B0BF9-593C-41C6-9890-5E9259111232}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Authentication", "Authentication\Authentication.fsproj", "{9C60D4A2-47BA-4C26-A819-53D39100523B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Authentication.Tests", "Authentication.Tests\Authentication.Tests.fsproj", "{BC2AC239-796A-443F-BE4E-FA51AA923D73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +76,13 @@ Global
 		{330B0BF9-593C-41C6-9890-5E9259111232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{330B0BF9-593C-41C6-9890-5E9259111232}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{330B0BF9-593C-41C6-9890-5E9259111232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C60D4A2-47BA-4C26-A819-53D39100523B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C60D4A2-47BA-4C26-A819-53D39100523B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C60D4A2-47BA-4C26-A819-53D39100523B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C60D4A2-47BA-4C26-A819-53D39100523B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC2AC239-796A-443F-BE4E-FA51AA923D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2AC239-796A-443F-BE4E-FA51AA923D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2AC239-796A-443F-BE4E-FA51AA923D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2AC239-796A-443F-BE4E-FA51AA923D73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
