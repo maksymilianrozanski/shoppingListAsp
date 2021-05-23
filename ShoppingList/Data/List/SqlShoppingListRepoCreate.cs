@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Authentication.Salt;
 using LaYumba.Functional;
 using LaYumba.Functional.Option;
 using Microsoft.EntityFrameworkCore;
@@ -20,17 +21,16 @@ namespace ShoppingList.Data.List
         public Either<ShoppingListErrors.ShoppingListErrors, UserCreatedReadDto> CreateUser(
             Option<UserCreateDto> userCreateDto) =>
             CanCreateUser(userCreateDto)
-                .Map(canCreate =>
+                .Map(ToUserEntity)
+                .Bind(canCreate =>
                     Try(() =>
                             _context.UserEntities.Add(canCreate).Entity)
                         .Map(i => SaveChanges() ? Some((UserCreatedReadDto) i) : new None())
                         .Run()
-                        .Match(l => F.Left(ShoppingListErrors.ShoppingListErrors.CreatingUserFailed), r =>
+                        .Match(l => Left(ShoppingListErrors.ShoppingListErrors.CreatingUserFailed), r =>
                             r.Map(i => (Either<ShoppingListErrors.ShoppingListErrors, UserCreatedReadDto>) Right(i))
                                 .GetOrElse(
-                                    (Either<ShoppingListErrors.ShoppingListErrors, UserCreatedReadDto>)
-                                    F.Left(ShoppingListErrors.ShoppingListErrors.CreatingUserFailed))))
-                .Bind(i => i);
+                                    Left(ShoppingListErrors.ShoppingListErrors.CreatingUserFailed))));
 
         private Either<ShoppingListErrors.ShoppingListErrors, UserCreateDto> CanCreateUser(
             Option<UserCreateDto> userCreateDto) =>

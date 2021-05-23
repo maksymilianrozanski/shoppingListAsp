@@ -31,13 +31,15 @@ namespace ShoppingList.Data.List
         private readonly ShoppingListDbContext _context;
         private readonly IWaypointsRepo _waypointsRepo;
         private readonly GroceryPredictionPool _predictionEnginePool;
+        private readonly IUserPasswordSalt _salt;
 
         public SqlShoppingListRepo(ShoppingListDbContext context,
-            GroceryPredictionPool predictionEnginePool)
+            GroceryPredictionPool predictionEnginePool, IUserPasswordSalt salt)
         {
             _context = context;
             _waypointsRepo = new SqlWaypointsRepo(_context);
             _predictionEnginePool = predictionEnginePool;
+            _salt = salt;
         }
 
         private Either<ShoppingListErrors.ShoppingListErrors, (ShoppingListCreateDto, Option<ShopWaypointsEntity>)>

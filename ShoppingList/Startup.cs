@@ -17,7 +17,7 @@ namespace ShoppingList
 {
     public class Startup
     {
-        private string _passwordSalt = "";
+        public static string PasswordSalt { get; private set; } = "";
 
         public Startup(IConfiguration configuration)
         {
@@ -40,8 +40,10 @@ namespace ShoppingList
             {
                 Console.WriteLine("Reading config value failed. Exiting the app.");
                 Environment.Exit(1);
-            }, r => _passwordSalt = r);
+            }, r => PasswordSalt = r);
 
+            services.AddTransient<IUserPasswordSalt, UserPasswordSaltImpl>();
+            
             services.AddDbContext<ShoppingListDbContext>(opt =>
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("ShoppingListConnection"));

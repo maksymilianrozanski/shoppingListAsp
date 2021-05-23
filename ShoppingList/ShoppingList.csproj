@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Authentication\Authentication.fsproj" />
       <ProjectReference Include="..\GroceryClassification\GroceryClassification.csproj" />
       <ProjectReference Include="..\SharedTypes\SharedTypes.csproj" />
       <ProjectReference Include="..\ShoppingData\ShoppingData.fsproj" />

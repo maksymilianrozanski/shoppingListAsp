@@ -8,6 +8,7 @@ using Microsoft.Extensions.ML;
 using SharedTypes.Dtos;
 using SharedTypes.Dtos.Protected;
 using SharedTypes.Entities;
+using ShoppingList.Auth;
 using ShoppingList.Data.Waypoints;
 
 namespace ShoppingList.Data.List
@@ -15,15 +16,14 @@ namespace ShoppingList.Data.List
     public class SqlShoppingListRepoExampleData : SqlShoppingListRepo
     {
         public SqlShoppingListRepoExampleData(ShoppingListDbContext context,
-            PredictionEnginePool<GroceryData, GroceryItemPrediction> predictionEnginePool) : base(context,
-            predictionEnginePool)
+            PredictionEnginePool<GroceryData, GroceryItemPrediction> predictionEnginePool,
+            IUserPasswordSalt salt) : base(context,
+            predictionEnginePool, salt)
         {
             if (context.ShopWaypointsEntities.ToList().Count == 0)
             {
-                var userEntity = new UserEntity
-                {
-                    Id = 0, Login = "user", Password = "password"
-                };
+                var userCreateDto = new UserCreateDto("user", "password");
+                var userEntity = ToUserEntity(userCreateDto);
 
                 context.UserEntities.Add(userEntity);
 

@@ -10,15 +10,9 @@ namespace SharedTypes.Entities
 
         [Required, MaxLength(100)] public string Login { get; set; }
 
-        [Required, MinLength(8), MaxLength(20)]
+        [Required, MinLength(64), MaxLength(64)]
         public string Password { get; set; }
 
         public ICollection<ShoppingListEntity> ShoppingListEntities { get; set; } = new List<ShoppingListEntity>();
-
-        public static implicit operator UserEntity(UserCreateDto userCreateDto) =>
-            new()
-            {
-                Id = 0, Login = userCreateDto.Login, Password = userCreateDto.Password
-            };
     }
 }

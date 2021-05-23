@@ -125,13 +125,15 @@ namespace ShoppingList.Data.List
 
         public Either<ShoppingListErrors.ShoppingListErrors, UserReadDto>
             AuthenticateUser(UserLoginData userLoginData) =>
-            F.Try(() =>
+            Try(() => userLoginData)
+                .Map(ToUserEntity)
+                .Map(searched =>
                     _context.UserEntities.FirstOrDefault(i =>
-                        i.Login == userLoginData.Username && i.Password == userLoginData.Password)
+                        i.Login == searched.Login && i.Password == searched.Password)
                 ).Run()
-                .Match(l => F.Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(l.Message)),
+                .Match(l => Left(ShoppingListErrors.ShoppingListErrors.NewOtherError(l.Message)),
                     r => r == null
-                        ? F.Left(ShoppingListErrors.ShoppingListErrors.NotFound)
+                        ? Left(ShoppingListErrors.ShoppingListErrors.NotFound)
                         : (Either<ShoppingListErrors.ShoppingListErrors, UserReadDto>) F.Right((UserReadDto) r!));
 
         public Either<ShoppingListErrors.ShoppingListErrors, (User, int)> ValidateAccess
