@@ -8,7 +8,6 @@ module SaltModule =
 
     type Salt = Salt of string
     type Password = Password of string
-
     type Hash = Hash of string
 
     let private joinSaltPassword salt password =
@@ -22,10 +21,4 @@ module SaltModule =
         |> Convert.ToHexString
         |> Hash
 
-//    let verifySha (salt: Salt) (savedSha: Hash) (password: Password) =
-//        match (savedSha, createSha salt password) with
-//        | Hash a, b -> a = b
-//
-//    let verifySha2 (salt: Salt) shaCreator (savedSha: Hash) (password: Password) =
-//        match (savedSha, shaCreator salt password) with
-//        | Hash a, b -> a = b
+    let verifySha (salt: Salt) shaCreator (savedSha: Hash) (password: Password) = savedSha = shaCreator salt password
